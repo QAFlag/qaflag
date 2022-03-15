@@ -1,0 +1,5 @@
+lerna-debug.log
+npm-debug.log
+packages/*/lib
+.idea
+node_modules

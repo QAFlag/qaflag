@@ -1,0 +1,31 @@
+{
+  "name": "@qaflag/core",
+  "version": "0.0.1",
+  "description": "Base requirements for the QA Flag library",
+  "keywords": [
+    "qa",
+    "quality",
+    "testing",
+    "flagpole"
+  ],
+  "author": "Jason Byrne",
+  "homepage": "",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "dependencies": {
+    "needle": "^3.0.0"
+  },
+  "devDependencies": {
+    "@types/needle": "^2.5.3"
+  }
+}
