@@ -1,9 +1,21 @@
 import { KeyValue } from '../types/general.types';
 
 export class KvStore {
-  #store: KeyValue;
+  #store: KeyValue = {};
 
-  public set(key: string, value: any) {
+  public entries() {
+    return Object.entries(this.#store);
+  }
+
+  public keys() {
+    return Object.keys(this.#store);
+  }
+
+  public values() {
+    return Object.values(this.#store);
+  }
+
+  public set<T>(key: string, value: T): T {
     this.#store[key] = value;
     return value;
   }

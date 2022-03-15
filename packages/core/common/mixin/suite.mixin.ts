@@ -4,6 +4,7 @@ import { LogCollector, LogReceiver } from '../types/log-provider.interface';
 import { MessageType } from '../types/message.interface';
 import { ScenarioInterface } from '../types/scenario.interface';
 import { ScenarioConstructor, ScenarioOpts } from '../types/scenario.types';
+import { SuiteInterface } from '../types/suite.interface';
 
 export const ScenarioDefinitions = Symbol('ScenarioDefinitions');
 
@@ -20,7 +21,7 @@ export function Suite<ScenarioType extends ScenarioInterface>(
   scenarioConstructor: ScenarioConstructor<ScenarioType>,
   initOpts: SuiteOpts,
 ) {
-  return class SuiteAbstract implements LogReceiver, LogCollector {
+  return class SuiteAbstract implements SuiteInterface {
     public readonly title = initOpts.title;
     public readonly scenarios: ScenarioType[] = [];
     public readonly steps: SuiteStep[] = [];
@@ -35,7 +36,7 @@ export function Suite<ScenarioType extends ScenarioInterface>(
         Object.values(scenarioMethods)
           .sort((a, b) => a.step - b.step)
           .forEach(scenario => {
-            this.scenarios.push(new scenarioConstructor(scenario));
+            this.scenarios.push(new scenarioConstructor(scenario, this));
           });
       }
       // Initialize suite
@@ -63,6 +64,7 @@ export function Suite<ScenarioType extends ScenarioInterface>(
         await Promise.all(
           step.scenarioKeys.map(async key => {
             const scenario = this.scenario(key);
+            scenario.uriReplace(this.store.entries());
             scenario.log('info', `Execute ${String(key)} - ${scenario.uri}`);
             await scenario.execute();
             await scenario.next(scenario);
@@ -104,7 +106,7 @@ export function Suite<ScenarioType extends ScenarioInterface>(
       this.logger.log(type, text);
     }
 
-    public set(key: string, value: any) {
+    public set<T>(key: string, value: T): T {
       return this.store.set(key, value);
     }
 

@@ -1,12 +1,13 @@
 import { HttpVerbsCaseInsensitive } from './http-methods';
 import { ScenarioInterface } from './scenario.interface';
+import { SuiteInterface } from './suite.interface';
 
 export type ScenarioUri = `${HttpVerbsCaseInsensitive} ${string}`;
 
 export interface ScenarioConstructor<
   ScenarioType extends ScenarioInterface = ScenarioInterface,
 > {
-  new (opts: ScenarioOpts): ScenarioType;
+  new (opts: ScenarioOpts, suite: SuiteInterface): ScenarioType;
 }
 
 /**

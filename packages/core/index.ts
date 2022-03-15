@@ -1,5 +1,6 @@
 import { Scenario } from './common/decorators/scenario.decorator';
 import { Suite } from './common/mixin/suite.mixin';
+import { test } from './common/models/test';
 import { JsonResponse } from './json/json.response';
 import { JsonScenario } from './json/json.scenario';
 
@@ -12,8 +13,11 @@ class UsersSuite extends Suite(JsonScenario, {
     step: 1,
   })
   async getListOfUsers(response: JsonResponse) {
-    const status = response.statusCode;
-    response.log('info', `${status.name} = ${status.toString()}`);
+    test(response.statusCode).equals(200);
+    const ids = response.find('[*].id').array;
+    test(ids.length).greaterThan(0);
+    test(ids.first.number).greaterThan(0);
+    this.set('userId', ids.first.$);
   }
 
   @Scenario({
@@ -21,14 +25,7 @@ class UsersSuite extends Suite(JsonScenario, {
     uri: 'GET https://jsonplaceholder.typicode.com/users/{userId}',
     step: 2,
   })
-  async test2() {}
-
-  @Scenario({
-    description: 'Get one user',
-    uri: 'GET https://jsonplaceholder.typicode.com/users/1',
-    step: 2,
-  })
-  async test3() {}
+  async getOneUser() {}
 }
 
 const suite = new UsersSuite();

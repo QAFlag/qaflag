@@ -9,3 +9,18 @@ export class NumericValue extends ValueType({
 export class StringValue extends ValueType({
   name: 'String Value',
 })<string> {}
+
+export class BooleanValue extends ValueType({
+  name: 'Boolean Value',
+})<boolean> {}
+
+export class ArrayValue<T = any> extends ValueType({
+  name: 'Array Value',
+})<T[]> {
+  public get first() {
+    return new Value(this.$[0], {
+      ...this.opts,
+      name: `First in ${this.name}`,
+    });
+  }
+}

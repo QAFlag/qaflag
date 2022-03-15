@@ -16,7 +16,7 @@ export function Scenario(opts: ScenarioDecoratorOpts) {
       uri: opts.uri,
       step: opts.step || 1,
       next: async (scenario: ScenarioInterface) => {
-        return originalMethod(scenario.response);
+        return originalMethod.apply(scenario.suite, [scenario.response]);
       },
     };
     descriptor.value = () => {
