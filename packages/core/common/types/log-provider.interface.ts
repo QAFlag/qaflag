@@ -1,9 +1,10 @@
-import { MessageInterface } from './message.interface';
+import { Logger } from '../models/logger';
+import { MessageType } from './message.interface';
 
-export interface LogEmmitter {
-  log(messages: MessageInterface | MessageInterface[]): void;
+export interface LogReceiver {
+  log(type: MessageType, message: string): void;
 }
 
 export interface LogCollector {
-  getLog(): MessageInterface[];
+  logger: Logger;
 }

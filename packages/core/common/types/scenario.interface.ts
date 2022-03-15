@@ -1,8 +1,8 @@
 import { ScenarioUri } from '../types/scenario.types';
-import { LogCollector, LogEmmitter } from './log-provider.interface';
+import { LogCollector, LogReceiver } from './log-provider.interface';
 import { ResponseInterface } from './response.interface';
 
-export interface ScenarioInterface extends LogEmmitter, LogCollector {
+export interface ScenarioInterface extends LogReceiver, LogCollector {
   name: string;
   response: ResponseInterface | null;
   key: string | Symbol;

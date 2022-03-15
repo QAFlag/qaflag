@@ -13,7 +13,7 @@ class UsersSuite extends Suite(JsonScenario, {
   })
   async getListOfUsers(response: JsonResponse) {
     const status = response.statusCode;
-    response.log({ text: `${status.name} = ${status.toString()}` });
+    response.log('info', `${status.name} = ${status.toString()}`);
   }
 
   @Scenario({

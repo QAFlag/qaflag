@@ -1,5 +1,7 @@
-import { LogCollector, LogEmmitter } from '../types/log-provider.interface';
-import { MessageInterface } from '../types/message.interface';
+import { KvStore } from '../models/kv-store';
+import { Logger } from '../models/logger';
+import { LogCollector, LogReceiver } from '../types/log-provider.interface';
+import { MessageType } from '../types/message.interface';
 import { ScenarioInterface } from '../types/scenario.interface';
 import { ScenarioConstructor, ScenarioOpts } from '../types/scenario.types';
 
@@ -18,12 +20,12 @@ export function Suite<ScenarioType extends ScenarioInterface>(
   scenarioConstructor: ScenarioConstructor<ScenarioType>,
   initOpts: SuiteOpts,
 ) {
-  return class SuiteAbstract implements LogEmmitter, LogCollector {
-    #messages: MessageInterface[] = [];
-
+  return class SuiteAbstract implements LogReceiver, LogCollector {
     public readonly title = initOpts.title;
     public readonly scenarios: ScenarioType[] = [];
     public readonly steps: SuiteStep[] = [];
+    public readonly store = new KvStore();
+    public readonly logger = new Logger();
 
     constructor() {
       // Add scenarios to this instance
@@ -51,25 +53,28 @@ export function Suite<ScenarioType extends ScenarioInterface>(
     }
 
     public async execute() {
-      this.log({ text: this.title });
-      this.log({
-        text: `There are ${this.scenarios.length} scenarios and ${this.steps.length} steps.`,
-      });
+      this.logger.log('suiteHeader', this.title);
+      this.logger.log(
+        'info',
+        `There are ${this.scenarios.length} scenarios and ${this.steps.length} steps.`,
+      );
       for (const step of this.steps) {
-        this.log({ text: `==== STEP ${step.stepNumber} ====` });
+        this.logger.log('step', `==== STEP ${step.stepNumber} ====`);
         await Promise.all(
           step.scenarioKeys.map(async key => {
             const scenario = this.scenario(key);
-            scenario.log({ text: `Execute ${String(key)} - ${scenario.uri}` });
+            scenario.log('info', `Execute ${String(key)} - ${scenario.uri}`);
             await scenario.execute();
             await scenario.next(scenario);
-            scenario.getLog().forEach(message => {
-              this.log(message);
+            scenario.logger.getMessages().forEach(message => {
+              this.logger.add(message);
             });
           }),
         );
       }
-      console.log(...this.getLog().map(message => message.text + '\n'));
+      console.log(
+        ...this.logger.getMessages().map(message => message.text + '\n'),
+      );
     }
 
     public scenario(key: string | Symbol): ScenarioType | undefined {
@@ -95,18 +100,20 @@ export function Suite<ScenarioType extends ScenarioInterface>(
       step.scenarioKeys.push(scenario.key);
     }
 
-    public log(messages: MessageInterface | MessageInterface[]): void {
-      if (!Array.isArray(messages)) {
-        this.#messages.push(messages);
-        return;
-      }
-      messages.forEach(message => {
-        this.#messages.push(message);
-      });
+    public log(type: MessageType, text: string): void {
+      this.logger.log(type, text);
     }
 
-    public getLog(): MessageInterface[] {
-      return this.#messages;
+    public set(key: string, value: any) {
+      return this.store.set(key, value);
+    }
+
+    public get(key: string): any {
+      return this.store.get(key);
+    }
+
+    public push(key: string, value: any): any {
+      return this.store.push(key, value);
     }
   };
 }

@@ -1,6 +1,6 @@
 import { HttpResponse } from '../models/http-response';
 import { NumericValue } from '../models/value';
-import { MessageInterface } from '../types/message.interface';
+import { MessageInterface, MessageType } from '../types/message.interface';
 import { ResponseInterface } from '../types/response.interface';
 import { ScenarioInterface } from '../types/scenario.interface';
 
@@ -21,8 +21,8 @@ export function ResponseType(initOpts: ResponseTypeOpts) {
       });
     }
 
-    public log(messages: MessageInterface | MessageInterface[]): void {
-      this.scenario.log(messages);
+    public log(type: MessageType, text: string): void {
+      this.scenario.log(type, text);
     }
   }
   return ResponseAbstract;

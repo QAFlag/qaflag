@@ -1,3 +1,3 @@
-import { LogEmmitter } from './log-provider.interface';
+import { LogReceiver } from './log-provider.interface';
 
-export interface ResponseInterface extends LogEmmitter {}
+export interface ResponseInterface extends LogReceiver {}

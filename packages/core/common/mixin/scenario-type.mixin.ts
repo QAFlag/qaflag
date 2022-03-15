@@ -1,4 +1,5 @@
-import { MessageInterface } from '../types/message.interface';
+import { Logger } from '../models/logger';
+import { MessageType } from '../types/message.interface';
 import { ResponseInterface } from '../types/response.interface';
 import { ScenarioInterface } from '../types/scenario.interface';
 import { ScenarioOpts, ScenarioUri } from '../types/scenario.types';
@@ -9,8 +10,6 @@ export type ScenarioTypeOpts = {
 
 export function ScenarioType(initOpts: ScenarioTypeOpts) {
   abstract class ScenarioAbstract implements ScenarioInterface {
-    #messages: MessageInterface[] = [];
-
     constructor(public readonly opts: ScenarioOpts) {
       this.key = opts.key;
       this.description = opts.description;
@@ -28,19 +27,10 @@ export function ScenarioType(initOpts: ScenarioTypeOpts) {
     public uri: ScenarioUri;
     public step: number;
     public next: (...args: any[]) => Promise<void>;
+    public readonly logger = new Logger();
 
-    public log(messages: MessageInterface | MessageInterface[]): void {
-      if (!Array.isArray(messages)) {
-        this.#messages.push(messages);
-        return;
-      }
-      messages.forEach(message => {
-        this.#messages.push(message);
-      });
-    }
-
-    public getLog(): MessageInterface[] {
-      return this.#messages;
+    public log(type: MessageType, text: string): void {
+      this.logger.log(type, text);
     }
   }
   return ScenarioAbstract;
