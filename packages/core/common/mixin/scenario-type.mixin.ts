@@ -1,10 +1,10 @@
+import { ScenarioTemplate } from '../decorators/scenario.decorator';
 import { Logger } from '../models/logger';
-import { HttpVerbs } from '../types/http-methods';
+import { HttpVerbs } from '../types/http.types';
 import { MessageInterface, MessageType } from '../types/message.interface';
 import { RequestInterface } from '../types/request.interface';
 import { ResponseInterface } from '../types/response.interface';
 import { ScenarioInterface } from '../types/scenario.interface';
-import { ScenarioOpts } from '../types/scenario.types';
 import { SuiteInterface } from '../types/suite.interface';
 
 export type ScenarioTypeOpts = {
@@ -14,7 +14,7 @@ export type ScenarioTypeOpts = {
 export function ScenarioType(initOpts: ScenarioTypeOpts) {
   abstract class ScenarioAbstract implements ScenarioInterface {
     constructor(
-      public readonly opts: ScenarioOpts,
+      public readonly opts: ScenarioTemplate,
       public readonly suite: SuiteInterface,
     ) {
       this.key = opts.key;

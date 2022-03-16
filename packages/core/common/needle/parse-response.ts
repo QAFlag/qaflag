@@ -1,7 +1,7 @@
 import needle = require('needle');
 import { HttpResponse } from '../models/http-response';
 import { HttpHeaders, KeyValue } from '../types/general.types';
-import { HttpVerbs, HttpVerbsEnum } from '../types/http-methods';
+import { HttpVerbs, HttpVerbsEnum } from '../types/http.types';
 
 export const parseResponseFromNeedle = (response: needle.NeedleResponse) =>
   new HttpResponse({

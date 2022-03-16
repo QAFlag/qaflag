@@ -1,5 +1,5 @@
 import { HttpHeaders, JsonData, KeyValue } from '../types/general.types';
-import { HttpVerbsCaseInsensitive } from '../types/http-methods';
+import { HttpVerbsCaseInsensitive } from '../types/http.types';
 
 interface HttpResponseOptions {
   body?: string;

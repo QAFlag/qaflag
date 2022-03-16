@@ -1,6 +1,31 @@
-import { ScenarioDecoratorOpts, ScenarioOpts } from '../types/scenario.types';
 import { ScenarioDefinitions } from '../mixin/suite.mixin';
-import { ScenarioInterface } from '../types/scenario.interface';
+import { HttpHeaders, KeyValue } from '../types/general.types';
+import { HttpAuth } from '../types/http.types';
+import { ScenarioInterface, ScenarioUri } from '../types/scenario.interface';
+import { SuiteInterface } from '../types/suite.interface';
+
+export type ScenarioDecoratorOpts = {
+  uri: ScenarioUri;
+  description?: string;
+  step?: number;
+  bearerToken?: string;
+  headers?: HttpHeaders;
+  cookies?: KeyValue;
+  auth?: HttpAuth;
+  userAgent?: string;
+};
+
+export type ScenarioTemplate = ScenarioDecoratorOpts & {
+  key: string | Symbol;
+  step: number;
+  next: (...args: any[]) => Promise<void>;
+};
+
+export interface ScenarioConstructor<
+  ScenarioType extends ScenarioInterface = ScenarioInterface,
+> {
+  new (opts: ScenarioTemplate, suite: SuiteInterface): ScenarioType;
+}
 
 export function Scenario(opts: ScenarioDecoratorOpts) {
   return function (
@@ -9,11 +34,11 @@ export function Scenario(opts: ScenarioDecoratorOpts) {
     descriptor: PropertyDescriptor,
   ) {
     const originalMethod = descriptor.value;
-    const scenario: ScenarioOpts = {
+    const scenario: ScenarioTemplate = {
+      ...opts,
       key: methodName,
       description:
         opts.description !== undefined ? opts.description : String(methodName),
-      uri: opts.uri,
       step: opts.step || 1,
       next: async (scenario: ScenarioInterface) => {
         return originalMethod.apply(scenario.suite, [scenario.response]);

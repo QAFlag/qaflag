@@ -1,9 +1,11 @@
+import {
+  ScenarioConstructor,
+  ScenarioTemplate,
+} from '../decorators/scenario.decorator';
 import { KvStore } from '../models/kv-store';
 import { Logger } from '../models/logger';
-import { LogCollector, LogReceiver } from '../types/log-provider.interface';
 import { MessageType } from '../types/message.interface';
 import { ScenarioInterface } from '../types/scenario.interface';
-import { ScenarioConstructor, ScenarioOpts } from '../types/scenario.types';
 import { SuiteInterface } from '../types/suite.interface';
 
 export const ScenarioDefinitions = Symbol('ScenarioDefinitions');
@@ -30,7 +32,7 @@ export function Suite<ScenarioType extends ScenarioInterface>(
 
     constructor() {
       // Add scenarios to this instance
-      const scenarioMethods: { [methodName: string]: ScenarioOpts } =
+      const scenarioMethods: { [methodName: string]: ScenarioTemplate } =
         this[ScenarioDefinitions];
       if (scenarioMethods) {
         Object.values(scenarioMethods)

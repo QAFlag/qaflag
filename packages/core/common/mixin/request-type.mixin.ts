@@ -1,6 +1,7 @@
-import { HttpVerbs } from '../types/http-methods';
+import { ScenarioTemplate } from '../decorators/scenario.decorator';
+import { HttpVerbs } from '../types/http.types';
 import { RequestInterface } from '../types/request.interface';
-import { ScenarioOpts, ScenarioUri } from '../types/scenario.types';
+import { ScenarioUri } from '../types/scenario.interface';
 
 export function RequestType() {
   abstract class RequestAbstract implements RequestInterface {
@@ -33,7 +34,28 @@ export function RequestType() {
       this.#path = value;
     }
 
-    constructor(public readonly opts: ScenarioOpts) {
+    public get auth() {
+      return this.opts.auth;
+    }
+
+    public get headers() {
+      return {
+        ...this.opts.headers,
+        'user-agent': this.userAgent,
+      };
+    }
+
+    public get userAgent() {
+      const ua =
+        this.opts.userAgent || this.opts.headers['user-agent'] || 'Flagpole';
+      return Array.isArray(ua) ? ua.join(' ') : ua;
+    }
+
+    public get cookies() {
+      return this.opts.cookies || {};
+    }
+
+    constructor(public readonly opts: ScenarioTemplate) {
       this.uri = opts.uri;
     }
 
