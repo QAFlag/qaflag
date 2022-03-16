@@ -1,6 +1,7 @@
 import { Scenario } from './common/decorators/scenario.decorator';
 import { Suite } from './common/mixin/suite.mixin';
 import { test } from './common/models/test';
+import { toType } from './common/utils/to-type';
 import { JsonResponse } from './json/json.response';
 import { JsonScenario } from './json/json.scenario';
 
@@ -27,6 +28,7 @@ class UsersSuite extends Suite(JsonScenario, {
   })
   async getOneUser(response: JsonResponse) {
     response.find('email').is.email();
+    response.find('email').type.is.equalTo('string');
   }
 }
 

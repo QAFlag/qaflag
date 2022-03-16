@@ -1,5 +1,6 @@
 import { LogReceiver } from '../types/log-provider.interface';
 import { ValueInterface } from '../types/value.interface';
+import { toType } from '../utils/to-type';
 import { test } from './test';
 
 interface ValueOpts {
@@ -36,6 +37,13 @@ export abstract class ValueAbstract<InputType>
 
   public get is() {
     return test(this);
+  }
+
+  public get type() {
+    return new StringValue(toType(this.#input), {
+      ...this.opts,
+      name: `Type of ${this.name}`,
+    });
   }
 
   public get bool() {

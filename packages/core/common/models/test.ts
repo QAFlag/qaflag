@@ -5,9 +5,13 @@ export function test<T>(input: ValueInterface<T>) {
   class Test {
     constructor() {}
 
-    private validator(methodName: keyof typeof validator, thing: string) {
+    private validator(
+      methodName: keyof typeof validator,
+      thing: string,
+      opts?: any,
+    ) {
       const method = validator[methodName] as Function;
-      this.eval(method(input.string.$), `${input.name} is ${thing}`);
+      this.eval(method(input.string.$, opts), `${input.name} is ${thing}`);
     }
 
     private eval(result: boolean, message: string) {
@@ -52,8 +56,38 @@ export function test<T>(input: ValueInterface<T>) {
       );
     }
 
+    public includes(value: any) {
+      this.eval(
+        input.array.$.includes(value),
+        `${input.name} includes ${value}`,
+      );
+    }
+
+    public contains(value: any) {
+      this.eval(
+        validator.contains(input.string.$, value),
+        `${input.name} includes ${value}`,
+      );
+    }
+
     public email() {
       this.validator('isEmail', 'email address');
+    }
+
+    public creditCard() {
+      this.validator('isCreditCard', 'credit card');
+    }
+
+    public date() {
+      this.validator('isDate', 'date');
+    }
+
+    public integer() {
+      this.validator('isInt', 'integer');
+    }
+
+    public ipAddress(version?: number) {
+      this.validator('isIP', 'IP Address', version);
     }
   }
   return new Test();
