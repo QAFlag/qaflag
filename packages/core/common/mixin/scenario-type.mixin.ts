@@ -1,9 +1,10 @@
 import { Logger } from '../models/logger';
 import { HttpVerbs } from '../types/http-methods';
-import { MessageType } from '../types/message.interface';
+import { MessageInterface, MessageType } from '../types/message.interface';
+import { RequestInterface } from '../types/request.interface';
 import { ResponseInterface } from '../types/response.interface';
 import { ScenarioInterface } from '../types/scenario.interface';
-import { ScenarioOpts, ScenarioUri } from '../types/scenario.types';
+import { ScenarioOpts } from '../types/scenario.types';
 import { SuiteInterface } from '../types/suite.interface';
 
 export type ScenarioTypeOpts = {
@@ -18,41 +19,47 @@ export function ScenarioType(initOpts: ScenarioTypeOpts) {
     ) {
       this.key = opts.key;
       this.description = opts.description;
-      this.uri = opts.uri;
       this.step = opts.step || 1;
       this.next = opts.next;
     }
 
     public abstract response: ResponseInterface | null;
+    public abstract request: RequestInterface;
     public abstract execute(): Promise<void>;
 
     public name: string = initOpts.name;
     public key: string | Symbol;
     public description: string;
-    public uri: ScenarioUri;
     public step: number;
     public next: (...args: any[]) => Promise<void>;
     public readonly logger = new Logger();
 
+    public get uri() {
+      return this.request.uri;
+    }
+
     public get method(): HttpVerbs {
-      return this.uri.split(' ')[0].toLowerCase() as HttpVerbs;
+      return this.request.method;
     }
 
     public get path(): string {
-      return this.uri.split(' ')[1];
+      return this.request.path;
+    }
+
+    public get hasFailures(): boolean {
+      return this.failures.length > 0;
+    }
+
+    public get failures(): MessageInterface[] {
+      return this.logger.filter('fail');
+    }
+
+    public get passes(): MessageInterface[] {
+      return this.logger.filter('pass');
     }
 
     public log(type: MessageType, text: string): void {
       this.logger.log(type, text);
-    }
-
-    public uriReplace(variables: [string, any][]): void {
-      const method = this.method;
-      let path = this.path;
-      variables.forEach(([key, value]) => {
-        path = path.replace(`{${key}}`, String(value));
-      });
-      this.uri = `${method} ${path}`;
     }
   }
   return ScenarioAbstract;

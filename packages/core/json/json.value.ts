@@ -1,4 +1,4 @@
-import { ValueType } from '../common/mixin/value-type.mixin';
+import { ValueAbstract } from '../common/models/values';
 import { JsonData } from '../common/types/general.types';
 
-export class JsonValue extends ValueType({ name: 'JSON Value' })<JsonData> {}
+export class JsonValue extends ValueAbstract<JsonData> {}

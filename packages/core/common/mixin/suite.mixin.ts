@@ -64,7 +64,7 @@ export function Suite<ScenarioType extends ScenarioInterface>(
         await Promise.all(
           step.scenarioKeys.map(async key => {
             const scenario = this.scenario(key);
-            scenario.uriReplace(this.store.entries());
+            scenario.request.pathReplace(this.store.entries());
             scenario.log('info', `Execute ${String(key)} - ${scenario.uri}`);
             await scenario.execute();
             await scenario.next(scenario);
@@ -75,7 +75,9 @@ export function Suite<ScenarioType extends ScenarioInterface>(
         );
       }
       console.log(
-        ...this.logger.getMessages().map(message => message.text + '\n'),
+        ...this.logger
+          .getMessages()
+          .map(message => `${message.type} - ${message.text}` + '\n'),
       );
     }
 

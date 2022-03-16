@@ -24,10 +24,12 @@
   },
   "dependencies": {
     "jmespath": "^0.16.0",
-    "needle": "^3.0.0"
+    "needle": "^3.0.0",
+    "validator": "^13.7.0"
   },
   "devDependencies": {
     "@types/jmespath": "^0.15.0",
-    "@types/needle": "^2.5.3"
+    "@types/needle": "^2.5.3",
+    "@types/validator": "^13.7.1"
   }
 }

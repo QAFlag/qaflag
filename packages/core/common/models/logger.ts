@@ -20,4 +20,9 @@ export class Logger {
   public getMessages(): MessageInterface[] {
     return this.#messages;
   }
+
+  public filter(type: MessageType | MessageType[]): MessageInterface[] {
+    type = Array.isArray(type) ? type : [type];
+    return this.#messages.filter(message => type.includes(message.type));
+  }
 }

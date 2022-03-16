@@ -1,5 +1,5 @@
 import { HttpResponse } from '../models/http-response';
-import { NumericValue } from '../models/value';
+import { NumericValue } from '../models/values';
 import { MessageType } from '../types/message.interface';
 import { ResponseInterface } from '../types/response.interface';
 import { ScenarioInterface } from '../types/scenario.interface';

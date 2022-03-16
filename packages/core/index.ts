@@ -13,10 +13,10 @@ class UsersSuite extends Suite(JsonScenario, {
     step: 1,
   })
   async getListOfUsers(response: JsonResponse) {
-    test(response.statusCode).equals(200);
+    test(response.statusCode).between(200, 299);
     const ids = response.find('[*].id').array;
-    test(ids.length).greaterThan(0);
-    test(ids.first.number).greaterThan(0);
+    ids.length.is.greaterThan(0);
+    ids.first.number.is.greaterThan(0);
     this.set('userId', ids.first.$);
   }
 
@@ -25,7 +25,9 @@ class UsersSuite extends Suite(JsonScenario, {
     uri: 'GET https://jsonplaceholder.typicode.com/users/{userId}',
     step: 2,
   })
-  async getOneUser() {}
+  async getOneUser(response: JsonResponse) {
+    response.find('email').is.email();
+  }
 }
 
 const suite = new UsersSuite();
