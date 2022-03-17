@@ -10,6 +10,8 @@ import { ScenarioInterface } from '../types/scenario.interface';
 import { SuiteInterface, SuiteStep } from '../types/suite.interface';
 
 export const ScenarioDefinitions = Symbol('ScenarioDefinitions');
+export const BeforeAlls = Symbol('BeforeAlls');
+export const AfterAlls = Symbol('AfterAlls');
 
 export type SuiteOpts = {
   title: string;
@@ -22,6 +24,8 @@ export function Suite<ScenarioType extends ScenarioInterface>(
   return class SuiteAbstract implements SuiteInterface {
     #steps: SuiteStep<ScenarioType>[] = [];
     #scenarios: ScenarioType[] = [];
+    #befores: string[] = [];
+    #afters: string[] = [];
 
     public readonly title = initOpts.title;
     public readonly store = new KvStore();
@@ -37,6 +41,16 @@ export function Suite<ScenarioType extends ScenarioInterface>(
     }
 
     constructor() {
+      if (this[BeforeAlls]) {
+        Object.keys(this[BeforeAlls]).forEach(methodName =>
+          this.#befores.push(methodName),
+        );
+      }
+      if (this[AfterAlls]) {
+        Object.keys(this[AfterAlls]).forEach(methodName =>
+          this.#afters.push(methodName),
+        );
+      }
       // Add scenarios to this instance
       const scenarioMethods: { [methodName: string]: ScenarioTemplate } =
         this[ScenarioDefinitions];
@@ -61,6 +75,7 @@ export function Suite<ScenarioType extends ScenarioInterface>(
     public async init() {}
 
     public async execute() {
+      await Promise.all(this.#befores.map(methodName => this[methodName]()));
       for (const step of this.#steps) {
         await Promise.all(
           step.scenarios.map(async scenario => {
@@ -70,6 +85,7 @@ export function Suite<ScenarioType extends ScenarioInterface>(
           }),
         );
       }
+      await Promise.all(this.#afters.map(methodName => this[methodName]()));
     }
 
     private getStep(stepNumber: number): SuiteStep<ScenarioType> {

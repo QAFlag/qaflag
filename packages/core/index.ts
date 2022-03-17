@@ -1,14 +1,25 @@
+import { After } from './common/decorators/after.decorator';
+import { Before } from './common/decorators/before.decorator';
 import { Scenario } from './common/decorators/scenario.decorator';
 import { ConsoleFormatter } from './common/formatter/console';
 import { Suite } from './common/mixin/suite.mixin';
 import { test } from './common/models/test';
-import { toType } from './common/utils/to-type';
 import { JsonResponse } from './json/json.response';
 import { JsonScenario } from './json/json.scenario';
 
 class UsersSuite extends Suite(JsonScenario, {
   title: 'Test Users Endpoints',
 }) {
+  @Before()
+  async authenticate() {
+    console.log('BEFORE ALL');
+  }
+
+  @After()
+  async cleanUp() {
+    console.log('AFTER ALL');
+  }
+
   @Scenario({
     uri: 'GET https://jsonplaceholder.typicode.com/users',
     description: 'adsfasd',
