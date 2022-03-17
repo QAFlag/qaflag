@@ -1,3 +1,4 @@
+import Emittery = require('emittery');
 import {
   ScenarioConstructor,
   ScenarioTemplate,
@@ -6,14 +7,9 @@ import { KvStore } from '../models/kv-store';
 import { Logger } from '../models/logger';
 import { MessageType } from '../types/message.interface';
 import { ScenarioInterface } from '../types/scenario.interface';
-import { SuiteInterface } from '../types/suite.interface';
+import { SuiteInterface, SuiteStep } from '../types/suite.interface';
 
 export const ScenarioDefinitions = Symbol('ScenarioDefinitions');
-
-type SuiteStep = {
-  stepNumber: number;
-  scenarioKeys: (string | Symbol)[];
-};
 
 export type SuiteOpts = {
   title: string;
@@ -24,12 +20,21 @@ export function Suite<ScenarioType extends ScenarioInterface>(
   initOpts: SuiteOpts,
 ) {
   return class SuiteAbstract implements SuiteInterface {
-    #steps: SuiteStep[] = [];
+    #steps: SuiteStep<ScenarioType>[] = [];
+    #scenarios: ScenarioType[] = [];
 
     public readonly title = initOpts.title;
-    public readonly scenarios: ScenarioType[] = [];
     public readonly store = new KvStore();
     public readonly logger = new Logger();
+    public readonly events = new Emittery();
+
+    public get steps(): SuiteStep<ScenarioType>[] {
+      return this.#steps;
+    }
+
+    public get scenarios(): ScenarioType[] {
+      return this.#scenarios;
+    }
 
     constructor() {
       // Add scenarios to this instance
@@ -38,66 +43,43 @@ export function Suite<ScenarioType extends ScenarioInterface>(
       if (scenarioMethods) {
         Object.values(scenarioMethods)
           .sort((a, b) => a.step - b.step)
-          .forEach(scenario => {
-            this.scenarios.push(new scenarioConstructor(scenario, this));
+          .forEach(template => {
+            const scenario = this.addScenarioToStep(
+              new scenarioConstructor(template, this),
+            );
+            this.#scenarios.push(scenario);
           });
       }
-      // Initialize suite
-      this.init();
+
       // Execute
       setTimeout(async () => {
         await this.execute();
+        this.events.emit('complete', this);
       }, 1);
     }
 
-    public init() {
-      this.scenarios.forEach(scenario => {
-        this.addScenarioToStep(scenario);
-      });
-    }
+    public async init() {}
 
     public async execute() {
-      this.logger.log('suiteHeader', this.title);
-      this.logger.log(
-        'info',
-        `There are ${this.scenarios.length} scenarios and ${
-          this.#steps.length
-        } steps.`,
-      );
       for (const step of this.#steps) {
-        this.logger.log('step', `==== STEP ${step.stepNumber} ====`);
         await Promise.all(
-          step.scenarioKeys.map(async key => {
-            const scenario = this.scenario(key);
+          step.scenarios.map(async scenario => {
             scenario.request.pathReplace(this.store.entries());
-            scenario.log('info', `Execute ${String(key)} - ${scenario.uri}`);
             await scenario.execute();
             await scenario.next(scenario);
-            scenario.logger.getMessages().forEach(message => {
-              this.logger.add(message);
-            });
           }),
         );
       }
-      console.log(
-        ...this.logger
-          .getMessages()
-          .map(message => `${message.type} - ${message.text}` + '\n'),
-      );
     }
 
-    public scenario(key: string | Symbol): ScenarioType | undefined {
-      return this.scenarios.find(scenario => scenario.key === key);
-    }
-
-    private getStep(stepNumber: number): SuiteStep {
+    private getStep(stepNumber: number): SuiteStep<ScenarioType> {
       // Look for existing step with this number
       const step = this.#steps.find(step => step.stepNumber === stepNumber);
       if (step) return step;
       // Create new step
-      const newStep: SuiteStep = {
+      const newStep: SuiteStep<ScenarioType> = {
         stepNumber,
-        scenarioKeys: [],
+        scenarios: [],
       };
       this.#steps.push(newStep);
       this.#steps.sort((a, b) => a.stepNumber - b.stepNumber);
@@ -106,7 +88,8 @@ export function Suite<ScenarioType extends ScenarioInterface>(
 
     private addScenarioToStep(scenario: ScenarioType) {
       const step = this.getStep(scenario.step);
-      step.scenarioKeys.push(scenario.key);
+      step.scenarios.push(scenario);
+      return scenario;
     }
 
     public log(type: MessageType, text: string): void {

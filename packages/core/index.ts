@@ -1,4 +1,5 @@
 import { Scenario } from './common/decorators/scenario.decorator';
+import { ConsoleFormatter } from './common/formatter/console';
 import { Suite } from './common/mixin/suite.mixin';
 import { test } from './common/models/test';
 import { toType } from './common/utils/to-type';
@@ -33,3 +34,6 @@ class UsersSuite extends Suite(JsonScenario, {
 }
 
 const suite = new UsersSuite();
+suite.events.once('complete').then(() => {
+  ConsoleFormatter.printSuite(suite);
+});
