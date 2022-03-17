@@ -24,9 +24,10 @@ export function Suite<ScenarioType extends ScenarioInterface>(
   initOpts: SuiteOpts,
 ) {
   return class SuiteAbstract implements SuiteInterface {
+    #steps: SuiteStep[] = [];
+
     public readonly title = initOpts.title;
     public readonly scenarios: ScenarioType[] = [];
-    public readonly steps: SuiteStep[] = [];
     public readonly store = new KvStore();
     public readonly logger = new Logger();
 
@@ -59,9 +60,11 @@ export function Suite<ScenarioType extends ScenarioInterface>(
       this.logger.log('suiteHeader', this.title);
       this.logger.log(
         'info',
-        `There are ${this.scenarios.length} scenarios and ${this.steps.length} steps.`,
+        `There are ${this.scenarios.length} scenarios and ${
+          this.#steps.length
+        } steps.`,
       );
-      for (const step of this.steps) {
+      for (const step of this.#steps) {
         this.logger.log('step', `==== STEP ${step.stepNumber} ====`);
         await Promise.all(
           step.scenarioKeys.map(async key => {
@@ -89,15 +92,15 @@ export function Suite<ScenarioType extends ScenarioInterface>(
 
     private getStep(stepNumber: number): SuiteStep {
       // Look for existing step with this number
-      const step = this.steps.find(step => step.stepNumber === stepNumber);
+      const step = this.#steps.find(step => step.stepNumber === stepNumber);
       if (step) return step;
       // Create new step
       const newStep: SuiteStep = {
         stepNumber,
         scenarioKeys: [],
       };
-      this.steps.push(newStep);
-      this.steps.sort((a, b) => a.stepNumber - b.stepNumber);
+      this.#steps.push(newStep);
+      this.#steps.sort((a, b) => a.stepNumber - b.stepNumber);
       return newStep;
     }
 

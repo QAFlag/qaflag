@@ -11,7 +11,7 @@ import { parseResponseFromNeedle } from './parse-response';
 export const getNeedleOptions = (
   req: RequestInterface,
 ): needle.NeedleOptions => ({
-  agent: undefined,
+  agent: req.proxy,
   auth: req.auth?.type,
   compressed: req.headers['Accept-Encoding'] === ENCODING_GZIP,
   cookies: req.cookies,

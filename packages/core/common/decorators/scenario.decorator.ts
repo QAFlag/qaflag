@@ -1,6 +1,6 @@
 import { ScenarioDefinitions } from '../mixin/suite.mixin';
 import { HttpHeaders, KeyValue } from '../types/general.types';
-import { HttpAuth } from '../types/http.types';
+import { HttpAuth, HttpProxy } from '../types/http.types';
 import { ScenarioInterface, ScenarioUri } from '../types/scenario.interface';
 import { SuiteInterface } from '../types/suite.interface';
 
@@ -13,6 +13,7 @@ export type ScenarioDecoratorOpts = {
   cookies?: KeyValue;
   auth?: HttpAuth;
   userAgent?: string;
+  proxy?: HttpProxy;
 };
 
 export type ScenarioTemplate = ScenarioDecoratorOpts & {

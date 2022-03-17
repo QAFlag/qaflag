@@ -1,3 +1,4 @@
+import { Agent } from 'http';
 import { ScenarioTemplate } from '../decorators/scenario.decorator';
 import { HttpHeaders, KeyValue } from './general.types';
 import { HttpAuth, HttpVerbs } from './http.types';
@@ -13,4 +14,5 @@ export interface RequestInterface {
   cookies: KeyValue;
   auth?: HttpAuth;
   userAgent: string;
+  proxy?: Agent;
 }

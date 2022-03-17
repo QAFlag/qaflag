@@ -1,3 +1,5 @@
+import { Agent } from 'http';
+import tunnel = require('tunnel');
 import { ScenarioTemplate } from '../decorators/scenario.decorator';
 import { HttpVerbs } from '../types/http.types';
 import { RequestInterface } from '../types/request.interface';
@@ -47,8 +49,23 @@ export function RequestType() {
 
     public get userAgent() {
       const ua =
-        this.opts.userAgent || this.opts.headers['user-agent'] || 'Flagpole';
+        this.opts.userAgent ||
+        (this.opts.headers && this.opts.headers['user-agent']) ||
+        'Flagpole';
       return Array.isArray(ua) ? ua.join(' ') : ua;
+    }
+
+    public get proxy(): Agent | undefined {
+      if (this.opts.proxy) {
+        return tunnel.httpOverHttp({
+          proxy: {
+            host: this.opts.proxy.host,
+            port: this.opts.proxy.port,
+            proxyAuth: `${this.opts.proxy.auth.username}:${this.opts.proxy.auth.password}`,
+          },
+        });
+      }
+      return undefined;
     }
 
     public get cookies() {
