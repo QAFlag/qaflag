@@ -11,7 +11,7 @@ export interface SuiteInterface extends LogReceiver, LogCollector {
   title: string;
   steps: SuiteStep<ScenarioInterface>[];
   scenarios: ScenarioInterface[];
-  events: Emittery;
+  events: Emittery<{ complete: never }>;
   set<T>(key: string, value: T): T;
   get(key: string): any;
   push(key: string, value: any): any;

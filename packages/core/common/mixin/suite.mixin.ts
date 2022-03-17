@@ -26,7 +26,7 @@ export function Suite<ScenarioType extends ScenarioInterface>(
     public readonly title = initOpts.title;
     public readonly store = new KvStore();
     public readonly logger = new Logger();
-    public readonly events = new Emittery();
+    public readonly events = new Emittery<{ complete: never }>();
 
     public get steps(): SuiteStep<ScenarioType>[] {
       return this.#steps;
@@ -54,7 +54,7 @@ export function Suite<ScenarioType extends ScenarioInterface>(
       // Execute
       setTimeout(async () => {
         await this.execute();
-        this.events.emit('complete', this);
+        this.events.emit('complete');
       }, 1);
     }
 
