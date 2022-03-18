@@ -4,11 +4,13 @@ import { Scenario } from './common/decorators/scenario.decorator';
 import { ConsoleFormatter } from './common/formatter/console';
 import { Suite } from './common/mixin/suite.mixin';
 import { test } from './common/models/test';
+import { GuestPersona } from './examples/guest.persona';
 import { JsonResponse } from './json/json.response';
 import { JsonScenario } from './json/json.scenario';
 
 class UsersSuite extends Suite(JsonScenario, {
   title: 'Test Users Endpoints',
+  persona: GuestPersona,
 }) {
   @Before()
   async authenticate() {
@@ -22,11 +24,10 @@ class UsersSuite extends Suite(JsonScenario, {
 
   @Scenario({
     uri: 'GET https://jsonplaceholder.typicode.com/users',
-    description: 'adsfasd',
     step: 1,
+    statusCode: 200,
   })
   async getListOfUsers(response: JsonResponse) {
-    test(response.statusCode).between(200, 299);
     const ids = response.find('[*].id').array;
     ids.length.is.greaterThan(0);
     ids.first.number.is.greaterThan(0);

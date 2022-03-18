@@ -1,6 +1,7 @@
 import { ScenarioDefinitions } from '../mixin/suite.mixin';
 import { HttpHeaders, KeyValue } from '../types/general.types';
 import { HttpAuth, HttpProxy } from '../types/http.types';
+import { PersonaInterface } from '../types/persona.interface';
 import { ScenarioInterface, ScenarioUri } from '../types/scenario.interface';
 import { SuiteInterface } from '../types/suite.interface';
 
@@ -14,6 +15,8 @@ export type ScenarioDecoratorOpts = {
   auth?: HttpAuth;
   userAgent?: string;
   proxy?: HttpProxy;
+  persona?: PersonaInterface;
+  statusCode?: number;
 };
 
 export type ScenarioTemplate = ScenarioDecoratorOpts & {
