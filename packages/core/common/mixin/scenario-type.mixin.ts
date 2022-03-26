@@ -1,5 +1,6 @@
 import { ScenarioTemplate } from '../decorators/scenario.decorator';
 import { Logger } from '../models/logger';
+import { Persona } from '../models/persona';
 import { HttpVerbs } from '../types/http.types';
 import { MessageInterface, MessageType } from '../types/message.interface';
 import { RequestInterface } from '../types/request.interface';
@@ -56,6 +57,10 @@ export function ScenarioType(initOpts: ScenarioTypeOpts) {
 
     public get passes(): MessageInterface[] {
       return this.logger.filter('pass');
+    }
+
+    public get persona(): Persona {
+      return this.opts.persona || this.suite.persona;
     }
 
     public log(type: MessageType, text: string): void {

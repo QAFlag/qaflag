@@ -1,3 +1,4 @@
+import { Persona } from '../models/persona';
 import { HttpVerbsCaseInsensitive } from './http.types';
 import { LogCollector, LogReceiver } from './log-provider.interface';
 import { RequestInterface } from './request.interface';
@@ -15,6 +16,7 @@ export interface ScenarioInterface extends LogReceiver, LogCollector {
   description: string;
   uri: ScenarioUri;
   step: number;
+  persona: Persona;
   next: (...args: any[]) => Promise<void>;
   execute(): Promise<void>;
 }

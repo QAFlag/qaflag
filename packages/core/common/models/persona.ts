@@ -27,7 +27,13 @@ export interface PersonaInitOpts {
 }
 
 export class Persona {
-  constructor(private readonly opts: PersonaInitOpts) {}
+  #bearerToken: string | undefined = undefined;
+
+  constructor(private readonly opts: PersonaInitOpts) {
+    if (typeof opts.bearerToken == 'string') {
+      this.#bearerToken = opts.bearerToken;
+    }
+  }
 
   public get name() {
     return this.opts.name;
@@ -42,13 +48,13 @@ export class Persona {
   ): Promise<RequestInterface> {
     // Request has no bearer token, but our persona does
     if (!request.bearerToken && this.opts.bearerToken) {
-      if (typeof this.opts.bearerToken == 'string') {
-        request.bearerToken = this.opts.bearerToken;
-      } else {
+      // If it's a fetch method, go get the token (but only do this once)
+      if (!this.#bearerToken && typeof this.opts.bearerToken !== 'string') {
         const req = new HttpRequest(this.opts.bearerToken);
         const res = await fetchWithNeedle(req);
-        request.bearerToken = await this.opts.bearerToken.then(res);
+        this.#bearerToken = await this.opts.bearerToken.then(res);
       }
+      request.bearerToken = this.#bearerToken;
     }
     // Apply headers from persona
     Object.entries(this.opts.headers).forEach(([key, value]) => {

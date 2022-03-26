@@ -1,4 +1,5 @@
 import Emittery = require('emittery');
+import { Persona } from '../models/persona';
 import { LogCollector, LogReceiver } from './log-provider.interface';
 import { ScenarioInterface } from './scenario.interface';
 
@@ -12,6 +13,7 @@ export interface SuiteInterface extends LogReceiver, LogCollector {
   steps: SuiteStep<ScenarioInterface>[];
   scenarios: ScenarioInterface[];
   events: Emittery<{ complete: never }>;
+  persona: Persona;
   set<T>(key: string, value: T): T;
   get(key: string): any;
   push(key: string, value: any): any;

@@ -42,6 +42,10 @@ export function Suite<ScenarioType extends ScenarioInterface>(
       return this.#scenarios;
     }
 
+    public get persona(): Persona {
+      return initOpts.persona || new Persona({ name: 'Default ' });
+    }
+
     constructor() {
       if (this[BeforeAlls]) {
         Object.keys(this[BeforeAlls]).forEach(methodName =>
@@ -81,6 +85,9 @@ export function Suite<ScenarioType extends ScenarioInterface>(
       for (const step of this.#steps) {
         await Promise.all(
           step.scenarios.map(async scenario => {
+            scenario.request = await scenario.persona.authenticate(
+              scenario.request,
+            );
             scenario.request.pathReplace(this.store.entries());
             await scenario.execute();
             await scenario.next(scenario);
