@@ -3,8 +3,8 @@ import { Before } from './common/decorators/before.decorator';
 import { Scenario } from './common/decorators/scenario.decorator';
 import { ConsoleFormatter } from './common/formatter/console';
 import { Suite } from './common/mixin/suite.mixin';
-import { test } from './common/models/test';
 import { GuestPersona } from './examples/guest.persona';
+import { StandardUserPersona } from './examples/user.persona';
 import { JsonResponse } from './json/json.response';
 import { JsonScenario } from './json/json.scenario';
 
@@ -26,6 +26,7 @@ class UsersSuite extends Suite(JsonScenario, {
     uri: 'GET https://jsonplaceholder.typicode.com/users',
     step: 1,
     statusCode: 200,
+    persona: StandardUserPersona,
   })
   async getListOfUsers(response: JsonResponse) {
     const ids = response.find('[*].id').array;

@@ -1,8 +1,15 @@
 import { Agent } from 'http';
 import tunnel = require('tunnel');
-import { ScenarioTemplate } from '../decorators/scenario.decorator';
-import { HttpVerbs } from '../types/http.types';
-import { RequestInterface } from '../types/request.interface';
+import {
+  CONTENT_TYPE_JSON,
+  CONTENT_TYPE_XML,
+  HttpBody,
+  HttpVerbs,
+} from '../types/http.types';
+import {
+  HttpRequestOptions,
+  RequestInterface,
+} from '../types/request.interface';
 import { ScenarioUri } from '../types/scenario.interface';
 
 export function RequestType() {
@@ -20,7 +27,7 @@ export function RequestType() {
       this.#path = uri.slice(1).join(' ');
     }
 
-    public get method(): HttpVerbs {
+    public get method() {
       return this.#method;
     }
 
@@ -40,11 +47,28 @@ export function RequestType() {
       return this.opts.auth;
     }
 
+    public get bearerToken() {
+      return this.opts.bearerToken;
+    }
+
+    public get proxy() {
+      return this.opts.proxy;
+    }
+
     public get headers() {
-      return {
+      const headers = {
         ...this.opts.headers,
         'user-agent': this.userAgent,
       };
+      if (!headers['Content-Type']) {
+        if (this.opts.jsonBody) headers['Content-Type'] = CONTENT_TYPE_JSON;
+        if (this.opts.xmlBody) headers['Content-Type'] = CONTENT_TYPE_XML;
+      }
+      return headers;
+    }
+
+    public get body(): HttpBody {
+      return this.opts.body || this.opts.jsonBody || this.opts.xmlBody || null;
     }
 
     public get userAgent() {
@@ -55,7 +79,7 @@ export function RequestType() {
       return Array.isArray(ua) ? ua.join(' ') : ua;
     }
 
-    public get proxy(): Agent | undefined {
+    public get proxyAgent(): Agent | undefined {
       if (this.opts.proxy) {
         return tunnel.httpOverHttp({
           proxy: {
@@ -72,7 +96,7 @@ export function RequestType() {
       return this.opts.cookies || {};
     }
 
-    constructor(public readonly opts: ScenarioTemplate) {
+    constructor(public readonly opts: HttpRequestOptions) {
       this.uri = opts.uri;
     }
 

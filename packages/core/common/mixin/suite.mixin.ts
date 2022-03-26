@@ -5,8 +5,8 @@ import {
 } from '../decorators/scenario.decorator';
 import { KvStore } from '../models/kv-store';
 import { Logger } from '../models/logger';
+import { Persona } from '../models/persona';
 import { MessageType } from '../types/message.interface';
-import { PersonaInitOpts } from '../types/persona.interface';
 import { ScenarioInterface } from '../types/scenario.interface';
 import { SuiteInterface, SuiteStep } from '../types/suite.interface';
 
@@ -16,7 +16,7 @@ export const AfterAlls = Symbol('AfterAlls');
 
 export type SuiteOpts = {
   title: string;
-  persona?: PersonaInitOpts;
+  persona?: Persona;
 };
 
 export function Suite<ScenarioType extends ScenarioInterface>(

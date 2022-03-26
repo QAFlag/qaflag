@@ -1,23 +1,15 @@
 import { ScenarioDefinitions } from '../mixin/suite.mixin';
-import { HttpHeaders, KeyValue } from '../types/general.types';
-import { HttpAuth, HttpProxy } from '../types/http.types';
-import { PersonaInterface } from '../types/persona.interface';
-import { ScenarioInterface, ScenarioUri } from '../types/scenario.interface';
+import { Persona } from '../models/persona';
+import { HttpRequestOptions } from '../types/request.interface';
+import { ScenarioInterface } from '../types/scenario.interface';
 import { SuiteInterface } from '../types/suite.interface';
 
-export type ScenarioDecoratorOpts = {
-  uri: ScenarioUri;
+export interface ScenarioDecoratorOpts extends HttpRequestOptions {
   description?: string;
   step?: number;
-  bearerToken?: string;
-  headers?: HttpHeaders;
-  cookies?: KeyValue;
-  auth?: HttpAuth;
-  userAgent?: string;
-  proxy?: HttpProxy;
-  persona?: PersonaInterface;
+  persona?: Persona;
   statusCode?: number;
-};
+}
 
 export type ScenarioTemplate = ScenarioDecoratorOpts & {
   key: string | Symbol;
