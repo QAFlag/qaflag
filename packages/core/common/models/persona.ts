@@ -62,6 +62,10 @@ export class Persona {
         request.headers[key] = value;
       }
     });
+    // Apply basic/digest auth
+    if (this.opts.auth && !request.auth) {
+      request.auth = this.opts.auth;
+    }
     return request;
   }
 }
