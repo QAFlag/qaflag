@@ -26,12 +26,14 @@ export interface RequestConstructor {
 export interface RequestInterface {
   pathReplace(variables: [string, any][]): void;
   uri: ScenarioUri;
+  url: URL;
   method: HttpVerbs;
   path: string;
   headers: HttpHeaders;
   cookies: KeyValue;
   bearerToken?: string;
   auth?: HttpAuth;
+  proxy: HttpProxy;
   proxyAgent?: Agent;
   body: HttpBody;
 }

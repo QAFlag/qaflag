@@ -1,5 +1,5 @@
+import { fetchWithAxios } from '../utils/axios';
 import { HttpResponse } from '../models/http-response';
-import { fetchWithNeedle } from '../needle/fetch';
 import { HttpHeaders, KeyValue } from '../types/general.types';
 import { HttpAuth } from '../types/http.types';
 import {
@@ -51,7 +51,7 @@ export class Persona {
       // If it's a fetch method, go get the token (but only do this once)
       if (!this.#bearerToken && typeof this.opts.bearerToken !== 'string') {
         const req = new HttpRequest(this.opts.bearerToken);
-        const res = await fetchWithNeedle(req);
+        const res = await fetchWithAxios(req);
         this.#bearerToken = await this.opts.bearerToken.then(res);
       }
       request.bearerToken = this.#bearerToken;

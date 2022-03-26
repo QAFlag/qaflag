@@ -7,8 +7,16 @@ export const CONTENT_TYPE_FORM_MULTIPART = 'multipart/form-data';
 export const CONTENT_TYPE_FORM = 'application/x-www-form-urlencoded';
 export const ENCODING_GZIP = 'gzip,deflate';
 
-export const HttpReadVerbsEnum = ['get', 'head'] as const;
-export const HttpWriteVerbsEnum = ['delete', 'patch', 'post', 'put'] as const;
+export const HttpReadVerbsEnum = ['get', 'head', 'options'] as const;
+export const HttpWriteVerbsEnum = [
+  'delete',
+  'patch',
+  'post',
+  'put',
+  'purge',
+  'link',
+  'unlink',
+] as const;
 export const HttpVerbsEnum = [
   ...HttpReadVerbsEnum,
   ...HttpWriteVerbsEnum,
@@ -32,7 +40,10 @@ export type HttpTimeout = {
   response?: number;
 };
 
+export type HttpProtocol = 'http' | 'https';
+
 export type HttpProxy = {
+  protocol: HttpProtocol;
   host: string;
   port: number;
   auth: HttpAuth;

@@ -17,6 +17,10 @@ export function RequestType() {
     #method: HttpVerbs;
     #path: string;
 
+    public get url(): URL {
+      return new URL(this.#path);
+    }
+
     public get uri(): ScenarioUri {
       return `${this.#method} ${this.#path}`;
     }
