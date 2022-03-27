@@ -1,0 +1,64 @@
+import { AxiosStatic } from 'axios';
+import MockAdapter from 'axios-mock-adapter';
+import { HttpHeaders, HttpVerbs } from '../types/http.types';
+import { ScenarioUri } from '../types/scenario.interface';
+import { parseUri } from '../utils/uri';
+
+interface MockReply {
+  statusCode: number;
+  data: any;
+  headers?: HttpHeaders;
+}
+
+type MockListener =
+  | 'onGet'
+  | 'onPatch'
+  | 'onPut'
+  | 'onPost'
+  | 'onHead'
+  | 'onDelete'
+  | 'onOptions'
+  | 'onAny'
+  | 'onList';
+
+const verbMap: { [key in HttpVerbs]?: MockListener } = {
+  get: 'onGet',
+  patch: 'onPatch',
+  put: 'onPut',
+  post: 'onPost',
+  head: 'onHead',
+  delete: 'onDelete',
+  options: 'onOptions',
+};
+
+export class AxiosMock {
+  private adapter: MockAdapter;
+
+  constructor(private axios: AxiosStatic) {
+    this.adapter = new MockAdapter(axios, { onNoMatch: 'passthrough' });
+  }
+
+  private getHandler(uri: ScenarioUri) {
+    const { method, path } = parseUri(uri);
+    const listener = verbMap[method] || 'onAny';
+    return this.adapter[listener](path);
+  }
+
+  public reset() {
+    this.adapter.reset();
+  }
+
+  public on(uri: ScenarioUri, reply: MockReply) {
+    this.getHandler(uri).reply(reply.statusCode, reply.data, reply.headers);
+  }
+
+  public once(uri: ScenarioUri, reply: MockReply) {
+    this.getHandler(uri).replyOnce(reply.statusCode, reply.data, reply.headers);
+  }
+
+  public error(uri: ScenarioUri, type: 'network' | 'timeout') {
+    const handler = this.getHandler(uri);
+    if (type == 'network') return handler.timeout();
+    handler.networkError();
+  }
+}

@@ -1,3 +1,4 @@
+import { parseUri } from '../utils/uri';
 import {
   HttpBody,
   HttpEncoding,
@@ -25,9 +26,9 @@ export function RequestType() {
     }
 
     public set uri(value: ScenarioUri) {
-      const uri = value.split(' ');
-      this.#method = uri[0].toLowerCase() as HttpVerbs;
-      this.#path = uri.slice(1).join(' ');
+      const uri = parseUri(value);
+      this.#method = uri.method;
+      this.#path = uri.path;
     }
 
     public get method() {
