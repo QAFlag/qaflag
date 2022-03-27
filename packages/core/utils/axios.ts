@@ -4,6 +4,9 @@ import { HttpBody } from '../types/http.types';
 import { RequestInterface } from '../types/request.interface';
 import { wrapper } from 'axios-cookiejar-support';
 import { CookieJar } from 'tough-cookie';
+import MockAdapter from 'axios-mock-adapter';
+
+export const mock = new MockAdapter(axios, { onNoMatch: 'passthrough' });
 
 export type AxiosRequest = AxiosRequestConfig<HttpBody> & {
   jar?: CookieJar;

@@ -2,6 +2,7 @@ import {
   HttpBody,
   HttpEncoding,
   HttpHeaders,
+  HttpResponseType,
   HttpVerbs,
 } from '../types/http.types';
 import {
@@ -75,6 +76,10 @@ export function RequestType() {
 
     public get responseType() {
       return this.opts.responseType || 'json';
+    }
+
+    public set responseType(type: HttpResponseType) {
+      this.opts.responseType = type;
     }
 
     public get responseEncoding(): HttpEncoding {

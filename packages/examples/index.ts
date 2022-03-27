@@ -1,7 +1,13 @@
 import { ConsoleFormatter } from '@qaflag/core';
-import { UsersSuite } from './json/example';
+import { XmlMusicSuite } from './scenarios/xml';
+import { UsersSuite } from './scenarios/json';
 
-const suite = new UsersSuite();
-suite.events.once('complete').then(() => {
-  ConsoleFormatter.printSuite(suite);
+const json = new UsersSuite();
+json.events.once('complete').then(() => {
+  ConsoleFormatter.printSuite(json);
+});
+
+const xml = new XmlMusicSuite();
+xml.events.once('complete').then(() => {
+  ConsoleFormatter.printSuite(xml);
 });

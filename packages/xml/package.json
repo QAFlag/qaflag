@@ -1,18 +1,20 @@
 {
-  "name": "@qaflag/examples",
+  "name": "@qaflag/xml",
   "version": "0.0.1",
-  "private": true,
   "description": "",
-  "main": "dist/index.js",
   "author": "Jason Byrne",
+  "homepage": "https://github.com/QAFlag/qaflag#readme",
   "license": "MIT",
+  "main": "dist/index.js",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc",
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "dependencies": {
     "@qaflag/core": "^0.0.1",
-    "@qaflag/json": "^0.0.1",
-    "@qaflag/xml": "^0.0.1"
+    "cheerio": "^1.0.0-rc.10"
   }
 }
