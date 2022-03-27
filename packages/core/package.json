@@ -33,5 +33,10 @@
     "fs-extra": "^10.0.1",
     "tough-cookie": "^4.0.0",
     "validator": "^13.7.0"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^9.0.13",
+    "@types/tough-cookie": "^4.0.1",
+    "@types/validator": "^13.7.2"
   }
 }

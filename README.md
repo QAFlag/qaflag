@@ -21,7 +21,8 @@ npm run start
 ## Example
 
 ```typescript
-import { Scenario, JsonResponse, JsonScenario, Suite } from '@qaflag/core';
+import { Scenario, Suite } from '@qaflag/core';
+import { JsonResponse, JsonScenario } from '@qaflag/json';
 
 export class UsersSuite extends Suite(JsonScenario, {
   title: 'Test Users Endpoints',
