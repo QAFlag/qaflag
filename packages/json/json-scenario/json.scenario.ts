@@ -1,5 +1,5 @@
-import { ScenarioType } from '../common/mixin/scenario-type.mixin';
-import testSchema, { SchemaType } from '../common/utils/ajv';
+import { ScenarioType } from '@qaflag/core';
+import { SchemaType, testSchema } from '../utils/ajv';
 import { JsonAdapter } from './json.adapter';
 import { JsonRequest } from './json.request';
 import { JsonResponse } from './json.response';

@@ -1,4 +1,4 @@
-import { Persona } from '../../common/models/persona';
+import { Persona } from '@qaflag/core';
 
 export const StandardUserPersona = new Persona({
   name: 'John Doe',

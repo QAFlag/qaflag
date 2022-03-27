@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "build": "lerna run build",
-    "start": "node packages/core/lib/examples/index.js",
+    "start": "node packages/examples/dist/index.js",
     "publish": "lerna run tsc && lerna publish",
     "prepare": "husky install"
   },

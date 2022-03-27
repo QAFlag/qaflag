@@ -1,8 +1,8 @@
 import AjvJsonSchema, { ErrorObject, Schema, ValidateFunction } from 'ajv';
 import AjvJtd from 'ajv/dist/jtd';
-import generateJtd from '@flagpolejs/json-to-jtd';
-import generateJsonSchema from '@flagpolejs/json-to-jsonschema';
-import { JsonData } from '../types/general.types';
+import generateJtd from '../utils/json-to-jtd';
+import generateJsonSchema from '../utils/json-to-jsonscema';
+import { JsonData } from '../types/json-data';
 import {
   ensureDirSync,
   ensureFileSync,
@@ -89,14 +89,12 @@ export const getSchema = (schemaName: string): Schema | null => {
   return null;
 };
 
-const testSchema = async (
+export const testSchema = async (
   json: JsonData,
   schemaName: string,
-  schemaType: SchemaType,
+  schemaType: string,
 ): Promise<string[]> => {
-  const schema =
-    getSchema(schemaName) || writeSchema(json, schemaName, schemaType);
-  return validateSchema(json, schema, schemaType);
+  const type: SchemaType = schemaType == 'JTD' ? 'JTD' : 'JsonSchema';
+  const schema = getSchema(schemaName) || writeSchema(json, schemaName, type);
+  return validateSchema(json, schema, type);
 };
-
-export default testSchema;

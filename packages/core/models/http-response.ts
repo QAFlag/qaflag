@@ -1,6 +1,6 @@
 import { AxiosResponse } from 'axios';
 import { Cookie } from 'tough-cookie';
-import { HttpHeaders, JsonData, KeyValue } from '../types/general.types';
+import { HttpHeaders, KeyValue } from '../types/general.types';
 import { HttpStatus } from '../types/http.types';
 import { AxiosRequest } from '../utils/axios';
 

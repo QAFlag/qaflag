@@ -1,4 +1,4 @@
-import { ConsoleFormatter } from '..';
+import { ConsoleFormatter } from '@qaflag/core';
 import { UsersSuite } from './json/example';
 
 const suite = new UsersSuite();

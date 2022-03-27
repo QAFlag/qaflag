@@ -1,6 +1,6 @@
 import * as jmespath from 'jmespath';
-import { ResponseType } from '../common/mixin/response-type.mixin';
-import { JsonData } from '../common/types/general.types';
+import { ResponseType } from '@qaflag/core';
+import { JsonData } from '../types/json-data';
 import { JsonValue } from './json.value';
 
 export class JsonResponse<DataType = JsonData> extends ResponseType({

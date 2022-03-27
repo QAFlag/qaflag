@@ -1,0 +1,17 @@
+{
+  "name": "@qaflag/examples",
+  "version": "0.0.1",
+  "private": true,
+  "description": "",
+  "main": "lib/index.js",
+  "author": "Jason Byrne",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "dependencies": {
+    "@qaflag/core": "^0.0.1",
+    "@qaflag/json": "^0.0.1"
+  }
+}

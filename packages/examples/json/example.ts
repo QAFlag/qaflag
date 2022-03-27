@@ -1,4 +1,5 @@
-import { Scenario, JsonResponse, JsonScenario, Suite } from '../..';
+import { Scenario, Suite } from '@qaflag/core';
+import { JsonResponse, JsonScenario } from '@qaflag/json';
 import { GuestPersona } from '../personas/guest.persona';
 import { StandardUserPersona } from '../personas/user.persona';
 

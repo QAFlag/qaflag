@@ -1,5 +1,4 @@
-import { BeforeAlls, ScenarioDefinitions } from '../mixin/suite.mixin';
-import { ScenarioInterface, ScenarioUri } from '../types/scenario.interface';
+import { BeforeAlls } from '../mixin/suite.mixin';
 
 export function Before() {
   return function (
