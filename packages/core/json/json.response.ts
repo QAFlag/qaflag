@@ -7,10 +7,7 @@ export class JsonResponse extends ResponseType({
   name: 'JSON Response',
 }) {
   public find(selector: string) {
-    const results: JsonData = jmespath.search(
-      this.httpResponse.jsonBody,
-      selector,
-    );
+    const results: JsonData = jmespath.search(this.httpResponse.data, selector);
     return new JsonValue(results, { name: selector, logger: this });
   }
 }

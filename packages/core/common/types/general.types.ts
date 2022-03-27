@@ -10,8 +10,8 @@ export type JsonData =
   | { [x: string]: JsonData }
   | Array<JsonData>;
 
-export type KeyValue = {
-  [key: string]: any;
+export type KeyValue<T = any> = {
+  [key: string]: T;
 };
 
 export type HttpHeaderValue = string;

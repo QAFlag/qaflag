@@ -8,9 +8,17 @@ import {
 } from '../types/request.interface';
 import { HttpRequest } from './http-request';
 
-interface TokenFetch extends HttpRequestOptions {
-  then: (response: HttpResponse) => Promise<string>;
-}
+type Fetcher = HttpRequestOptions & {
+  fetch?: (request: HttpRequest) => Promise<HttpResponse>;
+  parse?: (response: HttpResponse) => Promise<any>;
+};
+
+type StringFetcher = Fetcher & {
+  parse: (response: HttpResponse) => Promise<string>;
+};
+type HeaderFetcher = Fetcher & {
+  parse: (response: HttpResponse) => Promise<HttpHeaders>;
+};
 
 export interface PersonaInitOpts {
   name: string;
@@ -19,9 +27,9 @@ export interface PersonaInitOpts {
     userAgent: string;
     viewport: { width: number; height: number };
   };
-  bearerToken?: TokenFetch | string;
+  bearerToken?: string | StringFetcher;
   auth?: HttpAuth;
-  headers?: HttpHeaders;
+  headers?: HttpHeaders | HeaderFetcher;
   cookies?: KeyValue;
   trailers?: KeyValue;
 }
@@ -48,11 +56,9 @@ export class Persona {
   ): Promise<RequestInterface> {
     // Request has no bearer token, but our persona does
     if (!request.bearerToken && this.opts.bearerToken) {
-      // If it's a fetch method, go get the token (but only do this once)
-      if (!this.#bearerToken && typeof this.opts.bearerToken !== 'string') {
-        const req = new HttpRequest(this.opts.bearerToken);
-        const res = await fetchWithAxios(req);
-        this.#bearerToken = await this.opts.bearerToken.then(res);
+      // If we haven't gotten token yet, go get it
+      if (!this.#bearerToken) {
+        this.#bearerToken = await this.getToken(this.opts.bearerToken);
       }
       request.bearerToken = this.#bearerToken;
     }
@@ -67,5 +73,14 @@ export class Persona {
       request.auth = this.opts.auth;
     }
     return request;
+  }
+
+  private async getToken(fetcher: string | StringFetcher): Promise<string> {
+    if (typeof fetcher == 'string') return fetcher;
+    const req = new HttpRequest(fetcher);
+    const res = await (fetcher.fetch === undefined
+      ? fetchWithAxios(req)
+      : fetcher.fetch(req));
+    return fetcher.parse(res);
   }
 }

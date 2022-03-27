@@ -57,9 +57,14 @@ export type HttpData =
   | null
   | undefined;
 
-export type HttpBody =
-  | Buffer
-  | KeyValue
-  | NodeJS.ReadableStream
-  | string
-  | null;
+export type HttpBody = Buffer | KeyValue | string | null;
+
+export type HttpResponseType =
+  | 'arraybuffer'
+  | 'blob'
+  | 'document'
+  | 'json'
+  | 'text'
+  | 'stream';
+
+export type HttpStatus = { code: number; text: string };

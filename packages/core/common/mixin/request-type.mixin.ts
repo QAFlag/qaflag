@@ -64,15 +64,11 @@ export function RequestType() {
         ...this.opts.headers,
         'user-agent': this.userAgent,
       };
-      if (!headers['Content-Type']) {
-        if (this.opts.jsonBody) headers['Content-Type'] = CONTENT_TYPE_JSON;
-        if (this.opts.xmlBody) headers['Content-Type'] = CONTENT_TYPE_XML;
-      }
       return headers;
     }
 
-    public get body(): HttpBody {
-      return this.opts.body || this.opts.jsonBody || this.opts.xmlBody || null;
+    public get data(): HttpBody {
+      return this.opts.data;
     }
 
     public get userAgent() {

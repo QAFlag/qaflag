@@ -16,7 +16,7 @@ export function ResponseType(initOpts: ResponseTypeOpts) {
     ) {}
 
     public get statusCode(): NumericValue {
-      return new NumericValue(this.httpResponse.statusCode, {
+      return new NumericValue(this.httpResponse.status.code, {
         name: 'HTTP Status Code',
         logger: this,
       });

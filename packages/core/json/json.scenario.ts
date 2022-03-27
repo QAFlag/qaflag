@@ -17,7 +17,7 @@ export class JsonScenario extends ScenarioType({
 
   public async execute() {
     const resp = await this.#adapter.fetch(this.request);
-    this.log('info', `Fetched response with status code ${resp.statusCode}`);
+    this.log('info', `Fetched response with status code ${resp.status.code}`);
     this.#response = new JsonResponse(resp, this);
   }
 }

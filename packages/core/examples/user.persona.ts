@@ -1,3 +1,4 @@
+import { HttpResponse } from '../common/models/http-response';
 import { Persona } from '../common/models/persona';
 
 export const StandardUserPersona = new Persona({
@@ -5,10 +6,11 @@ export const StandardUserPersona = new Persona({
   story: 'John is a registered user, aged 37 and living in Orlando, FL.',
   bearerToken: {
     uri: 'POST /auth',
-    jsonBody: {
+    data: {
       email: 'foo@foo.com',
       password: 'bar',
     },
-    then: async response => String((response.jsonBody as any).token),
+    parse: async (response: HttpResponse) =>
+      String((response.data as any).token),
   },
 });

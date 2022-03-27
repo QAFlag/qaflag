@@ -1,4 +1,3 @@
-import { Agent } from 'http';
 import { HttpHeaders, KeyValue } from './general.types';
 import { HttpAuth, HttpBody, HttpProxy, HttpVerbs } from './http.types';
 import { ScenarioUri } from './scenario.interface';
@@ -14,9 +13,7 @@ export interface HttpRequestOptions {
   auth?: HttpAuth;
   userAgent?: string;
   proxy?: HttpProxy;
-  body?: Buffer | KeyValue | NodeJS.ReadableStream | string | null;
-  jsonBody?: KeyValue | string;
-  xmlBody?: string;
+  data?: HttpBody;
 }
 
 export interface RequestConstructor {
@@ -34,6 +31,5 @@ export interface RequestInterface {
   bearerToken?: string;
   auth?: HttpAuth;
   proxy: HttpProxy;
-  proxyAgent?: Agent;
-  body: HttpBody;
+  data: HttpBody;
 }

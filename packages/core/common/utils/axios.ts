@@ -1,12 +1,19 @@
-import axios, { AxiosResponse, AxiosResponseHeaders } from 'axios';
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { HttpResponse } from '../models/http-response';
+import { HttpBody } from '../types/http.types';
 import { RequestInterface } from '../types/request.interface';
+import { wrapper } from 'axios-cookiejar-support';
+import { CookieJar } from 'tough-cookie';
+
+export type AxiosRequest = AxiosRequestConfig<HttpBody> & {
+  jar?: CookieJar;
+};
 
 export const fetchWithAxios = async (
   req: RequestInterface,
-): Promise<HttpResponse> => {
+): Promise<HttpResponse<HttpBody, AxiosRequest>> => {
   // https://axios-http.com/docs/req_config
-  const response = await axios({
+  const axiosRequest: AxiosRequest = {
     method: req.method,
     url: req.url.href,
     baseURL: undefined,
@@ -14,9 +21,9 @@ export const fetchWithAxios = async (
     //transformResponse: [data => data],
     headers: req.headers,
     //params: req.query,
-    data: req.body,
+    data: req.data,
     timeout: 10000,
-    withCredentials: false,
+    withCredentials: true,
     auth: (() => {
       if (req.auth?.type == 'basic') {
         return req.auth;
@@ -38,22 +45,9 @@ export const fetchWithAxios = async (
     //httpsAgent: new https.Agent({ keepAlive: true }),
     proxy: req.proxy,
     decompress: true,
-  });
-  return parseResponseFromAxios(response);
+  };
+  const jar = new CookieJar();
+  const client = wrapper(axios.create({ jar }));
+  const response = await client.request(axiosRequest);
+  return new HttpResponse(response);
 };
-
-export const parseResponseFromAxios = (response: AxiosResponse<any, any>) =>
-  new HttpResponse({
-    status: [response.status || 0, response.statusText || ''],
-    headers: response.headers,
-    body:
-      typeof response.data === 'string' ||
-      response.headers['content-type']?.includes('image')
-        ? response.data
-        : response.data.toString('utf8'),
-    //cookies: {},
-    //trailers: <KeyValue>response.trailers,
-    method: response.config.method,
-    url: response.config.url || '',
-    rawBody: response.data,
-  });

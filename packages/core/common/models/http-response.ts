@@ -1,83 +1,49 @@
+import { AxiosResponse } from 'axios';
+import { Cookie } from 'tough-cookie';
 import { HttpHeaders, JsonData, KeyValue } from '../types/general.types';
-import { HttpVerbsCaseInsensitive } from '../types/http.types';
+import { HttpStatus } from '../types/http.types';
+import { AxiosRequest } from '../utils/axios';
 
-interface HttpResponseOptions {
-  body?: string;
-  jsonBody?: JsonData;
-  rawBody?: any;
-  status?: [number, string];
-  headers?: HttpHeaders;
+interface HttpResponseOptions<
+  ResponseBodyType,
+  RequestType extends AxiosRequest,
+> extends AxiosResponse<ResponseBodyType, RequestType> {
   cookies?: KeyValue;
   trailers?: KeyValue;
-  method?: HttpVerbsCaseInsensitive;
-  url?: string;
 }
 
-export class HttpResponse {
-  public constructor(private opts: HttpResponseOptions) {}
-
-  public get method(): string {
-    return this.opts.method || 'get';
-  }
-
-  public get url(): string {
-    return this.opts.url || '/';
-  }
+export class HttpResponse<ResponseBodyType = any, RequestType = any> {
+  public constructor(
+    private response: HttpResponseOptions<ResponseBodyType, RequestType>,
+  ) {}
 
   public get headers(): HttpHeaders {
-    return this.opts.headers || {};
+    return this.response.headers || {};
   }
 
   public get trailers(): KeyValue {
-    return this.opts.trailers || {};
+    return this.response.trailers || {};
   }
 
-  public get cookies(): KeyValue {
-    return this.opts.cookies || {};
+  public get cookies(): KeyValue<Cookie> {
+    const cookies: KeyValue<Cookie> = {};
+    if (!this.response.headers['set-cookie']) return cookies;
+    const cookieHeaders = Array.isArray(this.response.headers['set-cookie'])
+      ? this.response.headers['set-cookie']
+      : [this.response.headers['set-cookie']];
+    cookieHeaders
+      .map(cookie => Cookie.parse(cookie))
+      .forEach(cookie => {
+        cookies[cookie.key] = cookie;
+      });
+    return cookies;
   }
 
-  public get statusCode(): number {
-    return this.opts.status ? this.opts.status[0] : 200;
+  public get status(): HttpStatus {
+    return { code: this.response.status, text: this.response.statusText };
   }
 
-  public get statusMessage(): string {
-    return this.opts.status ? this.opts.status[1] : 'OK';
-  }
-
-  public get status(): [statusCode: number, statusMessage: string] {
-    return this.opts.status || [200, 'OK'];
-  }
-
-  public get body(): string {
-    return this.opts.body !== undefined
-      ? this.opts.body
-      : this.opts.rawBody !== undefined
-      ? String(this.opts.rawBody)
-      : this.opts.jsonBody !== undefined
-      ? JSON.stringify(this.opts.jsonBody)
-      : '';
-  }
-
-  public get rawBody(): any {
-    return this.opts.rawBody !== undefined
-      ? this.opts.rawBody
-      : this.opts.body !== undefined
-      ? this.opts.body
-      : this.opts.jsonBody !== undefined
-      ? JSON.stringify(this.opts.jsonBody)
-      : '';
-  }
-
-  public get jsonBody(): JsonData {
-    try {
-      if (this.opts.jsonBody !== undefined) return this.opts.jsonBody;
-      return this.opts.body != undefined
-        ? JSON.parse(this.opts.body)
-        : this.opts.rawBody != undefined
-        ? JSON.parse(this.opts.rawBody)
-        : null;
-    } catch (ex) {
-      return null;
-    }
+  public get data(): ResponseBodyType {
+    return this.response.data;
   }
 }
