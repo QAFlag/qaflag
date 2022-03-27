@@ -1,4 +1,4 @@
-import { ScenarioTemplate } from '../decorators/scenario.decorator';
+import { ScenarioTemplate } from '../types/scenario.options';
 import { Logger } from '../models/logger';
 import { Persona } from '../models/persona';
 import { HttpVerbs } from '../types/http.types';

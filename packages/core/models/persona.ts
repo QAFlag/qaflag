@@ -1,7 +1,7 @@
 import { fetchWithAxios } from '../utils/axios';
 import { HttpResponse } from '../models/http-response';
-import { HttpHeaders, KeyValue } from '../types/general.types';
-import { HttpAuth } from '../types/http.types';
+import { KeyValue } from '../types/general.types';
+import { HttpAuth, HttpHeaders } from '../types/http.types';
 import {
   HttpRequestOptions,
   RequestInterface,

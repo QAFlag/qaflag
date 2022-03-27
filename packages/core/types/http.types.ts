@@ -80,3 +80,9 @@ export type HttpEncoding =
   | 'utf16le';
 
 export type HttpStatus = { code: number; text: string };
+
+export type HttpHeaderValue = string;
+
+export type HttpHeaders = {
+  [key: string]: HttpHeaderValue;
+};

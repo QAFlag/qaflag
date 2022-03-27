@@ -2,7 +2,7 @@ import Emittery = require('emittery');
 import {
   ScenarioConstructor,
   ScenarioTemplate,
-} from '../decorators/scenario.decorator';
+} from '../types/scenario.options';
 import { KvStore } from '../models/kv-store';
 import { Logger } from '../models/logger';
 import { Persona } from '../models/persona';

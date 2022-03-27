@@ -1,33 +1,9 @@
+import {
+  ScenarioDecoratorOpts,
+  ScenarioTemplate,
+} from '../types/scenario.options';
 import { ScenarioDefinitions } from '../mixin/suite.mixin';
-import { Persona } from '../models/persona';
-import { HttpRequestOptions } from '../types/request.interface';
 import { ScenarioInterface } from '../types/scenario.interface';
-import { SuiteInterface } from '../types/suite.interface';
-
-export interface ScenarioDecoratorOpts extends HttpRequestOptions {
-  description?: string;
-  step?: number;
-  persona?: Persona;
-  statusCode?: number;
-  schema?:
-    | string
-    | {
-        name: string;
-        type?: string;
-      };
-}
-
-export type ScenarioTemplate = ScenarioDecoratorOpts & {
-  key: string | Symbol;
-  step: number;
-  next: (...args: any[]) => Promise<void>;
-};
-
-export interface ScenarioConstructor<
-  ScenarioType extends ScenarioInterface = ScenarioInterface,
-> {
-  new (opts: ScenarioTemplate, suite: SuiteInterface): ScenarioType;
-}
 
 export function Scenario(opts: ScenarioDecoratorOpts) {
   return function (
@@ -52,5 +28,12 @@ export function Scenario(opts: ScenarioDecoratorOpts) {
     target[ScenarioDefinitions] = target[ScenarioDefinitions] || {};
     target[ScenarioDefinitions][methodName] = scenario;
     return descriptor;
+  };
+}
+
+export function Template(initialOptions: ScenarioDecoratorOpts) {
+  return (overrideOptions: Partial<ScenarioDecoratorOpts>) => {
+    const opts = { ...initialOptions, ...overrideOptions };
+    return Scenario(opts);
   };
 }

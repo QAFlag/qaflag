@@ -1,5 +1,9 @@
-import { HttpHeaders } from '../types/general.types';
-import { HttpBody, HttpEncoding, HttpVerbs } from '../types/http.types';
+import {
+  HttpBody,
+  HttpEncoding,
+  HttpHeaders,
+  HttpVerbs,
+} from '../types/http.types';
 import {
   HttpRequestOptions,
   RequestInterface,

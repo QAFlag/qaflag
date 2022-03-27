@@ -1,8 +1,9 @@
-import { HttpHeaders, KeyValue } from './general.types';
+import { KeyValue } from './general.types';
 import {
   HttpAuth,
   HttpBody,
   HttpEncoding,
+  HttpHeaders,
   HttpProxy,
   HttpResponseType,
   HttpVerbs,
