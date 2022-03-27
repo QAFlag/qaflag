@@ -7,12 +7,9 @@
     "publish": "lerna run tsc && lerna publish",
     "prepare": "husky install"
   },
-  "dependencies": {
-    "axios": "^0.26.1",
-    "axios-cookiejar-support": "^2.0.4",
-    "tough-cookie": "^4.0.0"
-  },
+  "dependencies": {},
   "devDependencies": {
+    "@types/fs-extra": "^9.0.13",
     "@types/node": "^17.0.21",
     "@types/tough-cookie": "^4.0.1",
     "lerna": "^4.0.0",

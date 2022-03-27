@@ -3,12 +3,17 @@ import { Persona } from '../models/persona';
 import { HttpRequestOptions } from '../types/request.interface';
 import { ScenarioInterface } from '../types/scenario.interface';
 import { SuiteInterface } from '../types/suite.interface';
+import { SchemaType } from '../utils/ajv';
 
 export interface ScenarioDecoratorOpts extends HttpRequestOptions {
   description?: string;
   step?: number;
   persona?: Persona;
   statusCode?: number;
+  schema?: {
+    name: string;
+    type?: SchemaType;
+  };
 }
 
 export type ScenarioTemplate = ScenarioDecoratorOpts & {
