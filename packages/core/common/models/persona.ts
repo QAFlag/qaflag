@@ -36,6 +36,7 @@ export interface PersonaInitOpts {
 
 export class Persona {
   #bearerToken: string | undefined = undefined;
+  #headers: HttpHeaders | undefined = undefined;
 
   constructor(private readonly opts: PersonaInitOpts) {
     if (typeof opts.bearerToken == 'string') {
@@ -63,11 +64,10 @@ export class Persona {
       request.bearerToken = this.#bearerToken;
     }
     // Apply headers from persona
-    Object.entries(this.opts.headers).forEach(([key, value]) => {
-      if (!request.headers[key]) {
-        request.headers[key] = value;
-      }
-    });
+    request.headers = {
+      ...(await this.getHeaders(this.opts.headers)),
+      ...request.headers,
+    };
     // Apply basic/digest auth
     if (this.opts.auth && !request.auth) {
       request.auth = this.opts.auth;
@@ -82,5 +82,19 @@ export class Persona {
       ? fetchWithAxios(req)
       : fetcher.fetch(req));
     return fetcher.parse(res);
+  }
+
+  private async getHeaders(
+    personaHeaders?: HttpHeaders | HeaderFetcher,
+  ): Promise<HttpHeaders> {
+    if (this.#headers) return this.#headers;
+    if (!personaHeaders?.parse) return (personaHeaders as HttpHeaders) || {};
+    const fetcher = personaHeaders as HeaderFetcher;
+    const req = new HttpRequest(fetcher as HeaderFetcher);
+    const res = await (fetcher.fetch === undefined
+      ? fetchWithAxios(req)
+      : fetcher.fetch(req));
+    this.#headers = await fetcher.parse(res);
+    return this.#headers;
   }
 }

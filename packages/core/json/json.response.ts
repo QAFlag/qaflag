@@ -3,7 +3,7 @@ import { ResponseType } from '../common/mixin/response-type.mixin';
 import { JsonData } from '../common/types/general.types';
 import { JsonValue } from './json.value';
 
-export class JsonResponse extends ResponseType({
+export class JsonResponse<DataType = JsonData> extends ResponseType({
   name: 'JSON Response',
 }) {
   public find(selector: string) {

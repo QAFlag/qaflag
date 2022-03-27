@@ -67,4 +67,16 @@ export type HttpResponseType =
   | 'text'
   | 'stream';
 
+export type HttpEncoding =
+  | 'ascii'
+  | 'ansi'
+  | 'binary'
+  | 'base64'
+  | 'base64url'
+  | 'hex'
+  | 'latin1'
+  | 'ucs2'
+  | 'utf8'
+  | 'utf16le';
+
 export type HttpStatus = { code: number; text: string };

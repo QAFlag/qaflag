@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 import { HttpResponse } from '../models/http-response';
 import { HttpBody } from '../types/http.types';
 import { RequestInterface } from '../types/request.interface';
@@ -16,30 +16,26 @@ export const fetchWithAxios = async (
   const axiosRequest: AxiosRequest = {
     method: req.method,
     url: req.url.href,
-    baseURL: undefined,
+    baseURL: req.baseUrl,
     //transformRequest: [(data, headers) => data],
     //transformResponse: [data => data],
     headers: req.headers,
-    //params: req.query,
+    params: req.queryString,
     data: req.data,
-    timeout: 10000,
+    timeout: req.timeout,
     withCredentials: true,
-    auth: (() => {
-      if (req.auth?.type == 'basic') {
-        return req.auth;
-      }
-    })(),
-    responseType: 'json',
-    responseEncoding: 'utf8',
+    auth: req.auth,
+    responseType: req.responseType,
+    responseEncoding: req.responseEncoding,
     xsrfCookieName: 'XSRF-TOKEN',
     xsrfHeaderName: 'X-XSRF-TOKEN',
-    maxContentLength: 2000,
-    maxBodyLength: 2000,
+    maxContentLength: 20000,
+    maxBodyLength: 20000,
     validateStatus: status => {
       //return status >= 200 && status < 300; // default
       return true;
     },
-    maxRedirects: 5,
+    maxRedirects: req.maxRedirects,
     socketPath: null,
     //httpAgent: new http.Agent({ keepAlive: true }),
     //httpsAgent: new https.Agent({ keepAlive: true }),

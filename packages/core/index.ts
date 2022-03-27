@@ -12,16 +12,6 @@ class UsersSuite extends Suite(JsonScenario, {
   title: 'Test Users Endpoints',
   persona: GuestPersona,
 }) {
-  @Before()
-  async authenticate() {
-    console.log('BEFORE ALL');
-  }
-
-  @After()
-  async cleanUp() {
-    console.log('AFTER ALL');
-  }
-
   @Scenario({
     uri: 'GET https://jsonplaceholder.typicode.com/users',
     step: 1,

@@ -1,9 +1,11 @@
 import { Agent } from 'http';
 import tunnel = require('tunnel');
+import { HttpHeaders } from '../types/general.types';
 import {
   CONTENT_TYPE_JSON,
   CONTENT_TYPE_XML,
   HttpBody,
+  HttpEncoding,
   HttpVerbs,
 } from '../types/http.types';
 import {
@@ -18,7 +20,7 @@ export function RequestType() {
     #path: string;
 
     public get url(): URL {
-      return new URL(this.#path);
+      return new URL(this.#path, this.baseUrl);
     }
 
     public get uri(): ScenarioUri {
@@ -47,6 +49,10 @@ export function RequestType() {
       this.#path = value;
     }
 
+    public get baseUrl() {
+      return this.opts.baseUrl;
+    }
+
     public get auth() {
       return this.opts.auth;
     }
@@ -65,6 +71,22 @@ export function RequestType() {
         'user-agent': this.userAgent,
       };
       return headers;
+    }
+
+    public set headers(headers: HttpHeaders) {
+      this.opts.headers = headers;
+    }
+
+    public get responseType() {
+      return this.opts.responseType || 'json';
+    }
+
+    public get responseEncoding(): HttpEncoding {
+      return this.opts.responseEncoding || 'utf8';
+    }
+
+    public get queryString() {
+      return this.opts.queryString || {};
     }
 
     public get data(): HttpBody {
@@ -94,6 +116,14 @@ export function RequestType() {
 
     public get cookies() {
       return this.opts.cookies || {};
+    }
+
+    public get timeout(): number {
+      return this.opts.timeout || 10000;
+    }
+
+    public get maxRedirects(): number {
+      return this.opts.maxRedirects || 5;
     }
 
     constructor(public readonly opts: HttpRequestOptions) {
