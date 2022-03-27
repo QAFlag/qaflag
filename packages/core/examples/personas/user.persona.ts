@@ -1,5 +1,4 @@
-import { HttpResponse } from '../common/models/http-response';
-import { Persona } from '../common/models/persona';
+import { Persona } from '../../common/models/persona';
 
 export const StandardUserPersona = new Persona({
   name: 'John Doe',
