@@ -1,4 +1,4 @@
-import { ConsoleFormatter } from '../common/formatter/console';
+import { ConsoleFormatter } from '..';
 import { UsersSuite } from './json/example';
 
 const suite = new UsersSuite();

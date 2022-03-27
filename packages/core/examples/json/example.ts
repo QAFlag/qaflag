@@ -1,9 +1,6 @@
-import { Scenario } from '../../common/decorators/scenario.decorator';
-import { Suite } from '../../common/mixin/suite.mixin';
+import { Scenario, JsonResponse, JsonScenario, Suite } from '../..';
 import { GuestPersona } from '../personas/guest.persona';
 import { StandardUserPersona } from '../personas/user.persona';
-import { JsonResponse } from '../../json/json.response';
-import { JsonScenario } from '../../json/json.scenario';
 
 export class UsersSuite extends Suite(JsonScenario, {
   title: 'Test Users Endpoints',
