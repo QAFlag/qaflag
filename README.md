@@ -2,6 +2,12 @@
 
 This project is in the early stages. It will be a mono-repo, so we are using lerna.
 
+Install with
+
+```
+npm run bootstrap
+```
+
 Build with
 
 ```
