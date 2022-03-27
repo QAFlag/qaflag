@@ -17,7 +17,7 @@ class UsersSuite extends Suite(JsonScenario, {
     step: 1,
     statusCode: 200,
     persona: StandardUserPersona,
-    schema: { name: '@getUsers' },
+    schema: '@getUsers',
   })
   async getListOfUsers(response: JsonResponse) {
     const ids = response.find('[*].id').array;

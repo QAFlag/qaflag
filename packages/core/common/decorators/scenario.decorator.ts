@@ -10,10 +10,12 @@ export interface ScenarioDecoratorOpts extends HttpRequestOptions {
   step?: number;
   persona?: Persona;
   statusCode?: number;
-  schema?: {
-    name: string;
-    type?: SchemaType;
-  };
+  schema?:
+    | string
+    | {
+        name: string;
+        type?: SchemaType;
+      };
 }
 
 export type ScenarioTemplate = ScenarioDecoratorOpts & {
