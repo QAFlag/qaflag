@@ -6,10 +6,12 @@ import { GuestPersona } from '../personas/guest.persona';
 
 Mock.on('GET http://localhost/music', {
   statusCode: 200,
-  data: readFileSync(
-    path.resolve(__dirname, '../../fixtures/cd-list.xml'),
-    'utf8',
-  ),
+  data: async () => {
+    return readFileSync(
+      path.resolve(__dirname, '../../fixtures/cd-list.xml'),
+      'utf8',
+    );
+  },
 });
 
 export class XmlMusicSuite extends Suite(XmlScenario, {

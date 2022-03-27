@@ -49,11 +49,21 @@ export class AxiosMock {
   }
 
   public on(uri: ScenarioUri, reply: MockReply) {
-    this.getHandler(uri).reply(reply.statusCode, reply.data, reply.headers);
+    this.getHandler(uri).reply(async config => {
+      if (typeof reply.data == 'function') {
+        return [reply.statusCode, await reply.data(), reply.headers];
+      }
+      return [reply.statusCode, reply.data, reply.headers];
+    });
   }
 
   public once(uri: ScenarioUri, reply: MockReply) {
-    this.getHandler(uri).replyOnce(reply.statusCode, reply.data, reply.headers);
+    this.getHandler(uri).replyOnce(async config => {
+      if (typeof reply.data == 'function') {
+        return [reply.statusCode, await reply.data(), reply.headers];
+      }
+      return [reply.statusCode, reply.data, reply.headers];
+    });
   }
 
   public error(uri: ScenarioUri, type: 'network' | 'timeout') {
