@@ -13,7 +13,12 @@
     "sourceMap": true,
     "allowJs": true,
     "outDir": "dist",
-    "lib": ["es7"]
+    "lib": ["es7"],
+    "skipLibCheck": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "strict": false,
+    "strictNullChecks": false,
+    "importHelpers": false
   },
   "include": ["packages/**/*"],
   "exclude": ["node_modules", "**/*.spec.ts"]
