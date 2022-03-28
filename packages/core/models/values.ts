@@ -12,6 +12,7 @@ export abstract class ValueAbstract<InputType>
   implements ValueInterface<InputType>
 {
   #input: InputType | undefined;
+  #alias: string | undefined = undefined;
 
   public logger: LogReceiver;
 
@@ -25,7 +26,7 @@ export abstract class ValueAbstract<InputType>
   }
 
   public get name(): string {
-    return this.opts.name;
+    return this.#alias || this.opts.name;
   }
 
   public get length(): NumericValue {
@@ -35,8 +36,20 @@ export abstract class ValueAbstract<InputType>
     });
   }
 
-  public get is() {
+  public test() {
     return test(this);
+  }
+
+  // Aliases of test
+  public get is() {
+    return this.test();
+  }
+  public get are() {
+    return this.test();
+  }
+
+  public equals(compareTo: any) {
+    return this.is.equalTo(compareTo);
   }
 
   public get type() {
@@ -86,6 +99,35 @@ export abstract class ValueAbstract<InputType>
 
   public toNumber(): number {
     return Number(this.#input);
+  }
+
+  public as(newName: string) {
+    this.#alias = newName;
+    return this;
+  }
+
+  protected createGeneric(data: any, name: string, opts?: Partial<ValueOpts>) {
+    return new GenericValue(data, { logger: this.logger, name, ...opts });
+  }
+
+  protected createString(str: string, name: string, opts?: Partial<ValueOpts>) {
+    return new StringValue(str, { logger: this.logger, name, ...opts });
+  }
+
+  protected createNumber(num: number, name: string, opts?: Partial<ValueOpts>) {
+    return new NumericValue(num, { logger: this.logger, name, ...opts });
+  }
+
+  protected createBoolean(
+    bool: boolean,
+    name: string,
+    opts?: Partial<ValueOpts>,
+  ) {
+    return new BooleanValue(bool, { logger: this.logger, name, ...opts });
+  }
+
+  protected createArray<T>(data: T[], name: string, opts?: Partial<ValueOpts>) {
+    return new ArrayValue<T>(data, { logger: this.logger, name, ...opts });
   }
 }
 

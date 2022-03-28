@@ -1,5 +1,5 @@
 import { HttpResponse, ResponseType } from '@qaflag/core';
-import { XmlElement } from './xml.value';
+import { XmlValue } from './xml.value';
 import { XmlRequest } from './xml.request';
 import { XmlScenario } from './xml.scenario';
 import * as cheerio from 'cheerio';
@@ -34,6 +34,9 @@ export class XmlResponse extends ResponseType({
 
   public find(selector: string) {
     const results = this.body(selector);
-    return new XmlElement(results.eq(0), { name: selector, logger: this });
+    return new XmlValue(results, {
+      name: selector,
+      logger: this,
+    });
   }
 }
