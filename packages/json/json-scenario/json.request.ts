@@ -1,3 +1,3 @@
 import { RequestType } from '@qaflag/core';
 
-export class JsonRequest extends RequestType() {}
+export class JsonRequest extends RequestType {}

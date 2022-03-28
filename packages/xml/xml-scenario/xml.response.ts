@@ -6,9 +6,7 @@ import * as cheerio from 'cheerio';
 
 export class XmlResponse<
   ScenarioType extends ScenarioInterface = XmlScenario,
-> extends ResponseType({
-  name: 'XML Response',
-}) {
+> extends ResponseType {
   public cheerio: cheerio.CheerioAPI;
 
   constructor(

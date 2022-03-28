@@ -6,12 +6,12 @@ import { XmlResponse } from './xml.response';
 export class XmlScenario extends ScenarioType({
   name: 'XML',
 }) {
-  #response: XmlResponse<XmlScenario> | null = null;
+  #response: XmlResponse | null = null;
   #adapter = new XmlAdapter();
 
   public readonly request = new XmlRequest(this.opts);
 
-  public get response(): XmlResponse<XmlScenario> | null {
+  public get response(): XmlResponse | null {
     return this.#response;
   }
 

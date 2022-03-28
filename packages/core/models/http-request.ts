@@ -1,3 +1,3 @@
-import { RequestType } from '../mixin/request-type.mixin';
+import { RequestType } from '../abstracts/request-type.abstract';
 
-export class HttpRequest extends RequestType() {}
+export class HttpRequest extends RequestType {}
