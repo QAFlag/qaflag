@@ -36,8 +36,8 @@ export abstract class ValueAbstract<InputType>
     });
   }
 
-  public test() {
-    return test(this);
+  public test(assertionText?: string) {
+    return test(this, assertionText);
   }
 
   // Aliases of test

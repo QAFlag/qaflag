@@ -1,7 +1,7 @@
 import { ValueInterface } from '../types/value.interface';
 import validator from 'validator';
 
-export function test<T>(input: ValueInterface<T>) {
+export function test<T>(input: ValueInterface<T>, assertionText?: string) {
   class Test {
     constructor() {}
 
@@ -15,7 +15,7 @@ export function test<T>(input: ValueInterface<T>) {
     }
 
     private eval(result: boolean, message: string) {
-      input.logger.log(result ? 'pass' : 'fail', message);
+      input.logger.log(result ? 'pass' : 'fail', assertionText || message);
       if (!result) input.logger.log('info', `Actual Value: ${input.string.$}`);
     }
 
