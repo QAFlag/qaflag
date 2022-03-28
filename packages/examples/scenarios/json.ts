@@ -1,10 +1,32 @@
-import { Scenario, Suite, Template } from '@qaflag/core';
+import { Mock, Scenario, Suite, Template } from '@qaflag/core';
 import { JsonResponse, JsonScenario } from '@qaflag/json';
+import { readFileSync } from 'fs';
+import path = require('path');
 import { GuestPersona } from '../personas/guest.persona';
 import { StandardUserPersona } from '../personas/user.persona';
 
+Mock.on('GET http://rest-api/users', {
+  statusCode: 200,
+  data: async () => {
+    return readFileSync(
+      path.resolve(__dirname, '../../fixtures/users.json'),
+      'utf8',
+    );
+  },
+});
+
+Mock.on('GET http://rest-api/users/1', {
+  statusCode: 200,
+  data: async () => {
+    return readFileSync(
+      path.resolve(__dirname, '../../fixtures/user.json'),
+      'utf8',
+    );
+  },
+});
+
 const GetList = Template({
-  uri: 'GET https://jsonplaceholder.typicode.com/users',
+  uri: 'GET http://rest-api/users',
   step: 1,
   statusCode: 200,
   persona: StandardUserPersona,
@@ -15,14 +37,7 @@ export class UsersSuite extends Suite(JsonScenario, {
   title: 'Test Users Endpoints',
   persona: GuestPersona,
 }) {
-  @Scenario({
-    uri: 'GET https://jsonplaceholder.typicode.com/users',
-    step: 1,
-    statusCode: 200,
-    persona: StandardUserPersona,
-    schema: '@getUsers',
-  })
-  async getListOfUsers(response: JsonResponse) {
+  @GetList() async getListOfUsers(response: JsonResponse) {
     const ids = response.find('[*].id').array;
     ids.length.is.greaterThan(0);
     ids.first.number.is.greaterThan(0);
@@ -31,13 +46,11 @@ export class UsersSuite extends Suite(JsonScenario, {
 
   @Scenario({
     description: 'Get one user',
-    uri: 'GET https://jsonplaceholder.typicode.com/users/{userId}',
+    uri: 'GET http://rest-api/users/{userId}',
     step: 2,
   })
   async getOneUser(response: JsonResponse) {
     response.find('email').is.email();
     response.find('email').type.is.equalTo('string');
   }
-
-  @GetList({ persona: GuestPersona, statusCode: 200 }) getListNoAuth() {}
 }

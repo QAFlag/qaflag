@@ -25,25 +25,25 @@ export function test<T>(input: ValueInterface<T>, assertionText?: string) {
 
     public greaterThan(value: number) {
       this.eval(
-        Number(input.$) > value,
+        input.number.$ > value,
         `${input.name} is greater than ${value}`,
       );
     }
 
     public greaterThanOrEquals(value: number) {
       this.eval(
-        Number(input.$) >= value,
+        input.number.$ >= value,
         `${input.name} is greater than or equal to ${value}`,
       );
     }
 
     public lessThan(value: number) {
-      this.eval(Number(input.$) < value, `${input.name} is less than ${value}`);
+      this.eval(input.number.$ < value, `${input.name} is less than ${value}`);
     }
 
     public lessThanOrEquals(value: number) {
       this.eval(
-        Number(input.$) <= value,
+        input.number.$ <= value,
         `${input.name} is less than or equal to ${value}`,
       );
     }
@@ -67,6 +67,13 @@ export function test<T>(input: ValueInterface<T>, assertionText?: string) {
       this.eval(
         validator.contains(input.string.$, value),
         `${input.name} includes ${value}`,
+      );
+    }
+
+    public matches(value: RegExp) {
+      this.eval(
+        validator.matches(input.string.$, value),
+        `${input.name} matches ${value}`,
       );
     }
 

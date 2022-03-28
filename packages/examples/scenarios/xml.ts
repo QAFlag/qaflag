@@ -27,6 +27,6 @@ export class XmlMusicSuite extends Suite(XmlScenario, {
     title.text
       .test('Title of the CD is Empire Burlesque')
       .equalTo('Empire Burlesque');
-    title.tagName.test().equalTo('title');
+    title.tagName.equals('title');
   }
 }

@@ -32,7 +32,7 @@ export function Scenario(opts: ScenarioDecoratorOpts) {
 }
 
 export function Template(initialOptions: ScenarioDecoratorOpts) {
-  return (overrideOptions: Partial<ScenarioDecoratorOpts>) => {
+  return (overrideOptions?: Partial<ScenarioDecoratorOpts>) => {
     const opts = { ...initialOptions, ...overrideOptions };
     return Scenario(opts);
   };
