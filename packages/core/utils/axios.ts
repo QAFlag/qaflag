@@ -32,8 +32,8 @@ export const fetchWithAxios = async (
     responseEncoding: req.responseEncoding,
     xsrfCookieName: 'XSRF-TOKEN',
     xsrfHeaderName: 'X-XSRF-TOKEN',
-    maxContentLength: 20000,
-    maxBodyLength: 20000,
+    maxContentLength: 500000,
+    maxBodyLength: 500000,
     validateStatus: status => {
       //return status >= 200 && status < 300; // default
       return true;

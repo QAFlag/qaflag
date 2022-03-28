@@ -1,5 +1,5 @@
 import { HttpResponse } from '../models/http-response';
-import { NumericValue } from '../models/values';
+import { NumericValue, StringValue } from '../models/values';
 import { MessageType } from '../types/message.interface';
 import { ResponseInterface } from '../types/response.interface';
 import { ScenarioInterface } from '../types/scenario.interface';
@@ -24,6 +24,16 @@ export function ResponseType(initOpts: ResponseTypeOpts) {
 
     public log(type: MessageType, text: string): void {
       this.scenario.log(type, text);
+    }
+
+    public header(name: string) {
+      const header = Object.entries(this.httpResponse.headers).find(
+        ([key]) => key.toLocaleLowerCase() == name.toLocaleLowerCase(),
+      );
+      return new StringValue(header ? header[1] : undefined, {
+        name: `HTTP Header: ${name}`,
+        logger: this,
+      });
     }
   }
   return ResponseAbstract;

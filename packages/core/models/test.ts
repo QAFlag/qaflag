@@ -63,9 +63,32 @@ export function test<T>(input: ValueInterface<T>, assertionText?: string) {
       );
     }
 
-    public contains(value: any) {
+    public startsWith(value: string | string[]) {
+      const str = input.string.$;
       this.eval(
-        validator.contains(input.string.$, value),
+        Array.isArray(value)
+          ? value.some(x => str.startsWith(x))
+          : str.startsWith(value),
+        `${input.name} starts with ${value}`,
+      );
+    }
+
+    public endsWith(value: string | string[]) {
+      const str = input.string.$;
+      this.eval(
+        Array.isArray(value)
+          ? value.some(x => str.endsWith(x))
+          : str.endsWith(value),
+        `${input.name} starts with ${value}`,
+      );
+    }
+
+    public contains(value: string | string[]) {
+      const str = input.string.$;
+      this.eval(
+        Array.isArray(value)
+          ? value.some(x => validator.contains(str, x))
+          : validator.contains(str, value),
         `${input.name} includes ${value}`,
       );
     }

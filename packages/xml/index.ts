@@ -3,3 +3,5 @@ export * from './xml-scenario/xml.adapter';
 export * from './xml-scenario/xml.request';
 export * from './xml-scenario/xml.response';
 export * from './xml-scenario/xml.value';
+export * from './rss-scenario/rss.scenario';
+export * from './rss-scenario/rss.response';
