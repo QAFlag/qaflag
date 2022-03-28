@@ -7,14 +7,14 @@ import * as cheerio from 'cheerio';
 export class XmlResponse extends ResponseType({
   name: 'XML Response',
 }) {
-  public body: cheerio.CheerioAPI;
+  public cheerio: cheerio.CheerioAPI;
 
   constructor(
     httpResponse: HttpResponse<string, XmlRequest>,
     scenario: XmlScenario,
   ) {
     super(httpResponse, scenario);
-    this.body = cheerio.load(
+    this.cheerio = cheerio.load(
       httpResponse.data,
       {
         xmlMode: true,
@@ -33,10 +33,16 @@ export class XmlResponse extends ResponseType({
   }
 
   public find(selector: string) {
-    const results = this.body(selector);
+    const results = this.cheerio(selector);
     return new XmlValue(results, {
       name: selector,
       logger: this,
     });
+  }
+
+  public exists(selector: string) {
+    const results = this.find(selector);
+    results.length.test(`Exists: ${selector}`).greaterThan(0);
+    return results;
   }
 }
