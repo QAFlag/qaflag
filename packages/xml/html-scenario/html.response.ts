@@ -1,21 +1,21 @@
-import { HttpResponse, test } from '@qaflag/core';
+import { HttpResponse, ResponseType, test } from '@qaflag/core';
 import * as cheerio from 'cheerio';
 import { XmlRequest } from '../xml-scenario/xml.request';
-import { XmlResponse } from '../xml-scenario/xml.response';
 import { isHtmlValid } from './html-validation';
 import { HtmlScenario } from './html.scenario';
 import { HtmlValue } from './html.value';
 
 const validMimeTypes = ['application/xhtml+xml', 'text/html', 'text/html+xml'];
 
-export class HtmlResponse extends XmlResponse<HtmlScenario> {
+export class HtmlResponse extends ResponseType {
   public cheerio: cheerio.CheerioAPI;
 
   constructor(
-    httpResponse: HttpResponse<string, XmlRequest>,
-    scenario: HtmlScenario,
+    public httpResponse: HttpResponse<string, XmlRequest>,
+    public scenario: HtmlScenario,
   ) {
     super(httpResponse, scenario);
+    this.cheerio = this.loadCheerio();
     this.header('content-type').test().startsWith(validMimeTypes);
     test(isHtmlValid(this), 'HTML is valid.').equalTo(true);
   }

@@ -1,5 +1,5 @@
 import { KeyValue } from '@qaflag/core';
-import { CheerioElement, XmlValue } from 'xml-scenario/xml.value';
+import { CheerioElement, XmlValue } from '../xml-scenario/xml.value';
 
 export class HtmlValue extends XmlValue {
   public getCss(properties: string[] | string) {
