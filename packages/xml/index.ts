@@ -7,3 +7,5 @@ export * from './rss-scenario/rss.scenario';
 export * from './rss-scenario/rss.response';
 export * from './atom-scenario/atom.scenario';
 export * from './atom-scenario/atom.response';
+export * from './soap-scenario/soap.scenario';
+export * from './soap-scenario/soap.response';
