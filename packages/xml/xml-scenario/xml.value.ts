@@ -6,7 +6,7 @@ import {
 } from '@qaflag/core';
 import * as cheerio from 'cheerio';
 
-type CheerioElement = cheerio.Cheerio<cheerio.Node>;
+export type CheerioElement = cheerio.Cheerio<cheerio.Node>;
 
 export class XmlValue extends ValueAbstract<CheerioElement> {
   public get length(): NumericValue {
@@ -26,7 +26,7 @@ export class XmlValue extends ValueAbstract<CheerioElement> {
   }
 
   public get contents() {
-    return this.createXml(this.$.contents(), `Contents of ${this.name}`);
+    return this.createElement(this.$.contents(), `Contents of ${this.name}`);
   }
 
   public get tagName(): StringValue {
@@ -37,15 +37,15 @@ export class XmlValue extends ValueAbstract<CheerioElement> {
   }
 
   public get first() {
-    return this.createXml(this.$.first(), `First in ${this.name}`);
+    return this.createElement(this.$.first(), `First in ${this.name}`);
   }
 
   public get last() {
-    return this.createXml(this.$.last(), `Last in ${this.name}`);
+    return this.createElement(this.$.last(), `Last in ${this.name}`);
   }
 
   public get parent() {
-    return this.createXml(this.$.parent(), `Parent of ${this.name}`);
+    return this.createElement(this.$.parent(), `Parent of ${this.name}`);
   }
 
   public get value() {
@@ -68,28 +68,28 @@ export class XmlValue extends ValueAbstract<CheerioElement> {
   }
 
   public previousSibling(selector?: string) {
-    return this.createXml(
+    return this.createElement(
       this.$.prev(selector),
       `Previous Sibling of ${this.name}`,
     );
   }
 
   public nextSibling(selector?: string) {
-    return this.createXml(
+    return this.createElement(
       this.$.next(selector),
       `Next Sibling of ${this.name}`,
     );
   }
 
   public siblings(selector?: string) {
-    return this.createXml(
+    return this.createElement(
       this.$.siblings(selector),
       `Siblings of ${this.name}`,
     );
   }
 
   public children(selector?: string) {
-    return this.createXml(
+    return this.createElement(
       this.$.children(selector),
       `Siblings of ${this.name}`,
     );
@@ -103,7 +103,7 @@ export class XmlValue extends ValueAbstract<CheerioElement> {
   }
 
   public closestAncestor(selector?: string) {
-    return this.createXml(
+    return this.createElement(
       this.$.closest(selector),
       `Closest ancestor of ${this.name} matching ${selector}`,
     );
@@ -117,55 +117,51 @@ export class XmlValue extends ValueAbstract<CheerioElement> {
   }
 
   public nth(index: number) {
-    return this.createXml(this.$.eq(index), `nth(${index}) in ${this.name}`);
+    return this.createElement(
+      this.$.eq(index),
+      `nth(${index}) in ${this.name}`,
+    );
   }
 
   public butNot(selector: string) {
-    return this.createXml(
+    return this.createElement(
       this.$.not(selector),
       `${this.name} but not ${selector}`,
     );
   }
 
   public parents(selector?: string) {
-    return this.createXml(
+    return this.createElement(
       this.$.parents(selector),
       `Parents of ${this.name} that match ${selector}`,
     );
   }
 
   public parentsUntil(selector?: string) {
-    return this.createXml(
+    return this.createElement(
       this.$.parentsUntil(selector),
       `Parents of ${this.name} until matches ${selector}`,
     );
   }
 
   public previousSiblingsUntil(selector?: string) {
-    return this.createXml(
+    return this.createElement(
       this.$.prevUntil(selector),
       `Previous siblings of ${this.name} until matches ${selector}`,
     );
   }
 
   public nextSiblingsUntil(selector?: string) {
-    return this.createXml(
+    return this.createElement(
       this.$.nextUntil(selector),
       `Next siblings of ${this.name} until matches ${selector}`,
     );
   }
 
   public slice(startIndex: number, endIndex?: number) {
-    return this.createXml(
+    return this.createElement(
       this.$.slice(startIndex, endIndex),
       `Slice(${startIndex}, ${endIndex}) of ${this.name}`,
-    );
-  }
-
-  public getCss(properties: string[] | string) {
-    return this.createGeneric(
-      this.$.css(Array.isArray(properties) ? properties : [properties]),
-      `Style properties of ${this.name} matching ${properties}`,
     );
   }
 
@@ -184,7 +180,11 @@ export class XmlValue extends ValueAbstract<CheerioElement> {
     return this.$.toArray();
   }
 
-  protected createXml(element: CheerioElement, name: string, opts?: KeyValue) {
+  protected createElement(
+    element: CheerioElement,
+    name: string,
+    opts?: KeyValue,
+  ) {
     return new XmlValue(element, { logger: this.logger, name, ...opts });
   }
 }
