@@ -20,6 +20,7 @@
   "author": "Jason Byrne",
   "license": "MIT",
   "dependencies": {
+    "chalk": "4.1.2",
     "commander": "^9.1.0",
     "fs-extra": "^10.0.1"
   },
