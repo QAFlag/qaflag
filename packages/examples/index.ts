@@ -1,7 +1,7 @@
 import { ConsoleFormatter } from '@qaflag/core';
-import { XmlMusicSuite } from './scenarios/xml';
-import { UsersSuite } from './scenarios/json';
-import { RssCnnScenario } from './scenarios/rss';
+import { XmlMusicSuite } from './scenarios/xml.suite';
+import { UsersSuite } from './scenarios/json.suite';
+import { RssCnnScenario } from './scenarios/rss.suite';
 
 const json = new UsersSuite();
 json.events.once('complete').then(() => {

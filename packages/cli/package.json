@@ -19,5 +19,11 @@
   },
   "author": "Jason Byrne",
   "license": "MIT",
-  "dependencies": {}
+  "dependencies": {
+    "commander": "^9.1.0",
+    "fs-extra": "^10.0.1"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^9.0.13"
+  }
 }
