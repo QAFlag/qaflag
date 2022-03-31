@@ -24,8 +24,6 @@ export function Suite<ScenarioType extends ScenarioInterface>(
   initOpts: SuiteOpts,
 ) {
   return class SuiteAbstract implements SuiteInterface {
-    #steps: SuiteStep<ScenarioType>[] = [];
-    #scenarios: ScenarioType[] = [];
     #befores: string[] = [];
     #afters: string[] = [];
 
@@ -33,18 +31,10 @@ export function Suite<ScenarioType extends ScenarioInterface>(
     public readonly store = new KvStore();
     public readonly logger = new Logger();
     public readonly events = new Emittery<{ complete: never }>();
-
-    public get steps(): SuiteStep<ScenarioType>[] {
-      return this.#steps;
-    }
-
-    public get scenarios(): ScenarioType[] {
-      return this.#scenarios;
-    }
-
-    public get persona(): Persona {
-      return initOpts.persona || new Persona({ name: 'Default ' });
-    }
+    public readonly scenarios: ScenarioType[] = [];
+    public readonly steps: SuiteStep<ScenarioType>[] = [];
+    public readonly persona: Persona =
+      initOpts.persona || new Persona({ name: 'Default ' });
 
     constructor() {
       if (this[BeforeAlls]) {
@@ -67,7 +57,7 @@ export function Suite<ScenarioType extends ScenarioInterface>(
             const scenario = this.addScenarioToStep(
               new scenarioConstructor(template, this),
             );
-            this.#scenarios.push(scenario);
+            this.scenarios.push(scenario);
           });
       }
 
@@ -82,7 +72,7 @@ export function Suite<ScenarioType extends ScenarioInterface>(
 
     public async execute() {
       await Promise.all(this.#befores.map(methodName => this[methodName]()));
-      for (const step of this.#steps) {
+      for (const step of this.steps) {
         await Promise.all(
           step.scenarios.map(async scenario => {
             scenario.request = await scenario.persona.authenticate(
@@ -99,15 +89,15 @@ export function Suite<ScenarioType extends ScenarioInterface>(
 
     private getStep(stepNumber: number): SuiteStep<ScenarioType> {
       // Look for existing step with this number
-      const step = this.#steps.find(step => step.stepNumber === stepNumber);
+      const step = this.steps.find(step => step.stepNumber === stepNumber);
       if (step) return step;
       // Create new step
       const newStep: SuiteStep<ScenarioType> = {
         stepNumber,
         scenarios: [],
       };
-      this.#steps.push(newStep);
-      this.#steps.sort((a, b) => a.stepNumber - b.stepNumber);
+      this.steps.push(newStep);
+      this.steps.sort((a, b) => a.stepNumber - b.stepNumber);
       return newStep;
     }
 

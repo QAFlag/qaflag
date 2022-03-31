@@ -1,45 +1,55 @@
 import * as chalk from 'chalk';
+import cli from '../cli';
+import Table = require('cli-table3');
+import { ConsoleLineOptions, ConsoleOutput } from '../models/console-output';
 
-type Alignment = 'left' | 'center' | 'right';
-
-type LineOptions = {
-  alignment: Alignment;
-  lineLength: number;
-  padding: string;
-  style: chalk.Chalk;
+export const printHeader = () => {
+  printLineBreak();
+  new ConsoleOutput(['', '~~ QA FLAG ~~', ''], {
+    alignment: 'center',
+    lineLength: cli.lineLength,
+    style: chalk.whiteBright.bold.bgHex('#0000aa'),
+  }).print();
+  new ConsoleOutput(`v${cli.version}`, {
+    alignment: 'center',
+    lineLength: cli.lineLength,
+    style: chalk.black.bgHex('#bbbbbb'),
+  }).print();
+  printLineBreak();
 };
 
-const getLength = (lines: string[]) => {
-  return lines.reduce((prev: number, line: string) => {
-    return line.length > prev ? line.length : prev;
-  }, 0);
-};
-
-const align = (
-  line: string,
-  length: number,
-  alignment: Alignment,
-  padding: string,
+export const printLines = (
+  lines: string[],
+  opts?: Partial<ConsoleLineOptions>,
 ) => {
-  padding = padding || ' ';
-  // Left
-  if (alignment == 'left') return line.padEnd(length, padding);
-  // Right
-  if (alignment == 'right') return line.padStart(length, padding);
-  // Center
-  const padStart = Math.floor(length - line.length / 2);
-  const padEnd = Math.ceil(length - line.length / 2);
-  return (
-    (padStart ? padding.repeat(padStart) : '') +
-    line +
-    (padEnd ? padding.repeat(padEnd) : '')
-  );
+  new ConsoleOutput(lines, opts).print();
 };
 
-export const printLine = (lines: string[], opts?: Partial<LineOptions>) => {
-  const lineLength = opts.lineLength || getLength(lines);
-  lines.forEach(line => {
-    const text = align(line, lineLength, opts.alignment, opts.padding);
-    console.log(opts.style ? opts.style(text) : text);
+export const printList = (items: string[]) => {
+  new ConsoleOutput(items, {
+    alignment: 'left',
+    lineLength: cli.lineLength,
+    prefix: '  » ',
+  }).print();
+  printLineBreak();
+};
+
+export const printLineBreak = (n: number = 1) => {
+  for (let i = 0; i < n; i++) {
+    console.log('');
+  }
+};
+
+export const printTable = (
+  columnsNames: string[],
+  columnWidths: number[],
+  rows: string[][],
+) => {
+  const table = new Table({
+    head: columnsNames,
+    colWidths: columnWidths,
+    wordWrap: true,
   });
+  table.push(...rows);
+  console.log(table.toString());
 };

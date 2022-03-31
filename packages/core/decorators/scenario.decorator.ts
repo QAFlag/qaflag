@@ -15,8 +15,7 @@ export function Scenario(opts: ScenarioDecoratorOpts) {
     const scenario: ScenarioTemplate = {
       ...opts,
       key: methodName,
-      description:
-        opts.description !== undefined ? opts.description : String(methodName),
+      description: opts.description || '',
       step: opts.step || 1,
       next: async (scenario: ScenarioInterface) => {
         return originalMethod.apply(scenario.suite, [scenario.response]);

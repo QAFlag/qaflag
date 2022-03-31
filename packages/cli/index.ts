@@ -2,6 +2,7 @@
 
 import { list } from './actions/list';
 import { Command } from 'commander';
+import { plan } from './actions/plan';
 
 // Get version from package
 const pkg = require('../package.json');
@@ -18,6 +19,13 @@ program
   .description('List available suites')
   .action((str, options) => {
     list();
+  });
+
+program
+  .command('plan')
+  .description('Get test plan for a suite')
+  .action(async (str, options) => {
+    await plan();
   });
 
 program.parse();

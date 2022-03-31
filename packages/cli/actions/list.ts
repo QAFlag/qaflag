@@ -1,11 +1,12 @@
-import { printHeader } from '../utils/header';
-import { findFiles } from '../utils/find-files';
+import { printHeader, printList } from '../utils/print';
+import { findSuites } from '../utils/find-suites';
 
 export const list = () => {
-  const files = findFiles(
-    process.cwd() + '/packages/examples/dist/scenarios/',
-    /\.suite\./,
-  );
+  const suites = findSuites();
   printHeader();
-  console.log(JSON.stringify(files, null, 2));
+  printList(
+    Object.values(suites.suiteClasses).map(
+      suite => `${suite.className} - ${suite.relativePath}`,
+    ),
+  );
 };

@@ -1,7 +1,7 @@
 import { Scenario, Suite } from '@qaflag/core';
 import { RssResponse, RssScenario } from '@qaflag/xml';
 
-export class RssCnnScenario extends Suite(RssScenario, {
+export class RssCnnSuite extends Suite(RssScenario, {
   title: 'Test CNN RSS Feed',
 }) {
   @Scenario({

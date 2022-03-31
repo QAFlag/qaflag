@@ -35,6 +35,10 @@ export function ScenarioType(initOpts: ScenarioTypeOpts) {
     public next: (...args: any[]) => Promise<void>;
     public readonly logger = new Logger();
 
+    public get title() {
+      return this.key + (this.description ? `: ${this.description}` : '');
+    }
+
     public get uri() {
       return this.request.uri;
     }
