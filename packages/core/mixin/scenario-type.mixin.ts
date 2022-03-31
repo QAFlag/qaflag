@@ -36,7 +36,7 @@ export function ScenarioType(initOpts: ScenarioTypeOpts) {
     public readonly logger = new Logger();
 
     public get title() {
-      return this.key + (this.description ? `: ${this.description}` : '');
+      return String(this.key);
     }
 
     public get uri() {
@@ -65,6 +65,10 @@ export function ScenarioType(initOpts: ScenarioTypeOpts) {
 
     public get persona(): Persona {
       return this.opts.persona || this.suite.persona;
+    }
+
+    public get statusCode(): number | null {
+      return this.opts.statusCode || null;
     }
 
     public log(type: MessageType, text: string): void {

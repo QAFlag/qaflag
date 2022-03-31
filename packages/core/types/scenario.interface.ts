@@ -13,10 +13,12 @@ export interface ScenarioInterface extends LogReceiver, LogCollector {
   request: RequestInterface;
   response: ResponseInterface | null;
   key: string | Symbol;
+  title: string;
   description: string;
   uri: ScenarioUri;
   step: number;
   persona: Persona;
+  statusCode: number | null;
   next: (...args: any[]) => Promise<void>;
   execute(): Promise<void>;
 }

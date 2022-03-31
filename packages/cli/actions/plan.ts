@@ -8,6 +8,7 @@ import * as prompts from 'prompts';
 import { exitError } from '../utils/exit';
 import { findSuites } from '../utils/find-suites';
 import chalk = require('chalk');
+import { loadSuite } from '../utils/load-suite';
 
 export const plan = async () => {
   const suites = findSuites();
@@ -29,8 +30,7 @@ export const plan = async () => {
   if (!selection.suite) {
     return exitError('No suite selected.');
   }
-  const file = require(selection.suite.fullPath);
-  const suite = new file[selection.suite.className]();
+  const suite = loadSuite(selection.suite);
   printLineBreak();
   printLines([suite.title], { style: chalk.yellowBright });
   printLineBreak();
@@ -41,10 +41,16 @@ export const plan = async () => {
         chalk.blueBright('Title'),
         chalk.blueBright('Description'),
         chalk.blueBright('URI'),
+        chalk.blueBright('Code'),
       ],
-      [28, 40, 64],
+      [26, 40, 60, 6],
       step.scenarios.map(scenario => {
-        return [scenario.key, scenario.description, scenario.uri];
+        return [
+          scenario.title,
+          scenario.description,
+          scenario.uri,
+          scenario.statusCode ? String(scenario.statusCode) : '--',
+        ];
       }),
     );
     printLineBreak();
