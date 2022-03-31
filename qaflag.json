@@ -1,0 +1,10 @@
+{
+  "tests": {
+    "path": [
+      "dist"
+    ],
+    "pattern": [
+      ".suite.js"
+    ]
+  }
+}

@@ -3,16 +3,20 @@
 import { list } from './actions/list';
 import { Command } from 'commander';
 import { plan } from './actions/plan';
+import cli from './cli';
+import Project from './models/project';
+import { init } from './actions/init';
 
-// Get version from package
-const pkg = require('../package.json');
-const FLAGPOLE_VERSION = pkg.version;
+// Initialize Project
+const project = new Project({
+  configFile: process.env.QAFLAG_CONFIG_FILE,
+});
 
 // Initialize CLI
 const program = new Command()
   .name('qaflag')
   .description('QA Flag test automation CLI')
-  .version(FLAGPOLE_VERSION);
+  .version(cli.version);
 
 program
   .command('list')
@@ -26,6 +30,13 @@ program
   .description('Get test plan for a suite')
   .action(async (str, options) => {
     await plan();
+  });
+
+program
+  .command('init')
+  .description('Get test plan for a suite')
+  .action(async (str, options) => {
+    await init(project);
   });
 
 program.parse();
