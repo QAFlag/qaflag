@@ -6,6 +6,7 @@ import { plan } from './actions/plan';
 import cli from './cli';
 import Project from './models/project';
 import { init } from './actions/init';
+import { run } from './actions/run';
 
 // Initialize Project
 const project = new Project({
@@ -30,6 +31,13 @@ program
   .description('Get test plan for a suite')
   .action(async (str, options) => {
     await plan();
+  });
+
+program
+  .command('run')
+  .description('Run a test suite')
+  .action(async (str, options) => {
+    await run();
   });
 
 program
