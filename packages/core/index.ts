@@ -1,7 +1,6 @@
 export * from './decorators/scenario.decorator';
 export * from './decorators/after.decorator';
 export * from './decorators/before.decorator';
-export * from './formatter/console';
 export * from './abstracts/request-type.abstract';
 export * from './abstracts/response-type.abstract';
 export * from './mixin/scenario-type.mixin';
