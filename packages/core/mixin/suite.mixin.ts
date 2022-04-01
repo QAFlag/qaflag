@@ -60,12 +60,6 @@ export function Suite<ScenarioType extends ScenarioInterface>(
             this.scenarios.push(scenario);
           });
       }
-
-      // Execute
-      setTimeout(async () => {
-        await this.execute();
-        this.events.emit('complete');
-      }, 1);
     }
 
     public async init() {}
@@ -85,6 +79,7 @@ export function Suite<ScenarioType extends ScenarioInterface>(
         );
       }
       await Promise.all(this.#afters.map(methodName => this[methodName]()));
+      this.events.emit('complete');
     }
 
     private getStep(stepNumber: number): SuiteStep<ScenarioType> {

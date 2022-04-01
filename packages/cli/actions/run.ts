@@ -45,4 +45,5 @@ export const run = async () => {
       });
     });
   });
+  suite.execute();
 };
