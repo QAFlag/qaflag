@@ -25,7 +25,7 @@ export const plan = async () => {
       description: suite.relativePath,
       value: suite,
     })),
-    initial: 1,
+    initial: 0,
   });
   if (!selection.suite) {
     return exitError('No suite selected.');

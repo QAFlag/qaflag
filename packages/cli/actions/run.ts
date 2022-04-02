@@ -1,13 +1,32 @@
-import { printHeader, printLines } from '../utils/print';
+import { printHeader } from '../utils/print';
 import { findSuites } from '../utils/find-suites';
 import { exitError } from '../utils/exit';
 import { prompt } from 'prompts';
 import { loadSuite } from '../utils/load-suite';
-import chalk = require('chalk');
+import { outputSuiteToConsole } from '../formatter/console';
+import { SuiteClass, SuiteCollection } from '../types/suite-collection';
 
-export const run = async () => {
+export const run = async options => {
   const suites = findSuites();
-  printHeader();
+  const selection = !options.args?.length
+    ? await pickSuite(suites)
+    : findSuiteByName(suites, options.args[0]);
+  if (!selection) exitError('No suite selected.');
+  const suite = loadSuite(selection);
+  console.log(suite.logger);
+  suite.events.once('completed').then(() => outputSuiteToConsole(suite));
+  suite.execute();
+};
+
+const findSuiteByName = (
+  suites: SuiteCollection,
+  name: string,
+): SuiteClass | undefined => {
+  const pattern = new RegExp('^' + name.replace('*', '.*') + '$', 'i');
+  return suites.suiteClasses.find(suite => pattern.test(suite.className));
+};
+
+const pickSuite = async (suites: SuiteCollection): Promise<SuiteClass> => {
   if (suites.suiteClasses.length == 0) {
     return exitError('No suites found.');
   }
@@ -20,30 +39,7 @@ export const run = async () => {
       description: suite.relativePath,
       value: suite,
     })),
-    initial: 1,
+    initial: 0,
   });
-  if (!selection.suite) {
-    return exitError('No suite selected.');
-  }
-  const suite = loadSuite(selection.suite);
-  suite.events.once('completed').then(() => {
-    printLines([suite.title, '=========='], {
-      style: chalk.bold,
-    });
-    suite.steps.forEach(step => {
-      printLines(['', chalk.yellow(`Step ${step.stepNumber}`), '']);
-      step.scenarios.forEach(scenario => {
-        scenario.logger.getMessages().forEach(message => {
-          if (message.type == 'pass') {
-            printLines([chalk.green(message.text)]);
-          } else if (message.type == 'fail') {
-            printLines([chalk.red(message.text)]);
-          } else {
-            printLines([message.text]);
-          }
-        });
-      });
-    });
-  });
-  suite.execute();
+  return selection.suite;
 };

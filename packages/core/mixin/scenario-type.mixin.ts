@@ -32,7 +32,7 @@ export function ScenarioType(initOpts: ScenarioTypeOpts) {
     public abstract request: RequestInterface;
     public abstract execute(): Promise<void>;
 
-    public name: string = initOpts.name;
+    public type: string = initOpts.name;
     public key: string | Symbol;
     public description: string;
     public step: number;

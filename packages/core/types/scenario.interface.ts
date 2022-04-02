@@ -9,7 +9,7 @@ import { SuiteInterface } from './suite.interface';
 export type ScenarioUri = `${HttpVerbsCaseInsensitive} ${string}`;
 
 export interface ScenarioInterface extends LogProvider {
-  name: string;
+  type: string;
   suite: SuiteInterface;
   request: RequestInterface;
   response: ResponseInterface | null;

@@ -18,6 +18,7 @@ export const findSuites = (): SuiteCollection => {
       });
     });
   });
+  suiteClasses.sort((a, b) => (a.className < b.className ? -1 : 0));
   return {
     baseFolder: files.baseFolder,
     suiteClasses,

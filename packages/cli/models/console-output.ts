@@ -1,4 +1,5 @@
 import * as chalk from 'chalk';
+import stringWidth from 'string-width';
 import { getLongestLineLength } from '../utils/longest-line';
 
 export type Alignment = 'left' | 'center' | 'right';
@@ -17,13 +18,15 @@ const align = (
   alignment: Alignment,
   padding: string,
 ) => {
+  const nonAsciiLength = stringWidth(line);
+  const asciiLength = line.length - nonAsciiLength;
   padding = padding || ' ';
   // Right
-  if (alignment == 'right') return line.padStart(length, padding);
+  if (alignment == 'right') return line.padStart(length + asciiLength, padding);
   // Center
   if (alignment == 'center') {
-    const padStart = Math.floor(length - line.length / 2);
-    const padEnd = Math.ceil(length - line.length / 2);
+    const padStart = Math.floor(length - nonAsciiLength / 2);
+    const padEnd = Math.ceil(length - nonAsciiLength / 2);
     return (
       (padStart ? padding.repeat(padStart) : '') +
       line +
@@ -31,7 +34,7 @@ const align = (
     );
   }
   // Left
-  return line.padEnd(length, padding);
+  return line.padEnd(length + asciiLength, padding);
 };
 
 export class ConsoleOutput {

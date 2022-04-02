@@ -2,8 +2,8 @@ import { Message, MessageType } from './message';
 
 export class Logger {
   #messages: Message[] = [];
-  #started: Date | null = null;
-  #ended: Date | null = null;
+  #started: number | null = null;
+  #ended: number | null = null;
 
   public get started() {
     return this.#started;
@@ -13,6 +13,12 @@ export class Logger {
     return this.#ended;
   }
 
+  public get duration(): number {
+    if (!this.started) throw 'Not yet started.';
+    if (!this.ended) throw 'Not yet ended.';
+    return this.ended - this.started;
+  }
+
   public get length(): number {
     return this.#messages.length;
   }
@@ -20,13 +26,13 @@ export class Logger {
   public start() {
     if (this.started) throw 'Already started.';
     if (this.ended) throw 'Already ended.';
-    this.#started = new Date();
+    this.#started = Date.now();
   }
 
   public end() {
     if (!this.started) throw 'Not yet started.';
     if (this.ended) throw 'Already ended.';
-    this.#ended = new Date();
+    this.#ended = Date.now();
   }
 
   public log(type: MessageType, text: string) {
@@ -37,8 +43,12 @@ export class Logger {
     return message;
   }
 
-  public getMessages(): Message[] {
+  public get messages(): Message[] {
     return this.#messages;
+  }
+
+  public count(type: MessageType | MessageType[]): number {
+    return this.filter(type).length;
   }
 
   public filter(type: MessageType | MessageType[]): Message[] {

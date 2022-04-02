@@ -37,7 +37,7 @@ program
   .command('run')
   .description('Run a test suite')
   .action(async (str, options) => {
-    await run();
+    await run(options);
   });
 
 program

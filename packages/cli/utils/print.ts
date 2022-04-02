@@ -22,7 +22,11 @@ export const printLines = (
   lines: string[],
   opts?: Partial<ConsoleLineOptions>,
 ) => {
-  new ConsoleOutput(lines, opts).print();
+  new ConsoleOutput(lines, {
+    alignment: 'left',
+    lineLength: cli.lineLength,
+    ...opts,
+  }).print();
 };
 
 export const printList = (items: string[]) => {
