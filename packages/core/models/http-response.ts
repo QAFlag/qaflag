@@ -13,9 +13,18 @@ interface HttpResponseOptions<
 }
 
 export class HttpResponse<ResponseBodyType = any, RequestType = any> {
+  private readonly stopTimestamp: number;
+
   public constructor(
     private response: HttpResponseOptions<ResponseBodyType, RequestType>,
-  ) {}
+    private readonly startTimestamp: number,
+  ) {
+    this.stopTimestamp = Date.now();
+  }
+
+  public get duration() {
+    return this.stopTimestamp - this.startTimestamp;
+  }
 
   public get headers(): HttpHeaders {
     return this.response.headers || {};

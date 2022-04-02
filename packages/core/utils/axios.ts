@@ -47,6 +47,7 @@ export const fetchWithAxios = async (
   };
   const jar = new CookieJar();
   const client = wrapper(axios.create({ jar }));
+  const start = Date.now();
   const response = await client.request(axiosRequest);
-  return new HttpResponse(response);
+  return new HttpResponse(response, start);
 };
