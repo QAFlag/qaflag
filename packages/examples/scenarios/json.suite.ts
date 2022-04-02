@@ -48,6 +48,7 @@ export class UsersSuite extends Suite(JsonScenario, {
   persona: GuestPersona,
 }) {
   @GetList() async getListOfUsers(response: JsonResponse) {
+    response.requestDuration.is.optionally.lessThan(100);
     const ids = response.find('[*].id').array;
     ids.length.is.greaterThan(0);
     ids.first.number.is.greaterThan(0);

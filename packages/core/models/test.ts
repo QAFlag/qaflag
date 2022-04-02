@@ -3,7 +3,14 @@ import validator from 'validator';
 
 export function test<T>(input: ValueInterface<T>, assertionText?: string) {
   class Test {
+    #isOptional: boolean = false;
+
     constructor() {}
+
+    public get optionally() {
+      this.#isOptional = true;
+      return this;
+    }
 
     private validator(
       methodName: keyof typeof validator,
@@ -15,8 +22,13 @@ export function test<T>(input: ValueInterface<T>, assertionText?: string) {
     }
 
     private eval(result: boolean, message: string) {
-      input.logger.log(result ? 'pass' : 'fail', assertionText || message);
-      if (!result) input.logger.log('info', `Actual Value: ${input.string.$}`);
+      input.logger.log(
+        result ? 'pass' : this.#isOptional ? 'optionalFail' : 'fail',
+        assertionText || message,
+      );
+      if (!result) {
+        input.logger.log('info', `Actual Value: ${input.string.$}`);
+      }
     }
 
     public equalTo(value: any) {

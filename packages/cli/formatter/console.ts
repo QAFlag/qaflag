@@ -47,6 +47,8 @@ export const outputSuiteToConsole = (suite: SuiteInterface) => {
               return chalk.green('✔') + ` ${message.text}`;
             } else if (message.type == 'fail') {
               return chalk.red('𐄂') + ` ${message.text}`;
+            } else if (message.type == 'optionalFail') {
+              return chalk.magenta('!') + ` ${message.text}`;
             } else {
               return `  ${message.text}`;
             }

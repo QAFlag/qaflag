@@ -30,4 +30,11 @@ export abstract class ResponseType implements ResponseInterface {
       logger: this,
     });
   }
+
+  public get requestDuration() {
+    return new NumericValue(this.httpResponse.duration, {
+      name: 'Request Duration',
+      logger: this,
+    });
+  }
 }

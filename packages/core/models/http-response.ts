@@ -12,18 +12,22 @@ interface HttpResponseOptions<
   trailers?: KeyValue;
 }
 
-export class HttpResponse<ResponseBodyType = any, RequestType = any> {
-  private readonly stopTimestamp: number;
+export interface ResponseMeta {
+  startTime?: number;
+  endTime?: number;
+}
 
+export class HttpResponse<ResponseBodyType = any, RequestType = any> {
   public constructor(
     private response: HttpResponseOptions<ResponseBodyType, RequestType>,
-    private readonly startTimestamp: number,
-  ) {
-    this.stopTimestamp = Date.now();
-  }
+    public readonly meta: ResponseMeta,
+  ) {}
 
   public get duration() {
-    return this.stopTimestamp - this.startTimestamp;
+    if (!this.meta.startTime || !this.meta.endTime) {
+      throw 'Start time and end time of request were not set';
+    }
+    return this.meta.endTime - this.meta.startTime;
   }
 
   public get headers(): HttpHeaders {

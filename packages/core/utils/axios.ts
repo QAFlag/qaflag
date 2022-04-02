@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig } from 'axios';
-import { HttpResponse } from '../models/http-response';
+import { HttpResponse, ResponseMeta } from '../models/http-response';
 import { HttpBody } from '../types/http.types';
 import { RequestInterface } from '../types/request.interface';
 import { wrapper } from 'axios-cookiejar-support';
@@ -47,7 +47,21 @@ export const fetchWithAxios = async (
   };
   const jar = new CookieJar();
   const client = wrapper(axios.create({ jar }));
-  const start = Date.now();
+  const meta: ResponseMeta = {};
+  client.interceptors.request.use(
+    config => {
+      meta.startTime = Date.now();
+      return config;
+    },
+    error => (meta.startTime = Date.now()),
+  );
+  client.interceptors.response.use(
+    response => {
+      meta.endTime = Date.now();
+      return response;
+    },
+    error => (meta.endTime = Date.now()),
+  );
   const response = await client.request(axiosRequest);
-  return new HttpResponse(response, start);
+  return new HttpResponse(response, meta);
 };
