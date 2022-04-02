@@ -29,19 +29,30 @@ export const outputSuiteToConsole = (suite: SuiteInterface) => {
     });
     step.scenarios.forEach(scenario => {
       printLines(
-        [`${scenario.title} (${scenario.type}) ${scenario.description}`],
-        { style: chalk.bgHex('#555555'), prefix: '  ' },
+        [
+          '',
+          chalk.whiteBright.bold(`${scenario.title}`) +
+            `  ${scenario.description}`,
+          ,
+          '',
+        ],
+        { style: chalk.bgHex('#555555').hex('#aaaaaa'), prefix: '  ' },
       );
       printLines(
-        scenario.logger.messages.map(message => {
-          if (message.type == 'pass') {
-            return chalk.green('✔') + ` ${message.text}`;
-          } else if (message.type == 'fail') {
-            return chalk.red('𐄂') + ` ${message.text}`;
-          } else {
-            return `  ${message.text}`;
-          }
-        }),
+        [
+          '',
+          `  Took ${scenario.logger.duration}ms | ${scenario.type} | Persona: ${scenario.persona.name}`,
+          ...scenario.logger.messages.map(message => {
+            if (message.type == 'pass') {
+              return chalk.green('✔') + ` ${message.text}`;
+            } else if (message.type == 'fail') {
+              return chalk.red('𐄂') + ` ${message.text}`;
+            } else {
+              return `  ${message.text}`;
+            }
+          }),
+          '',
+        ],
         {
           prefix: '  ',
           style: chalk.bgWhite.black,
