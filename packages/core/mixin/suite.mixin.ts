@@ -6,9 +6,9 @@ import {
 import { KvStore } from '../models/kv-store';
 import { Logger } from '../models/logger';
 import { Persona } from '../models/persona';
-import { MessageType } from '../types/message.interface';
 import { ScenarioInterface } from '../types/scenario.interface';
 import { SuiteInterface, SuiteStep } from '../types/suite.interface';
+import { MessageType } from '../models/message';
 
 export const ScenarioDefinitions = Symbol('ScenarioDefinitions');
 export const BeforeAlls = Symbol('BeforeAlls');
@@ -30,11 +30,22 @@ export function Suite<ScenarioType extends ScenarioInterface>(
     public readonly title = initOpts.title;
     public readonly store = new KvStore();
     public readonly logger = new Logger();
-    public readonly events = new Emittery<{ complete: never }>();
+    public readonly events = new Emittery<{
+      beforeAll: never;
+      beforeEach: ScenarioInterface;
+      afterEach: ScenarioInterface;
+      completed: never;
+      passed: never;
+      failed: never;
+    }>();
     public readonly scenarios: ScenarioType[] = [];
     public readonly steps: SuiteStep<ScenarioType>[] = [];
     public readonly persona: Persona =
       initOpts.persona || new Persona({ name: 'Default ' });
+
+    public log(type: MessageType, text: string) {
+      return this.logger.log(type, text);
+    }
 
     constructor() {
       if (this[BeforeAlls]) {
@@ -65,21 +76,33 @@ export function Suite<ScenarioType extends ScenarioInterface>(
     public async init() {}
 
     public async execute() {
+      this.logger.start();
+      this.events.emit('beforeAll');
       await Promise.all(this.#befores.map(methodName => this[methodName]()));
       for (const step of this.steps) {
         await Promise.all(
           step.scenarios.map(async scenario => {
+            this.events.emit('beforeEach', scenario);
             scenario.request = await scenario.persona.authenticate(
               scenario.request,
             );
             scenario.request.pathReplace(this.store.entries());
+            scenario.logger.start();
             await scenario.execute();
             await scenario.next(scenario);
+            scenario.logger.end();
+            this.events.emit('afterEach', scenario);
+            this.log(
+              scenario.status == 'pass' ? 'pass' : 'fail',
+              scenario.title,
+            );
           }),
         );
       }
       await Promise.all(this.#afters.map(methodName => this[methodName]()));
-      this.events.emit('complete');
+      this.events.emit('completed');
+      this.events.emit(this.logger.failed ? 'failed' : 'passed');
+      this.logger.end();
     }
 
     private getStep(stepNumber: number): SuiteStep<ScenarioType> {
@@ -100,10 +123,6 @@ export function Suite<ScenarioType extends ScenarioInterface>(
       const step = this.getStep(scenario.step);
       step.scenarios.push(scenario);
       return scenario;
-    }
-
-    public log(type: MessageType, text: string): void {
-      this.logger.log(type, text);
     }
 
     public set<T>(key: string, value: T): T {

@@ -4,12 +4,12 @@ import {
   NumericValue,
   StringValue,
 } from '../models/values';
-import { LogReceiver } from './log-provider.interface';
+import { LogProvider } from './log-provider.interface';
 
 export interface ValueInterface<InputType = any> {
   $: InputType;
   name: string;
-  logger: LogReceiver;
+  logger: LogProvider;
   number: NumericValue;
   string: StringValue;
   array: ArrayValue;

@@ -1,11 +1,11 @@
-import { LogReceiver } from '../types/log-provider.interface';
+import { LogProvider } from '../types/log-provider.interface';
 import { ValueInterface } from '../types/value.interface';
 import { toType } from '../utils/to-type';
 import { test } from './test';
 
 interface ValueOpts {
   name: string;
-  logger: LogReceiver;
+  logger: LogProvider;
 }
 
 export abstract class ValueAbstract<InputType>
@@ -14,7 +14,7 @@ export abstract class ValueAbstract<InputType>
   #input: InputType | undefined;
   #alias: string | undefined = undefined;
 
-  public logger: LogReceiver;
+  public logger: LogProvider;
 
   constructor(input: InputType | undefined, protected opts: ValueOpts) {
     this.#input = input;

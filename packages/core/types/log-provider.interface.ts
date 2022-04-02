@@ -1,10 +1,5 @@
-import { Logger } from '../models/logger';
-import { MessageType } from './message.interface';
+import { Message, MessageType } from '../models/message';
 
-export interface LogReceiver {
-  log(type: MessageType, message: string): void;
-}
-
-export interface LogCollector {
-  logger: Logger;
+export interface LogProvider {
+  log(type: MessageType, text: string): Message;
 }

@@ -1,13 +1,14 @@
+import { Logger } from '../models/logger';
 import { Persona } from '../models/persona';
 import { HttpVerbsCaseInsensitive } from './http.types';
-import { LogCollector, LogReceiver } from './log-provider.interface';
+import { LogProvider } from './log-provider.interface';
 import { RequestInterface } from './request.interface';
 import { ResponseInterface } from './response.interface';
 import { SuiteInterface } from './suite.interface';
 
 export type ScenarioUri = `${HttpVerbsCaseInsensitive} ${string}`;
 
-export interface ScenarioInterface extends LogReceiver, LogCollector {
+export interface ScenarioInterface extends LogProvider {
   name: string;
   suite: SuiteInterface;
   request: RequestInterface;
@@ -19,6 +20,18 @@ export interface ScenarioInterface extends LogReceiver, LogCollector {
   step: number;
   persona: Persona;
   statusCode: number | null;
+  status: ScenarioStatus;
+  result: ScenarioResult;
+  logger: Logger;
   next: (...args: any[]) => Promise<void>;
   execute(): Promise<void>;
+}
+
+export type ScenarioStatus = 'not started' | 'in progress' | 'pass' | 'fail';
+
+export interface ScenarioResult {
+  status: ScenarioStatus;
+  passCount: number;
+  failCount: number;
+  optionalFailCount: number;
 }

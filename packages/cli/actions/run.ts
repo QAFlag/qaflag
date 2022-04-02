@@ -1,4 +1,4 @@
-import { printHeader, printLines, printList } from '../utils/print';
+import { printHeader, printLines } from '../utils/print';
 import { findSuites } from '../utils/find-suites';
 import { exitError } from '../utils/exit';
 import { prompt } from 'prompts';
@@ -26,7 +26,7 @@ export const run = async () => {
     return exitError('No suite selected.');
   }
   const suite = loadSuite(selection.suite);
-  suite.events.once('complete').then(() => {
+  suite.events.once('completed').then(() => {
     printLines([suite.title, '=========='], {
       style: chalk.bold,
     });

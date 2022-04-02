@@ -1,6 +1,6 @@
+import { MessageType } from '../models/message';
 import { HttpResponse } from '../models/http-response';
 import { NumericValue, StringValue } from '../models/values';
-import { MessageType } from '../types/message.interface';
 import { ResponseInterface } from '../types/response.interface';
 import { ScenarioInterface } from '../types/scenario.interface';
 
@@ -17,8 +17,8 @@ export abstract class ResponseType implements ResponseInterface {
     });
   }
 
-  public log(type: MessageType, text: string): void {
-    this.scenario.log(type, text);
+  public log(type: MessageType, text: string) {
+    return this.scenario.log(type, text);
   }
 
   public header(name: string) {

@@ -2,11 +2,15 @@ import { ScenarioTemplate } from '../types/scenario.options';
 import { Logger } from '../models/logger';
 import { Persona } from '../models/persona';
 import { HttpVerbs } from '../types/http.types';
-import { MessageInterface, MessageType } from '../types/message.interface';
 import { RequestInterface } from '../types/request.interface';
 import { ResponseInterface } from '../types/response.interface';
-import { ScenarioInterface } from '../types/scenario.interface';
+import {
+  ScenarioInterface,
+  ScenarioResult,
+  ScenarioStatus,
+} from '../types/scenario.interface';
 import { SuiteInterface } from '../types/suite.interface';
+import { Message, MessageType } from '../models/message';
 
 export type ScenarioTypeOpts = {
   name: string;
@@ -35,6 +39,10 @@ export function ScenarioType(initOpts: ScenarioTypeOpts) {
     public next: (...args: any[]) => Promise<void>;
     public readonly logger = new Logger();
 
+    public log(type: MessageType, text: string) {
+      return this.logger.log(type, text);
+    }
+
     public get title() {
       return String(this.key);
     }
@@ -51,16 +59,19 @@ export function ScenarioType(initOpts: ScenarioTypeOpts) {
       return this.request.path;
     }
 
-    public get hasFailures(): boolean {
-      return this.failures.length > 0;
+    public get status(): ScenarioStatus {
+      if (!this.logger.started) return 'not started';
+      if (!this.logger.ended) return 'in progress';
+      return this.logger.failed ? 'fail' : 'pass';
     }
 
-    public get failures(): MessageInterface[] {
-      return this.logger.filter('fail');
-    }
-
-    public get passes(): MessageInterface[] {
-      return this.logger.filter('pass');
+    public get result(): ScenarioResult {
+      return {
+        status: this.status,
+        failCount: this.logger.filter('fail').length,
+        passCount: this.logger.filter('pass').length,
+        optionalFailCount: this.logger.filter('optionalFail').length,
+      };
     }
 
     public get persona(): Persona {
@@ -69,10 +80,6 @@ export function ScenarioType(initOpts: ScenarioTypeOpts) {
 
     public get statusCode(): number | null {
       return this.opts.statusCode || null;
-    }
-
-    public log(type: MessageType, text: string): void {
-      this.logger.log(type, text);
     }
   }
   return ScenarioAbstract;
