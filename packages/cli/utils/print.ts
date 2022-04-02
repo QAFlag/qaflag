@@ -1,7 +1,11 @@
 import * as chalk from 'chalk';
 import cli from '../cli';
 import Table = require('cli-table3');
-import { ConsoleLineOptions, ConsoleOutput } from '../models/console-output';
+import {
+  ConsoleLineOptions,
+  ConsoleOutput,
+  Line,
+} from '../models/console-output';
 
 export const printHeader = () => {
   printLineBreak();
@@ -19,7 +23,7 @@ export const printHeader = () => {
 };
 
 export const printLines = (
-  lines: string[],
+  lines: Line[],
   opts?: Partial<ConsoleLineOptions>,
 ) => {
   new ConsoleOutput(lines, {

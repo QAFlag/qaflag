@@ -4,16 +4,22 @@ import { printLineBreak, printLines } from '../utils/print';
 
 export const outputSuiteToConsole = (suite: SuiteInterface) => {
   printLineBreak(2);
-  printLines(['', suite.title, ''], {
-    style: chalk.bold.bgHex('#000000').white,
-    prefix: '  ',
-  });
+  printLines(
+    ['', [chalk.bold(suite.title), `${suite.logger.duration}ms`], ''],
+    {
+      style: chalk.bgHex(suite.logger.failed ? '#550000' : '#005500').white,
+      prefix: '  ',
+      suffix: '  ',
+      alignment: 'split',
+    },
+  );
   printLines(
     [
-      `Took ${suite.logger.duration}ms  |  Executed ${suite.scenarios.length} scenarios in ${suite.steps.length} steps`,
-      suite.logger.failed
-        ? chalk.bgHex('#550000').white(' FAILED ')
-        : chalk.bgHex('#005500').white(' PASSED '),
+      '',
+      `Executed ${suite.scenarios.length} scenarios in ${suite.steps.length} steps.`,
+      chalk.bgHex('#550000').white(` ${suite.logger.count('fail')} FAILED `) +
+        '  ' +
+        chalk.bgHex('#005500').white(` ${suite.logger.count('pass')} PASSED `),
       '',
     ],
     {
@@ -31,12 +37,16 @@ export const outputSuiteToConsole = (suite: SuiteInterface) => {
       printLines(
         [
           '',
-          chalk.whiteBright.bold(`${scenario.title}`) +
-            `  ${scenario.description}`,
+          [chalk.whiteBright.bold(`${scenario.title}`), scenario.description],
           ,
           '',
         ],
-        { style: chalk.bgHex('#555555').hex('#aaaaaa'), prefix: '  ' },
+        {
+          style: chalk.bgHex('#555555').hex('#aaaaaa'),
+          prefix: '  ',
+          suffix: ' ',
+          alignment: 'split',
+        },
       );
       printLines(
         [
