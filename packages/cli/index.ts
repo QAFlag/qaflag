@@ -23,21 +23,21 @@ program
   .command('list')
   .description('List available suites')
   .action((str, options) => {
-    list();
+    list(project);
   });
 
 program
   .command('plan')
   .description('Get test plan for a suite')
   .action(async (str, options) => {
-    await plan();
+    await plan(project);
   });
 
 program
   .command('run')
   .description('Run a test suite')
   .action(async (str, options) => {
-    await run(options);
+    await run(project, options);
   });
 
 program

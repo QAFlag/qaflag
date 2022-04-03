@@ -1,11 +1,12 @@
+import path = require('path');
+import Project from '../models/project';
 import { SuiteCollection, SuiteClass } from '../types/suite-collection';
 import { findFiles } from './find-files';
 
-export const findSuites = (): SuiteCollection => {
-  const files = findFiles(
-    process.cwd() + '/packages/examples/dist/scenarios/',
-    /\.suite\./,
-  );
+export const findSuites = (project: Project): SuiteCollection => {
+  const folder = path.resolve(process.cwd(), project.tests.path[0]);
+  const pattern = new RegExp(project.tests.pattern[0] || '\\.suite\\.', 'i');
+  const files = findFiles(folder, pattern);
   const suiteClasses: SuiteClass[] = [];
   files.files.forEach(file => {
     const exported = require(file.fullPath);

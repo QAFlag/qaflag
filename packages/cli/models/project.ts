@@ -14,10 +14,12 @@ export default class Project implements ProjectInterface {
     return this.settings !== null;
   }
 
-  public tests: ProjectTests = {
-    path: ['dist'],
-    pattern: [`\.suite\.js`],
-  };
+  public get tests(): ProjectTests {
+    return {
+      path: this.settings?.tests.path || ['dist'],
+      pattern: this.settings?.tests.pattern || [`\.suite\.js`],
+    };
+  }
 
   constructor(private readonly opts: ProjectOpts) {
     this.configFile = path.resolve(process.cwd(), 'qaflag.json');

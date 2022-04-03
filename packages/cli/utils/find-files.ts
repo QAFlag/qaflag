@@ -1,5 +1,6 @@
 import * as fs from 'fs-extra';
 import { sep } from 'path';
+import path = require('path');
 import { FileResults } from '../types/file-results';
 
 export const findFiles = (
@@ -19,7 +20,7 @@ export const findFiles = (
       files
         .filter(file => pattern.test(file))
         .forEach(fileName => {
-          const fullPath = `${dir}${fileName}`;
+          const fullPath = path.resolve(dir, fileName);
           // Drill into sub-folders, but only once!
           if (depth < maxDepth && fs.statSync(fullPath).isDirectory()) {
             findFiles(`${fullPath}${sep}`, depth + 1);

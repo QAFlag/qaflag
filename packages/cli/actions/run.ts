@@ -5,9 +5,10 @@ import { prompt } from 'prompts';
 import { loadSuite } from '../utils/load-suite';
 import { outputSuiteToConsole } from '../formatter/console';
 import { SuiteClass, SuiteCollection } from '../types/suite-collection';
+import Project from '../models/project';
 
-export const run = async options => {
-  const suites = findSuites();
+export const run = async (project: Project, options: any) => {
+  const suites = findSuites(project);
   const selection = !options.args?.length
     ? await pickSuite(suites)
     : findSuiteByName(suites, options.args[0]);

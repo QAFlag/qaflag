@@ -9,9 +9,10 @@ import { exitError } from '../utils/exit';
 import { findSuites } from '../utils/find-suites';
 import chalk = require('chalk');
 import { loadSuite } from '../utils/load-suite';
+import Project from '../models/project';
 
-export const plan = async () => {
-  const suites = findSuites();
+export const plan = async (project: Project) => {
+  const suites = findSuites(project);
   printHeader();
   if (suites.suiteClasses.length == 0) {
     return exitError('No suites found.');

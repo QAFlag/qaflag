@@ -1,10 +1,6 @@
 {
   "tests": {
-    "path": [
-      "dist"
-    ],
-    "pattern": [
-      ".suite.js"
-    ]
+    "path": ["packages/examples/dist/scenarios/"],
+    "pattern": ["\\.suite\\.js"]
   }
 }
