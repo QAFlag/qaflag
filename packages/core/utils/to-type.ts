@@ -1,11 +1,18 @@
-import { types } from 'util';
+import is from '@sindresorhus/is';
 
-export const isAsyncCallback = (func: Function): boolean => {
-  return (
-    func.constructor.name == 'AsyncFunction' ||
-    types.isAsyncFunction(func) ||
-    func.toString().indexOf('__awaiter(') > 0
-  );
+export const isArrayOfObjects = (value: unknown): boolean => {
+  if (!Array.isArray(value)) return false;
+  return value.every(item => is.object(item));
+};
+
+export const isArrayOfNumbers = (value: unknown): boolean => {
+  if (!Array.isArray(value)) return false;
+  return value.every(item => is.number(item));
+};
+
+export const isArrayOfStrings = (value: unknown): boolean => {
+  if (!Array.isArray(value)) return false;
+  return value.every(item => is.string(item));
 };
 
 /**
@@ -19,17 +26,8 @@ export const toType = (obj: any): string => {
   if (obj === null) return 'null';
   if (obj === NaN) return 'nan';
   if (!!obj && obj.cheerio) return 'cheerio';
-  if (
-    !!obj &&
-    (typeof obj === 'object' || typeof obj === 'function') &&
-    typeof obj.then === 'function' &&
-    typeof obj.catch === 'function'
-  ) {
-    return 'promise';
-  }
-  if (isAsyncCallback(obj)) {
-    return 'asyncfunction';
-  }
+  if (is.promise(obj)) return 'promise';
+  if (is.asyncFunction(obj)) return 'asyncfunction';
   if (obj && obj.constructor && obj.constructor.name) {
     return String(obj.constructor.name).toLocaleLowerCase();
   }

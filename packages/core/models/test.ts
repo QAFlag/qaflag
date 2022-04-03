@@ -1,6 +1,7 @@
 import { ValueInterface } from '../types/value.interface';
 import validator from 'validator';
 import { TestInterface } from '../types/test.interface';
+import is from '@sindresorhus/is';
 
 class Test<InputType = unknown> implements TestInterface {
   #isOptional: boolean = false;
@@ -99,7 +100,7 @@ class Test<InputType = unknown> implements TestInterface {
   }
 
   public between(valueA: number, valueB: number) {
-    this.assert = item => item >= valueA && item <= valueB;
+    this.assert = item => is.inRange(Number(item), [valueA, valueB]);
     this.execute(`${this.input.name} is between ${valueA} and ${valueB}`);
   }
 
