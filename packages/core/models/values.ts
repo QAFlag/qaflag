@@ -1,3 +1,4 @@
+import { TestInterface } from '../types/test.interface';
 import { LogProvider } from '../types/log-provider.interface';
 import { ValueInterface } from '../types/value.interface';
 import { toType } from '../utils/to-type';
@@ -36,15 +37,15 @@ export abstract class ValueAbstract<InputType>
     });
   }
 
-  public test(assertionText?: string) {
+  public test(assertionText?: string): TestInterface {
     return test(this, assertionText);
   }
 
   // Aliases of test
-  public get is() {
+  public get is(): TestInterface {
     return this.test();
   }
-  public get are() {
+  public get are(): TestInterface {
     return this.test();
   }
 
@@ -75,15 +76,19 @@ export abstract class ValueAbstract<InputType>
     return new ArrayValue(this.toArray(), this.opts);
   }
 
-  public isTruthy(): boolean {
+  protected isArray(): boolean {
+    return Array.isArray(this.#input);
+  }
+
+  protected isTruthy(): boolean {
     return !!this.#input;
   }
 
-  public isUndefined(): boolean {
+  protected isUndefined(): boolean {
     return this.#input === undefined;
   }
 
-  public isNull(): boolean {
+  protected isNull(): boolean {
     return this.#input === null;
   }
 
@@ -147,6 +152,21 @@ export class ArrayValue<T = any> extends ValueAbstract<T[]> {
     return new GenericValue(this.$.slice(-1), {
       ...this.opts,
       name: `Last in ${this.name}`,
+    });
+  }
+
+  public every(name: string, callback: (item: T) => boolean) {
+    return new BooleanValue(this.$.every(callback), { ...this.opts, name });
+  }
+
+  public some(name: string, callback: (item: T) => boolean) {
+    return new BooleanValue(this.$.some(callback), { ...this.opts, name });
+  }
+
+  public map<Output>(callback: (item: T) => Output) {
+    return new ArrayValue(this.$.map(callback), {
+      ...this.opts,
+      name: `Mapped ${this.name}`,
     });
   }
 }

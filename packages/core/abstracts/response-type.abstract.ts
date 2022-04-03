@@ -3,6 +3,7 @@ import { HttpResponse } from '../models/http-response';
 import { NumericValue, StringValue } from '../models/values';
 import { ResponseInterface } from '../types/response.interface';
 import { ScenarioInterface } from '../types/scenario.interface';
+import { ValueInterface } from '../types/value.interface';
 
 export abstract class ResponseType implements ResponseInterface {
   constructor(
@@ -14,6 +15,22 @@ export abstract class ResponseType implements ResponseInterface {
     return new NumericValue(this.httpResponse.status.code, {
       name: 'HTTP Status Code',
       logger: this,
+    });
+  }
+
+  public debug(...messages: (string | number | boolean | ValueInterface)[]) {
+    messages.forEach(message => {
+      const text = (() => {
+        if (
+          typeof message == 'string' ||
+          typeof message == 'number' ||
+          typeof message == 'boolean'
+        ) {
+          return String(message);
+        }
+        return message.string.$;
+      })();
+      this.scenario.log('info', text);
     });
   }
 

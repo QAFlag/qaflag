@@ -49,11 +49,13 @@ export class UsersSuite extends Suite(JsonScenario, {
 }) {
   @GetList() async getListOfUsers(response: JsonResponse) {
     response.requestDuration.is.optionally.lessThan(100);
-    const ids = response.find('[*].id').array;
-    ids.length.is.greaterThan(0);
-    ids.first.number.is.greaterThan(0);
-    this.set('firstUserId', ids.first.$);
-    this.set('lastUserId', ids.last.$);
+    const ids = response.find('[*].id');
+    ids.are.all.greaterThan(0);
+    ids.are.none.lessThan(0);
+    ids.are.any.greaterThan(0);
+    const names = response.find('[*].name').array;
+    this.set('firstUserId', ids.array.first.$);
+    this.set('lastUserId', ids.array.last.$);
   }
 
   @Scenario({
