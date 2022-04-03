@@ -16,6 +16,10 @@ class Test<InputType = unknown> implements TestInterface {
     private message?: string,
   ) {}
 
+  public get be() {
+    return this;
+  }
+
   public get optionally() {
     this.#isOptional = true;
     return this;
