@@ -17,7 +17,7 @@ export class AtomScenario extends ScenarioType({
 
   public async execute() {
     const resp = await this.#adapter.fetch(this.request);
-    this.log('info', `Fetched response with status code ${resp.status.code}`);
     this.#response = new AtomResponse(resp, this);
+    this.#response.statusCode.is.equalTo(this.statusCode || 200);
   }
 }

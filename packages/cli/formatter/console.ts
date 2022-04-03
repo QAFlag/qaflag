@@ -76,7 +76,11 @@ export const outputSuiteToConsole = (suite: SuiteInterface) => {
       printLines(
         [
           '',
-          `  Persona: ${scenario.persona.name} | Took ${scenario.logger.duration}ms | ${scenario.type}`,
+          `  Persona: ${scenario.persona.name} | ${scenario.type}`,
+          `  ${scenario.request.method.toUpperCase()} ${scenario.request.url}` +
+            chalk.hex(theme.scenario.content.subtextcolor)(
+              `  ${scenario.logger.duration}ms`,
+            ),
           ...scenario.logger.messages.map(message => {
             if (message.type == 'pass') {
               return (
