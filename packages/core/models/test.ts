@@ -2,6 +2,7 @@ import { ValueInterface } from '../types/value.interface';
 import validator from 'validator';
 import { TestInterface } from '../types/test.interface';
 import is from '@sindresorhus/is';
+import { isArrayOfObjects } from 'utils/to-type';
 
 class Test<InputType = unknown> implements TestInterface {
   #isOptional: boolean = false;
@@ -129,21 +130,21 @@ class Test<InputType = unknown> implements TestInterface {
     this.execute(`${this.input.name} starts with ${value}`);
   }
 
-  public contains(value: string | string[]) {
-    this.assert = item => {
-      if (typeof item == 'string') {
-        return Array.isArray(value)
-          ? value.some(x => validator.contains(item, x))
-          : validator.contains(item, value);
+  public contains(thatValue: string | string[]) {
+    this.assert = thisValue => {
+      if (typeof thisValue == 'string') {
+        return Array.isArray(thatValue)
+          ? thatValue.some(x => validator.contains(thisValue, x))
+          : validator.contains(thisValue, thatValue);
       }
-      if (Array.isArray(item)) {
-        return Array.isArray(value)
-          ? item.some(x => item.includes(x))
-          : item.includes(value);
+      if (Array.isArray(thisValue)) {
+        return Array.isArray(thatValue)
+          ? thisValue.some(x => thatValue.includes(x))
+          : thisValue.includes(thatValue);
       }
       return false;
     };
-    this.execute(`${this.input.name} includes ${value}`);
+    this.execute(`${this.input.name} includes ${thatValue}`);
   }
 
   public matches(value: RegExp) {

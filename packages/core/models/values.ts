@@ -41,6 +41,14 @@ export abstract class ValueAbstract<InputType>
     return test(this, assertionText);
   }
 
+  public get must(): TestInterface {
+    return this.test();
+  }
+
+  public get should(): TestInterface {
+    return this.test().optionally;
+  }
+
   // Aliases of test
   public get is(): TestInterface {
     return this.test();
