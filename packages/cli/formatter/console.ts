@@ -1,13 +1,18 @@
 import { SuiteInterface } from '@qaflag/core';
 import chalk = require('chalk');
-import { printLineBreak, printLines } from '../utils/print';
+import { LightTheme } from '../themes/light';
+import { pill, printLineBreak, printLines } from '../utils/print';
+
+const theme = LightTheme;
 
 export const outputSuiteToConsole = (suite: SuiteInterface) => {
   printLineBreak(2);
   printLines(
     ['', [chalk.bold(suite.title), `${suite.logger.duration}ms`], ''],
     {
-      style: chalk.bgHex(suite.logger.failed ? '#550000' : '#005500').white,
+      style: suite.logger.failed
+        ? chalk.bgHex(theme.suite.fail.bgColor).hex(theme.suite.fail.textColor)
+        : chalk.bgHex(theme.suite.pass.bgColor).hex(theme.suite.pass.textColor),
       prefix: '  ',
       suffix: '  ',
       alignment: 'split',
@@ -16,33 +21,53 @@ export const outputSuiteToConsole = (suite: SuiteInterface) => {
   printLines(
     [
       '',
-      `Executed ${suite.scenarios.length} scenarios in ${suite.steps.length} steps.`,
-      chalk.bgHex('#550000').white(` ${suite.logger.count('fail')} FAILED `) +
-        '  ' +
-        chalk.bgHex('#005500').white(` ${suite.logger.count('pass')} PASSED `),
+      [
+        `Executed ${suite.scenarios.length} scenarios in ${suite.steps.length} steps.`,
+        pill(
+          `${suite.logger.count('fail')} FAILED`,
+          theme.suite.fail.bgColor,
+          theme.suite.pass.textColor,
+        ) +
+          '  ' +
+          pill(
+            ` ${suite.logger.count('pass')} PASSED `,
+            theme.suite.pass.bgColor,
+            theme.suite.pass.textColor,
+          ),
+      ],
       '',
     ],
     {
-      style: chalk.bgWhite.black,
+      style: chalk
+        .bgHex(theme.suite.content.bgColor)
+        .hex(theme.suite.content.textColor),
       prefix: '  ',
+      suffix: '  ',
+      alignment: 'split',
     },
   );
 
   suite.steps.forEach(step => {
     printLines(['', `Step ${step.stepNumber}`, ''], {
-      style: chalk.bgBlack.yellow,
+      style: chalk.bgHex(theme.step.bgColor).hex(theme.step.textColor),
       prefix: '  ',
+      alignment: 'center',
     });
     step.scenarios.forEach(scenario => {
       printLines(
         [
           '',
-          [chalk.whiteBright.bold(`${scenario.title}`), scenario.description],
+          [
+            chalk.hex(theme.scenario.head.textColor).bold(`${scenario.title}`),
+            scenario.description,
+          ],
           ,
           '',
         ],
         {
-          style: chalk.bgHex('#555555').hex('#aaaaaa'),
+          style: chalk
+            .bgHex(theme.scenario.head.bgColor)
+            .hex(theme.scenario.head.subtextColor),
           prefix: '  ',
           suffix: ' ',
           alignment: 'split',
@@ -51,14 +76,35 @@ export const outputSuiteToConsole = (suite: SuiteInterface) => {
       printLines(
         [
           '',
-          `  Took ${scenario.logger.duration}ms | ${scenario.type} | Persona: ${scenario.persona.name}`,
+          `  Persona: ${scenario.persona.name} | Took ${scenario.logger.duration}ms | ${scenario.type}`,
           ...scenario.logger.messages.map(message => {
             if (message.type == 'pass') {
-              return chalk.green('✔') + ` ${message.text}`;
+              return (
+                chalk.hex(theme.scenario.content.pass.markerColor)(
+                  theme.scenario.content.pass.marker,
+                ) +
+                chalk.hex(theme.scenario.content.pass.textColor)(
+                  ` ${message.text}`,
+                )
+              );
             } else if (message.type == 'fail') {
-              return chalk.red('𐄂') + ` ${message.text}`;
+              return (
+                chalk.hex(theme.scenario.content.fail.markerColor)(
+                  theme.scenario.content.fail.marker,
+                ) +
+                chalk.hex(theme.scenario.content.fail.textColor)(
+                  ` ${message.text}`,
+                )
+              );
             } else if (message.type == 'optionalFail') {
-              return chalk.magenta('!') + ` ${message.text}`;
+              return (
+                chalk.hex(theme.scenario.content.optionalFail.markerColor)(
+                  theme.scenario.content.optionalFail.marker,
+                ) +
+                chalk.hex(theme.scenario.content.optionalFail.textColor)(
+                  ` ${message.text}`,
+                )
+              );
             } else {
               return `  ${message.text}`;
             }
@@ -67,7 +113,9 @@ export const outputSuiteToConsole = (suite: SuiteInterface) => {
         ],
         {
           prefix: '  ',
-          style: chalk.bgWhite.black,
+          style: chalk
+            .bgHex(theme.scenario.content.bgColor)
+            .hex(theme.scenario.content.textColor),
         },
       );
     });

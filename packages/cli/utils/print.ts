@@ -61,3 +61,11 @@ export const printTable = (
   table.push(...rows);
   console.log(table.toString());
 };
+
+export const pill = (
+  text: string,
+  bgHex: string,
+  fgHex: string = '#ffffff',
+) => {
+  return chalk.bgHex(bgHex).hex(fgHex)(` ${text} `);
+};

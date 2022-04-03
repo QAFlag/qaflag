@@ -43,13 +43,13 @@ const alignCenter = (
   targetLength: number,
   padding: string = ' ',
 ) => {
-  const nonAsciiLength = stringWidth(concatLine(line));
-  const asciiLength = line.length - nonAsciiLength;
-  const padStart = Math.floor(targetLength - nonAsciiLength / 2);
-  const padEnd = Math.ceil(targetLength - nonAsciiLength / 2);
+  const text = concatLine(line);
+  const nonAsciiLength = stringWidth(text);
+  const padStart = Math.floor((targetLength - nonAsciiLength) / 2);
+  const padEnd = Math.ceil((targetLength - nonAsciiLength) / 2);
   return (
     (padStart ? padding.repeat(padStart) : '') +
-    concatLine(line) +
+    text +
     (padEnd ? padding.repeat(padEnd) : '')
   );
 };
