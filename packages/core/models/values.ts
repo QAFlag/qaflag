@@ -46,7 +46,7 @@ export abstract class ValueAbstract<InputType>
     return this.test();
   }
   public get are(): TestInterface {
-    return this.test();
+    return this.array.test().all;
   }
 
   public equals(compareTo: any) {
@@ -74,6 +74,18 @@ export abstract class ValueAbstract<InputType>
 
   public get array() {
     return new ArrayValue(this.toArray(), this.opts);
+  }
+
+  public get keys() {
+    return new ArrayValue(Object.keys(this.$), this.opts);
+  }
+
+  public get values() {
+    return new ArrayValue(Object.values(this.$), this.opts);
+  }
+
+  public get entries() {
+    return new ArrayValue(Object.entries(this.$), this.opts);
   }
 
   protected isArray(): boolean {

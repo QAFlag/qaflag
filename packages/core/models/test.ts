@@ -130,10 +130,17 @@ class Test<InputType = unknown> implements TestInterface {
 
   public contains(value: string | string[]) {
     this.assert = item => {
-      const str = String(item);
-      return Array.isArray(value)
-        ? value.some(x => validator.contains(str, x))
-        : validator.contains(str, value);
+      if (typeof item == 'string') {
+        return Array.isArray(value)
+          ? value.some(x => validator.contains(item, x))
+          : validator.contains(item, value);
+      }
+      if (Array.isArray(item)) {
+        return Array.isArray(value)
+          ? item.some(x => item.includes(x))
+          : item.includes(value);
+      }
+      return false;
     };
     this.execute(`${this.input.name} includes ${value}`);
   }
