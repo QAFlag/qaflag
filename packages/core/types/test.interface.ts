@@ -12,7 +12,7 @@ export interface Must {
   exist(): void;
 }
 
-interface MustNot {
+export interface MustNot {
   be: MustBe;
   have: MustHave;
   match: MustMatch;
@@ -60,9 +60,15 @@ export interface MustBeAn {
   arrayOf(typeName: 'string' | 'number' | 'boolean' | 'object'): void;
   number(): void;
   string(): void;
+  nan(): void;
   integer(): void;
-  positive(): void;
-  negative(): void;
+  positiveNumber(): void;
+  positiveInteger(): void;
+  negativeNumber(): void;
+  negativeInteger(): void;
+  nonZeroNumber(): void;
+  evenInteger(): void;
+  oddInteger(): void;
   ipAddress(version?: number): void;
   url(): void;
   null(): void;
@@ -73,7 +79,7 @@ export interface MustBeAn {
   emptyObject(): void;
 }
 
-interface MustAll {
+export interface MustAll {
   be: MustBe;
   have: MustHave;
   match: MustMatch;
@@ -86,19 +92,19 @@ interface MustAll {
   exist(): void;
 }
 
-interface MustHaveAll {
+export interface MustHaveAll {
   be: MustBe;
   not: MustNot;
 }
 
-interface MustHaveSome {
+export interface MustHaveSome {
   be: MustBe;
 }
 
-interface MustHaveAny {
+export interface MustHaveAny {
   be: MustBe;
 }
 
-interface MustHaveNone {
+export interface MustHaveNone {
   be: MustBe;
 }

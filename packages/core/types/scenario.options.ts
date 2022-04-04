@@ -1,3 +1,4 @@
+import { ClassConstructor } from 'class-transformer';
 import { Persona } from '../models/persona';
 import { HttpRequestOptions } from './request.interface';
 import { ScenarioInterface } from './scenario.interface';
@@ -10,8 +11,9 @@ export interface ScenarioDecoratorOpts extends HttpRequestOptions {
   statusCode?: number;
   schema?:
     | string
+    | ClassConstructor<unknown>
     | {
-        name: string;
+        name: string | ClassConstructor<unknown>;
         type?: string;
       };
 }

@@ -3,6 +3,7 @@ import { LogProvider } from '../types/log-provider.interface';
 import { ValueInterface } from '../types/value.interface';
 import { toType } from '../utils/to-type';
 import { test } from './test';
+import is from '@sindresorhus/is';
 
 interface ValueOpts {
   name: string;
@@ -68,6 +69,10 @@ export abstract class ValueAbstract<InputType>
     return new ArrayValue(this.toArray(), this.opts);
   }
 
+  public get date() {
+    return new DateValue(this.toDate(), this.opts);
+  }
+
   public get keys() {
     return new ArrayValue(Object.keys(this.$), this.opts);
   }
@@ -100,6 +105,14 @@ export abstract class ValueAbstract<InputType>
     return typeof this.#input == 'string'
       ? this.#input
       : JSON.stringify(this.#input);
+  }
+
+  public toDate(): Date {
+    try {
+      return is.date(this.#input) ? this.#input : new Date(this.toString());
+    } catch {
+      throw `Could not convert ${this.name} (${this.#input}) to date.`;
+    }
   }
 
   public toArray(): any[] {
@@ -182,6 +195,141 @@ export class StringValue extends ValueAbstract<string> {
     return new StringValue(this.$.trim(), {
       ...this.opts,
       name: `Trimmed ${this.name}`,
+    });
+  }
+}
+
+export class DateValue extends ValueAbstract<Date> {
+  public get unixTime() {
+    return new NumericValue(Math.floor(this.$.getTime() / 1000), {
+      ...this.opts,
+      name: `${this.name} from UNIX Time`,
+    });
+  }
+
+  public get hours() {
+    return new NumericValue(this.$.getHours(), {
+      ...this.opts,
+      name: `Hours from ${this.name}`,
+    });
+  }
+
+  public get minutes() {
+    return new NumericValue(this.$.getMinutes(), {
+      ...this.opts,
+      name: `Minutes from ${this.name}`,
+    });
+  }
+
+  public get seconds() {
+    return new NumericValue(this.$.getSeconds(), {
+      ...this.opts,
+      name: `Seconds from ${this.name}`,
+    });
+  }
+
+  public get month() {
+    return new NumericValue(this.$.getMonth() + 1, {
+      ...this.opts,
+      name: `Month from ${this.name}`,
+    });
+  }
+
+  public get dayOfMonth() {
+    return new NumericValue(this.$.getDate(), {
+      ...this.opts,
+      name: `Day of Month from ${this.name}`,
+    });
+  }
+
+  public get year() {
+    return new NumericValue(this.$.getFullYear(), {
+      ...this.opts,
+      name: `Year from ${this.name}`,
+    });
+  }
+
+  public get dayOfWeek() {
+    return new NumericValue(this.$.getDay(), {
+      ...this.opts,
+      name: `Day of Week from ${this.name}`,
+    });
+  }
+
+  public get utcHours() {
+    return new NumericValue(this.$.getUTCHours(), {
+      ...this.opts,
+      name: `UTC Hours from ${this.name}`,
+    });
+  }
+
+  public get utcMinutes() {
+    return new NumericValue(this.$.getUTCMinutes(), {
+      ...this.opts,
+      name: `UTC Minutes from ${this.name}`,
+    });
+  }
+
+  public get utcSeconds() {
+    return new NumericValue(this.$.getUTCSeconds(), {
+      ...this.opts,
+      name: `UTC Seconds from ${this.name}`,
+    });
+  }
+
+  public get utcMonth() {
+    return new NumericValue(this.$.getUTCMonth() + 1, {
+      ...this.opts,
+      name: `UTC Month from ${this.name}`,
+    });
+  }
+
+  public get utcDayOfMonth() {
+    return new NumericValue(this.$.getUTCDate(), {
+      ...this.opts,
+      name: `UTC Day of Month from ${this.name}`,
+    });
+  }
+
+  public get utcYear() {
+    return new NumericValue(this.$.getUTCFullYear(), {
+      ...this.opts,
+      name: `UTC Year from ${this.name}`,
+    });
+  }
+
+  public get utcDayOfWeek() {
+    return new NumericValue(this.$.getUTCDay(), {
+      ...this.opts,
+      name: `UTC Day of Week from ${this.name}`,
+    });
+  }
+
+  public get dateString() {
+    return new StringValue(this.$.toDateString(), {
+      ...this.opts,
+      name: `Date String from ${this.name}`,
+    });
+  }
+
+  public get isoDateString() {
+    return new StringValue(this.$.toISOString(), {
+      ...this.opts,
+      name: `ISO Date String from ${this.name}`,
+    });
+  }
+
+  public get timeString() {
+    return new StringValue(this.$.toTimeString(), {
+      ...this.opts,
+      name: `Time String from ${this.name}`,
+    });
+  }
+
+  public get utcString() {
+    return new StringValue(this.$.toUTCString(), {
+      ...this.opts,
+      name: `UTC String from ${this.name}`,
     });
   }
 }

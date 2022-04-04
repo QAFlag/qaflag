@@ -1,4 +1,5 @@
 import { ScenarioType } from '@qaflag/core';
+import { JsonData } from '../types/json-data';
 import { SchemaType, testSchema } from '../utils/ajv';
 import { JsonAdapter } from './json.adapter';
 import { JsonRequest } from './json.request';
@@ -21,25 +22,33 @@ export class JsonScenario extends ScenarioType({
     this.#response = new JsonResponse(resp, this);
     this.#response.statusCode.must.be.equalTo(this.statusCode || 200);
     if (this.opts.schema) {
-      const schema =
-        typeof this.opts.schema == 'string'
-          ? {
-              name: this.opts.schema,
-              type: 'JsonSchema' as SchemaType,
-            }
+      const name =
+        typeof this.opts.schema == 'object'
+          ? this.opts.schema.name
           : this.opts.schema;
-      const schemaType = schema.type || 'JsonSchema';
-      const errors = await testSchema(resp.data, schema.name, schemaType);
-      if (errors.length > 0) {
-        errors.forEach(error => {
-          this.log('fail', error);
-        });
-      } else {
-        this.log(
-          'pass',
-          `JSON response matched schema ${schema.name} (${schemaType})`,
+      if (typeof name == 'string') {
+        const type = (
+          typeof this.opts.schema == 'object'
+            ? this.opts.schema.type
+            : 'JsonSchema'
+        ) as SchemaType;
+        await this.validateSchema(
+          name,
+          type == 'JTD' ? 'JTD' : 'JsonSchema',
+          resp.data,
         );
       }
+    }
+  }
+
+  private async validateSchema(name: string, type: SchemaType, data: JsonData) {
+    const errors = await testSchema(data, name, type);
+    if (errors.length > 0) {
+      errors.forEach(error => {
+        this.log('fail', error);
+      });
+    } else {
+      this.log('pass', `JSON response matched schema ${name} (${type})`);
     }
   }
 }

@@ -13,7 +13,7 @@ import {
 import { env } from 'process';
 import { resolve } from 'path';
 
-export type SchemaType = 'JsonSchema' | 'JTD';
+export type SchemaType = 'JsonSchema' | 'JTD' | 'ClassValidator';
 
 export type AjvErrors =
   | ErrorObject<string, Record<string, any>, unknown>[]
@@ -92,7 +92,7 @@ export const getSchema = (schemaName: string): Schema | null => {
 export const testSchema = async (
   json: JsonData,
   schemaName: string,
-  schemaType: string,
+  schemaType: SchemaType,
 ): Promise<string[]> => {
   const type: SchemaType = schemaType == 'JTD' ? 'JTD' : 'JsonSchema';
   const schema = getSchema(schemaName) || writeSchema(json, schemaName, type);
