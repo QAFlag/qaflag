@@ -1,4 +1,5 @@
 import {
+  ArrayValue,
   KeyValue,
   NumericValue,
   StringValue,
@@ -57,6 +58,24 @@ export class XmlValue extends ValueAbstract<CheerioElement> {
       this.$.attr(name),
       `Attribute ${name} of ${this.name}`,
     );
+  }
+
+  public mapText() {
+    const array = this.$.map((i, el) => cheerio.default(el).text()).toArray();
+    return new ArrayValue<string>(array, {
+      ...this.opts,
+      name: `Text of ${this.name}`,
+    });
+  }
+
+  public mapAttribute(attributeName: string) {
+    const array = this.$.map((i, el) =>
+      cheerio.default(el).attr(attributeName),
+    ).toArray();
+    return new ArrayValue<string>(array, {
+      ...this.opts,
+      name: `Attributes ${attributeName} of ${this.name}`,
+    });
   }
 
   public find(selector: string) {

@@ -26,5 +26,9 @@ export class XmlMusicSuite extends Suite(XmlScenario, {
     const title = response.exists('cd title').first.as('First CD Title');
     title.text.as('Title of the CD').must.be.equalTo('Empire Burlesque');
     title.tagName.must.equal('title');
+    const artists = response.find('cd artist').mapText().as('Artists');
+    artists.first.must.be.a.string();
+    artists.must.all.be.a.string();
+    artists.must.have.none.be.an.emptyString();
   }
 }

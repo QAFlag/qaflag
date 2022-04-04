@@ -9,6 +9,7 @@ export interface Must {
   endWith(value: string | string[]): void;
   include(value: any): void;
   contain(value: string | string[]): void;
+  exist(): void;
 }
 
 interface MustNot {
@@ -31,6 +32,7 @@ export interface MustHave {
   all: MustHaveAll;
   some: MustHaveSome;
   any: MustHaveAny;
+  none: MustHaveNone;
 }
 
 export interface MustBe extends MustBeAn {
@@ -81,5 +83,9 @@ interface MustHaveSome {
 }
 
 interface MustHaveAny {
+  be: MustBe;
+}
+
+interface MustHaveNone {
   be: MustBe;
 }

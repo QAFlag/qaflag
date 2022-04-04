@@ -62,6 +62,13 @@ class Test<InputType = unknown>
     return this;
   }
 
+  public get none() {
+    this.#evalType = 'some';
+    this.#isNot = true;
+    this.#message.push('none');
+    return this;
+  }
+
   public get any() {
     this.#evalType = 'some';
     this.#message.push('any');
@@ -316,6 +323,16 @@ class Test<InputType = unknown>
     this.execute(
       value => is(value).toLocaleLowerCase() == typeName.toLocaleLowerCase(),
     );
+  }
+
+  public exist() {
+    this.#message.push('exist');
+    this.execute(value => {
+      if (value === null || value === undefined) return false;
+      if (typeof value == 'number' && value <= 0) return false;
+      if (Array.isArray(value) && value.length == 0) return false;
+      return true;
+    });
   }
 }
 
