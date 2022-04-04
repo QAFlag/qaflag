@@ -1,5 +1,5 @@
 export interface Must {
-  all: MustHaveAll;
+  all: MustAll;
   not: MustNot;
   be: MustBe;
   have: MustHave;
@@ -13,7 +13,6 @@ export interface Must {
 }
 
 interface MustNot {
-  all: MustHaveAll;
   be: MustBe;
   have: MustHave;
   match: MustMatch;
@@ -36,7 +35,6 @@ export interface MustHave {
 }
 
 export interface MustBe extends MustBeAn {
-  not: MustBe;
   a: MustBeAn;
   an: MustBeAn;
   equalTo(value: any): void;
@@ -74,8 +72,22 @@ export interface MustBeAn {
   emptyObject(): void;
 }
 
+interface MustAll {
+  be: MustBe;
+  have: MustHave;
+  match: MustMatch;
+  not: MustNot;
+  equal(value: any): void;
+  startWith(value: string | string[]): void;
+  endWith(value: string | string[]): void;
+  include(value: any): void;
+  contain(value: string | string[]): void;
+  exist(): void;
+}
+
 interface MustHaveAll {
   be: MustBe;
+  not: MustNot;
 }
 
 interface MustHaveSome {
