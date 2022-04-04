@@ -50,7 +50,7 @@ export class UsersSuite extends Suite(JsonScenario, {
   @GetList() async getListOfUsers(response: JsonResponse) {
     response.requestDuration.should.be.lessThan(100);
     const items = response.find('[*]');
-    items.values.type.must.equal('array');
+    items.must.be.an.array();
     const ids = response.find('[*].id');
     ids.must.all.be.greaterThan(0);
     ids.must.not.have.any.be.lessThan(0);

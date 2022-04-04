@@ -57,6 +57,7 @@ export interface MustBeAn {
   date(): void;
   object(): void;
   array(): void;
+  arrayOf(typeName: 'string' | 'number' | 'boolean' | 'object'): void;
   number(): void;
   string(): void;
   integer(): void;

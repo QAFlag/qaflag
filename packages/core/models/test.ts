@@ -241,8 +241,12 @@ class Test<InputType = unknown>
     this.is('object');
   }
 
-  public array(typeName?: 'string' | 'number' | 'boolean' | 'object') {
-    this.#message.push(typeName ? `array of ${typeName}s` : 'array');
+  public array() {
+    this.is('array');
+  }
+
+  public arrayOf(typeName: 'string' | 'number' | 'boolean' | 'object') {
+    this.#message.push(`array of ${typeName}s`);
     this.execute(value => is.array(value, is[typeName]));
   }
 
