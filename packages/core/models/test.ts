@@ -1,49 +1,81 @@
 import { ValueInterface } from '../types/value.interface';
 import validator from 'validator';
-import { TestInterface } from '../types/test.interface';
+import {
+  MustBeAn,
+  MustBe,
+  MustHave,
+  Must,
+  MustMatch,
+} from '../types/test.interface';
 import is from '@sindresorhus/is';
-import { isArrayOfObjects } from 'utils/to-type';
 
-class Test<InputType = unknown> implements TestInterface {
-  #isOptional: boolean = false;
+type assertion = (data: unknown) => boolean;
+type mustOrShould = 'must' | 'should';
+
+class Test<InputType = unknown>
+  implements MustBe, MustHave, Must, MustBeAn, MustMatch
+{
+  #message: string[];
+  #type: mustOrShould;
   #isNot: boolean = false;
   #evalType: 'standard' | 'every' | 'some' = 'standard';
 
-  private assert: (data: unknown) => boolean = data => false;
-
-  constructor(
-    private input: ValueInterface<InputType>,
-    private message?: string,
-  ) {}
-
-  public get be() {
-    return this;
-  }
-
-  public get optionally() {
-    this.#isOptional = true;
-    return this;
+  constructor(private input: ValueInterface<InputType>, type: mustOrShould) {
+    this.#type = type;
+    this.#message = [input.name, type];
   }
 
   public get not() {
-    this.#isNot = true;
+    this.#isNot = !this.#isNot;
+    this.#message.push('not');
+    return this;
+  }
+
+  public get be() {
+    this.#message.push('be');
+    return this;
+  }
+
+  public get match() {
+    this.#message.push('match');
+    return this;
+  }
+
+  public get a() {
+    this.#message.push('a');
+    return this;
+  }
+
+  public get an() {
+    this.#message.push('an');
+    return this;
+  }
+
+  public get have() {
+    this.#message.push('have');
     return this;
   }
 
   public get all() {
     this.#evalType = 'every';
-    return this;
-  }
-
-  public get none() {
-    this.#isNot = true;
-    this.#evalType = 'some';
+    this.#message.push('all');
     return this;
   }
 
   public get any() {
     this.#evalType = 'some';
+    this.#message.push('any');
     return this;
+  }
+
+  public get some() {
+    this.#evalType = 'some';
+    this.#message.push('some');
+    return this;
+  }
+
+  public get message(): string {
+    return this.#message.join(' ');
   }
 
   private validator(
@@ -52,90 +84,113 @@ class Test<InputType = unknown> implements TestInterface {
     opts?: any,
   ) {
     const method = validator[methodName] as Function;
-    this.assert = item => method(String(item), opts);
-    this.execute(`${this.input.name} is ${thing}`);
+    this.#message.push(thing);
+    this.execute(item => method(String(item), opts));
   }
 
-  private execute(message: string) {
-    const text: string[] = [];
+  private is(methodName: keyof typeof is, noun?: string) {
+    const method = is[methodName] as Function;
+    this.#message.push(noun || methodName);
+    this.execute(value => method(value));
+  }
+
+  private execute(assertion: assertion) {
     const result = (() => {
       if (this.#evalType === 'every') {
-        text.push(this.#isNot ? 'NOT ALL' : 'ALL');
-        return this.input.array.$.every(item => this.assert(item));
+        return this.input.array.$.every(item => assertion(item));
       }
       if (this.#evalType === 'some') {
-        text.push(this.#isNot ? 'NONE' : 'ANY');
-        return this.input.array.$.some(item => this.assert(item));
+        return this.input.array.$.some(item => assertion(item));
       }
-      return this.assert(this.input.$);
+      return assertion(this.input.$);
     })();
     const pass = this.#isNot ? !result : result;
     this.input.logger.log(
-      pass ? 'pass' : this.#isOptional ? 'optionalFail' : 'fail',
-      [...text, this.message || message].join(': '),
+      pass ? 'pass' : this.#type == 'should' ? 'optionalFail' : 'fail',
+      this.message,
     );
     if (!pass) {
       this.input.logger.log('info', `Actual Value: ${this.input.string.$}`);
     }
   }
 
+  public equal(value: any) {
+    this.#message.push(`equal ${value}`);
+    this.execute(item => item == value);
+  }
+
   public equalTo(value: any) {
-    this.assert = item => item == value;
-    this.execute(`${this.input.name} equals ${value}`);
+    this.#message.push(`equal to ${value}`);
+    this.execute(item => item == value);
+  }
+
+  public exactly(value: any) {
+    this.#message.push(`exactly ${value}`);
+    this.execute(item => item === value);
+  }
+
+  public like(value: any) {
+    this.#message.push(`like ${value}`);
+    this.execute(
+      item =>
+        String(item).toLocaleLowerCase().trim() ===
+        value.toLocaleLowerCase().trim(),
+    );
   }
 
   public greaterThan(value: number) {
-    this.assert = item => Number(item) > value;
-    this.execute(`${this.input.name} is greater than ${value}`);
+    this.#message.push(`greater than ${value}`);
+    this.execute(item => Number(item) > value);
   }
 
   public greaterThanOrEquals(value: number) {
-    this.assert = item => item >= value;
-    this.execute(`${this.input.name} is greater than or equal to ${value}`);
+    this.#message.push(`greater than or equal to ${value}`);
+    this.execute(item => item >= value);
   }
 
   public lessThan(value: number) {
-    this.assert = item => item < value;
-    this.execute(`${this.input.name} is less than ${value}`);
+    this.#message.push(`less than ${value}`);
+    this.execute(item => item < value);
   }
 
   public lessThanOrEquals(value: number) {
-    this.assert = item => item <= value;
-    this.execute(`${this.input.name} is less than or equal to ${value}`);
+    this.#message.push(`less than or equal to ${value}`);
+    this.execute(item => item <= value);
   }
 
   public between(valueA: number, valueB: number) {
-    this.assert = item => is.inRange(Number(item), [valueA, valueB]);
-    this.execute(`${this.input.name} is between ${valueA} and ${valueB}`);
+    this.#message.push(`between ${valueA} and ${valueB}`);
+    this.execute(item => is.inRange(Number(item), [valueA, valueB]));
   }
 
-  public includes(value: any) {
-    this.assert = item => (Array.isArray(item) ? item : [item]).includes(value);
-    this.execute(`${this.input.name} includes ${value}`);
+  public include(value: any) {
+    this.#message.push(`include ${value}`);
+    this.execute(item => (Array.isArray(item) ? item : [item]).includes(value));
   }
 
-  public startsWith(value: string | string[]) {
-    this.assert = item => {
+  public startWith(value: string | string[]) {
+    this.#message.push(`start with ${value}`);
+    this.execute(item => {
       const str = String(item);
       return Array.isArray(value)
         ? value.some(x => str.startsWith(x))
         : str.startsWith(value);
-    };
-    this.execute(`${this.input.name} starts with ${value}`);
+    });
   }
 
-  public endsWith(value: string | string[]) {
-    this.assert = item => {
+  public endWith(value: string | string[]) {
+    this.#message.push(`end with ${value}`);
+    this.execute(item => {
       const str = String(item);
       return Array.isArray(value)
         ? value.some(x => str.endsWith(x))
         : str.endsWith(value);
-    };
-    this.execute(`${this.input.name} starts with ${value}`);
+    });
   }
 
-  public contains(thatValue: string | string[]) {
-    this.assert = thisValue => {
+  public contain(thatValue: string | string[]) {
+    this.#message.push(`contain ${thatValue}`);
+    this.execute(thisValue => {
       if (typeof thisValue == 'string') {
         return Array.isArray(thatValue)
           ? thatValue.some(x => validator.contains(thisValue, x))
@@ -147,13 +202,12 @@ class Test<InputType = unknown> implements TestInterface {
           : thisValue.includes(thatValue);
       }
       return false;
-    };
-    this.execute(`${this.input.name} includes ${thatValue}`);
+    });
   }
 
-  public matches(value: RegExp) {
-    this.assert = item => validator.matches(String(item), value);
-    this.execute(`${this.input.name} matches ${value}`);
+  public regularExpression(value: RegExp) {
+    this.#message.push(`regular expression ${value}`);
+    this.execute(item => validator.matches(String(item), value));
   }
 
   public email() {
@@ -172,36 +226,99 @@ class Test<InputType = unknown> implements TestInterface {
     this.validator('isInt', 'integer');
   }
 
+  public string() {
+    this.is('string');
+  }
+
+  public object() {
+    this.is('object');
+  }
+
+  public array(typeName?: 'string' | 'number' | 'boolean' | 'object') {
+    this.#message.push(typeName ? `array of ${typeName}s` : 'array');
+    this.execute(value => is.array(value, is[typeName]));
+  }
+
+  public number() {
+    this.is('number');
+  }
+
+  public numericString() {
+    this.is('numericString', 'numeric string');
+  }
+
   public ipAddress(version?: number) {
     this.validator('isIP', 'IP Address', version);
   }
 
+  public true() {
+    this.#message.push('true');
+    this.execute(item => item === true);
+  }
+
+  public false() {
+    this.#message.push('false');
+    this.execute(item => item === false);
+  }
+
   public positive() {
-    this.assert = item => Number(item) > 0;
-    this.execute(`${this.input.name} is positive.`);
+    this.#message.push('positive number');
+    this.execute(item => Number(item) > 0);
   }
 
   public negative() {
-    this.assert = item => Number(item) < 0;
-    this.execute(`${this.input.name} is negative.`);
+    this.#message.push('negative number');
+    this.execute(item => Number(item) < 0);
+  }
+
+  public nullOrUndefined() {
+    this.is('nullOrUndefined', 'null or undefined');
   }
 
   public null() {
-    this.assert = item => item === null;
-    this.execute(`${this.input.name} is null.`);
+    this.is('null_', 'null');
   }
 
   public undefined() {
-    this.assert = item => item === this.undefined;
-    this.execute(`${this.input.name} is undefined.`);
+    this.is('undefined');
+  }
+
+  public boolean() {
+    this.is('boolean');
   }
 
   public truthy() {
-    this.assert = item => !!item;
-    this.execute(`${this.input.name} is null.`);
+    this.is('truthy');
+  }
+
+  public url() {
+    this.is('urlString', 'URL');
+  }
+
+  public emptyString() {
+    this.is('emptyStringOrWhitespace', 'empty string');
+  }
+
+  public emptyArray() {
+    this.is('emptyArray', 'empty array');
+  }
+
+  public emptyObject() {
+    this.is('emptyObject', 'empty object');
+  }
+
+  public falsy() {
+    this.is('falsy');
+  }
+
+  public type(typeName: string) {
+    this.#message.push(typeName);
+    this.execute(
+      value => is(value).toLocaleLowerCase() == typeName.toLocaleLowerCase(),
+    );
   }
 }
 
-export function test<T>(input: ValueInterface<T>, assertionText?: string) {
-  return new Test<T>(input, assertionText);
+export function test<T>(input: ValueInterface<T>, type: mustOrShould) {
+  return new Test<T>(input, type);
 }

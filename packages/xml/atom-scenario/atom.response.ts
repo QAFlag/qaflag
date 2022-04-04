@@ -15,7 +15,7 @@ export class AtomResponse extends XmlResponse<AtomScenario> {
     scenario: AtomScenario,
   ) {
     super(httpResponse, scenario);
-    this.header('content-type').test().startsWith(validMimeTypes);
-    test(isValidAtomFeed(this), 'Atom Feed is valid.').equalTo(true);
+    this.header('content-type').must.startWith(validMimeTypes);
+    isValidAtomFeed(this).as('Is valid Atom Feed?').must.be.true();
   }
 }

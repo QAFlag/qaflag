@@ -46,7 +46,7 @@ export class XmlResponse<
 
   public exists(selector: string) {
     const results = this.find(selector);
-    results.length.test(`Exists: ${selector}`).greaterThan(0);
+    results.length.as(`${selector} exists?`).must.be.true();
     return results;
   }
 }

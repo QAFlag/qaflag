@@ -1,4 +1,4 @@
-import { TestInterface } from '../types/test.interface';
+import { Must } from '../types/test.interface';
 import { LogProvider } from '../types/log-provider.interface';
 import { ValueInterface } from '../types/value.interface';
 import { toType } from '../utils/to-type';
@@ -37,28 +37,12 @@ export abstract class ValueAbstract<InputType>
     });
   }
 
-  public test(assertionText?: string): TestInterface {
-    return test(this, assertionText);
+  public get must(): Must {
+    return test(this, 'must');
   }
 
-  public get must(): TestInterface {
-    return this.test();
-  }
-
-  public get should(): TestInterface {
-    return this.test().optionally;
-  }
-
-  // Aliases of test
-  public get is(): TestInterface {
-    return this.test();
-  }
-  public get are(): TestInterface {
-    return this.array.test().all;
-  }
-
-  public equals(compareTo: any) {
-    return this.is.equalTo(compareTo);
+  public get should(): Must {
+    return test(this, 'should');
   }
 
   public get type() {
@@ -68,7 +52,7 @@ export abstract class ValueAbstract<InputType>
     });
   }
 
-  public get bool() {
+  public get boolean() {
     return new BooleanValue(this.isTruthy(), this.opts);
   }
 

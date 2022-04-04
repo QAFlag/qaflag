@@ -48,16 +48,15 @@ export class UsersSuite extends Suite(JsonScenario, {
   persona: GuestPersona,
 }) {
   @GetList() async getListOfUsers(response: JsonResponse) {
-    response.requestDuration.is.optionally.lessThan(100);
+    response.requestDuration.should.be.lessThan(100);
     const items = response.find('[*]');
-    items.values.type.is.equalTo('array');
+    items.values.type.must.equal('array');
     const ids = response.find('[*].id');
-    ids.are.greaterThan(0);
-    ids.are.all.greaterThan(0);
-    ids.are.none.lessThan(0);
-    ids.are.any.greaterThan(0);
+    ids.must.all.be.greaterThan(0);
+    ids.must.not.have.any.be.lessThan(0);
+    ids.must.have.some.be.greaterThan(0);
     const names = response.find('[*].name').array;
-    names.length.equals(10);
+    names.length.must.equal(10);
     this.set('firstUserId', ids.array.first.$);
     this.set('lastUserId', ids.array.last.$);
   }
@@ -68,8 +67,8 @@ export class UsersSuite extends Suite(JsonScenario, {
     step: 2,
   })
   async getFirstUser(response: JsonResponse) {
-    response.find('email').is.email();
-    response.find('email').type.is.equalTo('string');
+    response.find('email').must.be.an.email();
+    response.find('email').must.be.a.string();
   }
 
   @Scenario({
@@ -78,7 +77,7 @@ export class UsersSuite extends Suite(JsonScenario, {
     step: 2,
   })
   async getLastUser(response: JsonResponse) {
-    response.find('email').is.email();
-    response.find('email').type.is.equalTo('string');
+    response.find('email').must.be.email();
+    response.find('email').must.be.a.string();
   }
 }

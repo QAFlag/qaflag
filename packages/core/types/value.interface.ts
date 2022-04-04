@@ -5,7 +5,7 @@ import {
   StringValue,
 } from '../models/values';
 import { LogProvider } from './log-provider.interface';
-import { TestInterface } from './test.interface';
+import { Must } from './test.interface';
 
 export interface ValueInterface<InputType = any> {
   $: InputType;
@@ -14,11 +14,9 @@ export interface ValueInterface<InputType = any> {
   number: NumericValue;
   string: StringValue;
   array: ArrayValue;
-  bool: BooleanValue;
-  is: TestInterface;
-  are: TestInterface;
-  test(message?: string): TestInterface;
-  equals(compareTo: any): void;
+  boolean: BooleanValue;
+  must: Must;
+  should: Must;
   as(newName: string): this;
   toString(): string;
   toArray(): any[];

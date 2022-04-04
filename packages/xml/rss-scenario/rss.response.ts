@@ -15,7 +15,7 @@ export class RssResponse extends XmlResponse<RssScenario> {
     scenario: RssScenario,
   ) {
     super(httpResponse, scenario);
-    this.header('content-type').test().startsWith(validMimeTypes);
-    test(isRssValid(this), 'RSS is valid.').equalTo(true);
+    this.header('content-type').must.startWith(validMimeTypes);
+    isRssValid(this).as('Is RSS valid?').must.be.true();
   }
 }

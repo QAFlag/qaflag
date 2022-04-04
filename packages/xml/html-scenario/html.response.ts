@@ -16,8 +16,8 @@ export class HtmlResponse extends ResponseType {
   ) {
     super(httpResponse, scenario);
     this.cheerio = this.loadCheerio();
-    this.header('content-type').test().startsWith(validMimeTypes);
-    test(isHtmlValid(this), 'HTML is valid.').equalTo(true);
+    this.header('content-type').must.startWith(validMimeTypes);
+    isHtmlValid(this).as('Is HTML valid?').must.be.true();
   }
 
   protected loadCheerio() {

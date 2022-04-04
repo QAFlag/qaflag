@@ -18,6 +18,6 @@ export class RssScenario extends ScenarioType({
   public async execute() {
     const resp = await this.#adapter.fetch(this.request);
     this.#response = new RssResponse(resp, this);
-    this.#response.statusCode.is.equalTo(this.statusCode || 200);
+    this.#response.statusCode.must.equal(this.statusCode || 200);
   }
 }

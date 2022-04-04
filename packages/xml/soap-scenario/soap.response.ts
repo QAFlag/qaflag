@@ -21,7 +21,7 @@ export class SoapResponse extends XmlResponse<SoapScenario> {
     scenario: SoapScenario,
   ) {
     super(httpResponse, scenario);
-    this.header('content-type').test().startsWith(validMimeTypes);
-    test(isSoapValid(this), 'SOAP is valid.').equalTo(true);
+    this.header('content-type').must.startWith(validMimeTypes);
+    isSoapValid(this).as('Is SOAP valid?').must.be.true();
   }
 }

@@ -1,4 +1,4 @@
-import { ScenarioType, test } from '@qaflag/core';
+import { ScenarioType } from '@qaflag/core';
 import { SchemaType, testSchema } from '../utils/ajv';
 import { JsonAdapter } from './json.adapter';
 import { JsonRequest } from './json.request';
@@ -19,7 +19,7 @@ export class JsonScenario extends ScenarioType({
   public async execute() {
     const resp = await this.#adapter.fetch(this.request);
     this.#response = new JsonResponse(resp, this);
-    this.#response.statusCode.is.equalTo(this.statusCode || 200);
+    this.#response.statusCode.must.be.equalTo(this.statusCode || 200);
     if (this.opts.schema) {
       const schema =
         typeof this.opts.schema == 'string'
