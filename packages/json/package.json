@@ -15,6 +15,8 @@
   "dependencies": {
     "@qaflag/core": "^0.0.1",
     "ajv": "^8.11.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.13.2",
     "jmespath": "^0.16.0"
   }
 }

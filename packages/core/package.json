@@ -24,8 +24,6 @@
     "axios": "^0.26.1",
     "axios-cookiejar-support": "^2.0.4",
     "axios-mock-adapter": "^1.20.0",
-    "class-transformer": "^0.5.1",
-    "class-validator": "^0.13.2",
     "emittery": "^0.10.1",
     "fs-extra": "^10.0.1",
     "tough-cookie": "^4.0.0",

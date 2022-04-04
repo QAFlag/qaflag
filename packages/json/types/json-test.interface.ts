@@ -11,6 +11,8 @@ import {
   MustMatch,
   MustNot,
 } from '@qaflag/core/types/test.interface';
+import { ClassConstructor } from 'class-transformer';
+import { ValidatorOptions } from 'class-validator';
 
 export interface JsonMust extends Must {
   all: JsonMustAll;
@@ -26,7 +28,12 @@ export interface JsonMustNot extends MustNot {
   match: JsonMustMatch;
 }
 
-export interface JsonMustMatch extends MustMatch {}
+export interface JsonMustMatch extends MustMatch {
+  dto<T>(
+    className: ClassConstructor<T>,
+    opts?: ValidatorOptions,
+  ): Promise<void>;
+}
 
 export interface JsonMustHave extends MustHave {
   all: JsonMustHaveAll;

@@ -1,5 +1,5 @@
-import { ClassConstructor } from 'class-transformer';
 import { Persona } from '../models/persona';
+import { ClassConstructor } from './general.types';
 import { HttpRequestOptions } from './request.interface';
 import { ScenarioInterface } from './scenario.interface';
 import { SuiteInterface } from './suite.interface';

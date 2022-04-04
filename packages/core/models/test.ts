@@ -8,9 +8,6 @@ import {
   MustMatch,
 } from '../types/test.interface';
 import is from '@sindresorhus/is';
-import { plainToClass } from 'class-transformer';
-import { ClassConstructor } from '../types/general.types';
-import { validate, ValidatorOptions } from 'class-validator';
 
 export type assertion = (data: unknown) => boolean;
 export type mustOrShould = 'must' | 'should';
@@ -95,13 +92,13 @@ export class Test<InputType = unknown>
     this.execute(item => method(String(item), opts));
   }
 
-  private is(methodName: keyof typeof is, noun?: string) {
+  protected is(methodName: keyof typeof is, noun?: string) {
     const method = is[methodName] as Function;
     this.message.push(noun || methodName);
     this.execute(value => method(value));
   }
 
-  private execute(assertion: assertion) {
+  protected execute(assertion: assertion) {
     const result = (() => {
       if (this.evalType === 'every') {
         return this.input.array.$.every(item => assertion(item));
@@ -363,16 +360,6 @@ export class Test<InputType = unknown>
       if (typeof value == 'number' && value <= 0) return false;
       if (Array.isArray(value) && value.length == 0) return false;
       return true;
-    });
-  }
-
-  public async dto<T>(className: ClassConstructor<T>, opts: ValidatorOptions) {
-    const instance = plainToClass(className, this.input.$);
-    const errors = await validate(instance as unknown as object, opts);
-    this.message.push('DTO');
-    this.execute(value => errors.length == 0);
-    errors.forEach(error => {
-      this.input.logger.log('info', error.toString());
     });
   }
 }
