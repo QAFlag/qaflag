@@ -14,7 +14,6 @@ export const run = async (project: Project, options: any) => {
     : findSuiteByName(suites, options.args[0]);
   if (!selection) exitError('No suite selected.');
   const suite = loadSuite(selection);
-  console.log(suite.logger);
   suite.events.once('completed').then(() => outputSuiteToConsole(suite));
   suite.execute();
 };

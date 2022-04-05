@@ -2,6 +2,7 @@ import { Mock, Scenario, Suite, Template } from '@qaflag/core';
 import { JsonResponse, JsonScenario } from '@qaflag/json';
 import { readFileSync } from 'fs';
 import path = require('path');
+import { UserDto } from '../schemas/user.dto';
 import { GuestPersona } from '../personas/guest.persona';
 import { StandardUserPersona } from '../personas/user.persona';
 
@@ -64,6 +65,10 @@ export class UsersSuite extends Suite(JsonScenario, {
   @Scenario({
     description: 'Get first user',
     uri: 'GET http://rest-api/users/{firstUserId}',
+    schema: {
+      name: '@userJtd',
+      type: 'jtd',
+    },
     step: 2,
   })
   async getFirstUser(response: JsonResponse) {
@@ -74,6 +79,7 @@ export class UsersSuite extends Suite(JsonScenario, {
   @Scenario({
     description: 'Get the last user in the list',
     uri: 'GET http://rest-api/users/{lastUserId}',
+    schema: UserDto,
     step: 2,
   })
   async getLastUser(response: JsonResponse) {

@@ -33,6 +33,8 @@ export interface JsonMustMatch extends MustMatch {
     className: ClassConstructor<T>,
     opts?: ValidatorOptions,
   ): Promise<void>;
+  jtd(name: string): Promise<void>;
+  jsonSchema(name: string): Promise<void>;
 }
 
 export interface JsonMustHave extends MustHave {
