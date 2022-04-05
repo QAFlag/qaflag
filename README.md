@@ -39,8 +39,8 @@ export class UsersSuite extends Suite(JsonScenario, {
   })
   async getListOfUsers(response: JsonResponse) {
     const ids = response.find('[*].id').array;
-    ids.length.is.greaterThan(0);
-    ids.first.number.is.greaterThan(0);
+    ids.length.must.be.greaterThan(0);
+    ids.first.number.must.be.greaterThan(0);
     this.set('userId', ids.first.$);
   }
 
@@ -50,8 +50,8 @@ export class UsersSuite extends Suite(JsonScenario, {
     step: 2,
   })
   async getOneUser(response: JsonResponse) {
-    response.find('email').is.email();
-    response.find('email').type.is.equalTo('string');
+    response.find('email').must.be.an.email();
+    response.find('email').type.must.be.a.string();
   }
 }
 ```
