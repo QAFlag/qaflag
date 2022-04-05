@@ -51,7 +51,7 @@ export class UsersSuite extends Suite(JsonScenario, {
   })
   async getOneUser(response: JsonResponse) {
     response.find('email').must.be.an.email();
-    response.find('email').type.must.be.a.string();
+    response.find('email').must.be.a.string();
   }
 }
 ```
