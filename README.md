@@ -38,9 +38,9 @@ export class UsersSuite extends Suite(JsonScenario, {
     schema: '@getUsers',
   })
   async getListOfUsers(response: JsonResponse) {
-    const ids = response.find('[*].id').array;
-    ids.length.must.be.greaterThan(0);
-    ids.first.number.must.be.greaterThan(0);
+    const ids = response.find('[*].id');
+    ids.array.length.must.be.greaterThan(0);
+    ids.must.all.be.greaterThan(0);
     this.set('userId', ids.first.$);
   }
 
