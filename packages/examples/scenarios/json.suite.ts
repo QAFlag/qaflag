@@ -51,6 +51,7 @@ export class UsersSuite extends Suite(JsonScenario, {
   @GetList() async getListOfUsers(response: JsonResponse) {
     response.requestDuration.should.be.lessThan(100);
     const items = response.find('[*]');
+    items.must.all.match.dto(UserDto);
     items.must.be.an.array();
     const ids = response.find('[*].id');
     ids.must.all.be.greaterThan(0);
@@ -85,5 +86,8 @@ export class UsersSuite extends Suite(JsonScenario, {
   async getLastUser(response: JsonResponse) {
     response.find('email').must.be.email();
     response.find('email').must.be.a.string();
+    response.document.must.match.dto(UserDto);
+    response.document.must.match.jsonSchema('@user');
+    response.document.must.match.jtd('@userJtd');
   }
 }

@@ -1,13 +1,13 @@
 import { MessageType } from '../models/message';
-import { HttpResponse } from '../models/http-response';
 import { NumericValue, StringValue } from '../models/values';
 import { ResponseInterface } from '../types/response.interface';
 import { ScenarioInterface } from '../types/scenario.interface';
 import { ValueInterface } from '../types/value.interface';
+import { HttpResponseInterface } from '../types/http-response.interface';
 
 export abstract class ResponseType implements ResponseInterface {
   constructor(
-    public readonly httpResponse: HttpResponse,
+    public readonly httpResponse: HttpResponseInterface,
     public readonly scenario: ScenarioInterface,
   ) {}
 

@@ -1,5 +1,6 @@
 import { AxiosResponse } from 'axios';
 import { Cookie } from 'tough-cookie';
+import { HttpResponseInterface } from '../types/http-response.interface';
 import { KeyValue } from '../types/general.types';
 import { HttpHeaders, HttpStatus } from '../types/http.types';
 import { AxiosRequest } from '../utils/axios';
@@ -17,7 +18,9 @@ export interface ResponseMeta {
   endTime?: number;
 }
 
-export class HttpResponse<ResponseBodyType = any, RequestType = any> {
+export class HttpResponse<ResponseBodyType = any, RequestType = any>
+  implements HttpResponseInterface
+{
   public constructor(
     private response: HttpResponseOptions<ResponseBodyType, RequestType>,
     public readonly meta: ResponseMeta,
