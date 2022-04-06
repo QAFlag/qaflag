@@ -1,7 +1,7 @@
 import { BooleanValue } from '@qaflag/core';
-import { RssResponse } from './rss.response';
+import { RssContext } from './rss.context';
 
-const rssHasRequiredFields = (res: RssResponse): boolean => {
+const rssHasRequiredFields = (res: RssContext): boolean => {
   // Must be one channel and one rss tag
   const rss = res.cheerio('rss');
   const channel = rss.children('channel');
@@ -39,7 +39,7 @@ const rssHasRequiredFields = (res: RssResponse): boolean => {
   return true;
 };
 
-export const isRssValid = (res: RssResponse) => {
+export const isRssValid = (res: RssContext) => {
   return new BooleanValue(rssHasRequiredFields(res), {
     name: 'RSS Document',
     logger: res,

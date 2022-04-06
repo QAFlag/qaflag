@@ -1,9 +1,9 @@
 import * as jmespath from 'jmespath';
-import { ResponseType } from '@qaflag/core';
+import { HttpContext } from '@qaflag/core';
 import { JsonData } from '../types/json-data';
 import { JsonValue } from './json.value';
 
-export class JsonResponse<DataType = JsonData> extends ResponseType {
+export class JsonContext extends HttpContext {
   public get document(): JsonValue {
     return new JsonValue(this.httpResponse.data, {
       name: 'JSON Document',

@@ -1,5 +1,5 @@
 import { Mock, Scenario, Suite } from '@qaflag/core';
-import { XmlResponse, XmlScenario } from '@qaflag/xml';
+import { XmlContext, XmlScenario } from '@qaflag/xml';
 import { readFileSync } from 'fs';
 import path = require('path');
 import { GuestPersona } from '../personas/guest.persona';
@@ -22,11 +22,11 @@ export class XmlMusicSuite extends Suite(XmlScenario, {
     uri: 'GET http://localhost/music',
     statusCode: 200,
   })
-  async getListOfCds(response: XmlResponse) {
-    const title = response.exists('cd title').first.as('First CD Title');
+  async getListOfCds(context: XmlContext) {
+    const title = context.exists('cd title').first.as('First CD Title');
     title.text.as('Title of the CD').must.be.equalTo('Empire Burlesque');
     title.tagName.must.equal('title');
-    const artists = response.find('cd artist').mapText().as('Artists');
+    const artists = context.find('cd artist').mapText().as('Artists');
     artists.first.must.be.a.string();
     artists.must.all.be.a.string();
     artists.must.have.none.be.an.emptyString();

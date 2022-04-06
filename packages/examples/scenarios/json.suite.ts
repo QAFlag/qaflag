@@ -1,5 +1,5 @@
 import { Mock, Scenario, Suite, Template } from '@qaflag/core';
-import { JsonResponse, JsonScenario } from '@qaflag/json';
+import { JsonContext, JsonScenario } from '@qaflag/json';
 import { readFileSync } from 'fs';
 import path = require('path');
 import { UserDto } from '../schemas/user.dto';
@@ -48,16 +48,16 @@ export class UsersSuite extends Suite(JsonScenario, {
   title: 'Test Users Endpoints',
   persona: GuestPersona,
 }) {
-  @GetList() async getListOfUsers(response: JsonResponse) {
-    response.requestDuration.should.be.lessThan(100);
-    const items = response.find('[*]');
+  @GetList() async getListOfUsers(context: JsonContext) {
+    context.requestDuration.should.be.lessThan(100);
+    const items = context.find('[*]');
     items.must.all.match.dto(UserDto);
     items.must.be.an.array();
-    const ids = response.find('[*].id');
+    const ids = context.find('[*].id');
     ids.must.all.be.greaterThan(0);
     ids.must.not.have.any.be.lessThan(0);
     ids.must.have.some.be.greaterThan(0);
-    const names = response.find('[*].name').array;
+    const names = context.find('[*].name').array;
     names.length.must.equal(10);
     this.set('firstUserId', ids.array.first.$);
     this.set('lastUserId', ids.array.last.$);
@@ -72,9 +72,9 @@ export class UsersSuite extends Suite(JsonScenario, {
     },
     step: 2,
   })
-  async getFirstUser(response: JsonResponse) {
-    response.find('email').must.be.an.email();
-    response.find('email').must.be.a.string();
+  async getFirstUser(context: JsonContext) {
+    context.find('email').must.be.an.email();
+    context.find('email').must.be.a.string();
   }
 
   @Scenario({
@@ -83,11 +83,11 @@ export class UsersSuite extends Suite(JsonScenario, {
     schema: UserDto,
     step: 2,
   })
-  async getLastUser(response: JsonResponse) {
-    response.find('email').must.be.email();
-    response.find('email').must.be.a.string();
-    response.document.must.match.dto(UserDto);
-    response.document.must.match.jsonSchema('@user');
-    response.document.must.match.jtd('@userJtd');
+  async getLastUser(context: JsonContext) {
+    context.find('email').must.be.email();
+    context.find('email').must.be.a.string();
+    context.document.must.match.dto(UserDto);
+    context.document.must.match.jsonSchema('@user');
+    context.document.must.match.jtd('@userJtd');
   }
 }

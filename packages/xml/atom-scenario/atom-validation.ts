@@ -1,9 +1,9 @@
 import { BooleanValue } from '@qaflag/core';
-import { AtomResponse } from './atom.response';
+import { AtomContext } from './atom.context';
 
 const validMimeTypes = ['application/atom+xml', 'text/xml', 'text/atom+xml'];
 
-const hasRequiredAtomFields = (res: AtomResponse): boolean => {
+const hasRequiredAtomFields = (res: AtomContext): boolean => {
   // Must be one channel and one rss tag
   const feed = res.cheerio('feed');
   if (feed.length !== 1) {
@@ -41,7 +41,7 @@ const hasRequiredAtomFields = (res: AtomResponse): boolean => {
   return true;
 };
 
-export const isValidAtomFeed = (res: AtomResponse): BooleanValue => {
+export const isValidAtomFeed = (res: AtomContext): BooleanValue => {
   return new BooleanValue(hasRequiredAtomFields(res), {
     name: 'Atom Document',
     logger: res,

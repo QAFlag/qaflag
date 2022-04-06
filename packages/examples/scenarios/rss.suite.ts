@@ -1,5 +1,5 @@
 import { Scenario, Suite } from '@qaflag/core';
-import { RssResponse, RssScenario } from '@qaflag/xml';
+import { RssContext, RssScenario } from '@qaflag/xml';
 
 export class RssCnnSuite extends Suite(RssScenario, {
   title: 'Test CNN RSS Feed',
@@ -8,5 +8,5 @@ export class RssCnnSuite extends Suite(RssScenario, {
     uri: 'GET http://rss.cnn.com/rss/cnn_topstories.rss',
     statusCode: 200,
   })
-  async getFeed(response: RssResponse) {}
+  async getFeed(context: RssContext) {}
 }

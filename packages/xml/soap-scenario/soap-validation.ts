@@ -1,7 +1,7 @@
 import { BooleanValue } from '@qaflag/core';
-import { SoapResponse } from './soap.response';
+import { SoapContext } from './soap.context';
 
-const hasRequiredSoapFields = (res: SoapResponse): boolean => {
+const hasRequiredSoapFields = (res: SoapContext): boolean => {
   const root = res.cheerio.root().children()[0];
   const rootName: string = root['name'];
   const rootParts = rootName.split(':');
@@ -29,7 +29,7 @@ const hasRequiredSoapFields = (res: SoapResponse): boolean => {
   return true;
 };
 
-export const isSoapValid = (res: SoapResponse) => {
+export const isSoapValid = (res: SoapContext) => {
   return new BooleanValue(hasRequiredSoapFields(res), {
     name: 'SOAP Document',
     logger: res,

@@ -1,23 +1,23 @@
 import { ScenarioType } from '@qaflag/core';
 import { XmlAdapter } from '../xml-scenario/xml.adapter';
 import { XmlRequest } from '../xml-scenario/xml.request';
-import { HtmlResponse } from './html.response';
+import { HtmlContext } from './html.context';
 
 export class HtmlScenario extends ScenarioType({
   name: 'HTML',
 }) {
-  #response: HtmlResponse | null = null;
+  #context: HtmlContext | null = null;
   #adapter = new XmlAdapter();
 
   public readonly request = new XmlRequest(this.opts);
 
-  public get response(): HtmlResponse | null {
-    return this.#response;
+  public get context(): HtmlContext | null {
+    return this.#context;
   }
 
   public async execute() {
-    const resp = await this.#adapter.fetch(this.request);
-    this.#response = new HtmlResponse(resp, this);
-    this.#response.statusCode.must.equal(this.statusCode || 200);
+    const response = await this.#adapter.fetch(this.request);
+    this.#context = new HtmlContext(this, response);
+    this.#context.statusCode.must.equal(this.statusCode || 200);
   }
 }

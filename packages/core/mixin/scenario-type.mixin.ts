@@ -3,14 +3,14 @@ import { Logger } from '../models/logger';
 import { Persona } from '../models/persona';
 import { HttpVerbs } from '../types/http.types';
 import { RequestInterface } from '../types/request.interface';
-import { ResponseInterface } from '../types/response.interface';
+import { ContextInterface } from '../types/context.interface';
 import {
   ScenarioInterface,
   ScenarioResult,
   ScenarioStatus,
 } from '../types/scenario.interface';
 import { SuiteInterface } from '../types/suite.interface';
-import { Message, MessageType } from '../models/message';
+import { MessageType } from '../models/message';
 
 export type ScenarioTypeOpts = {
   name: string;
@@ -28,7 +28,7 @@ export function ScenarioType(initOpts: ScenarioTypeOpts) {
       this.next = opts.next;
     }
 
-    public abstract response: ResponseInterface | null;
+    public abstract context: ContextInterface | null;
     public abstract request: RequestInterface;
     public abstract execute(): Promise<void>;
 

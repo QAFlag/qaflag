@@ -1,19 +1,19 @@
-import { HttpResponse, ResponseType, ScenarioInterface } from '@qaflag/core';
+import { HttpResponse, HttpContext, ScenarioInterface } from '@qaflag/core';
 import { XmlValue } from './xml.value';
 import { XmlRequest } from './xml.request';
 import { XmlScenario } from './xml.scenario';
 import * as cheerio from 'cheerio';
 
-export class XmlResponse<
+export class XmlContext<
   ScenarioType extends ScenarioInterface = XmlScenario,
-> extends ResponseType {
+> extends HttpContext {
   public cheerio: cheerio.CheerioAPI;
 
   constructor(
-    public httpResponse: HttpResponse<string, XmlRequest>,
     public scenario: ScenarioType,
+    public httpResponse: HttpResponse<string, XmlRequest>,
   ) {
-    super(httpResponse, scenario);
+    super(scenario, httpResponse);
     this.cheerio = this.loadCheerio();
   }
 

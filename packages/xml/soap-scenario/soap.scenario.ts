@@ -1,23 +1,23 @@
 import { ScenarioType } from '@qaflag/core';
 import { XmlAdapter } from '../xml-scenario/xml.adapter';
 import { XmlRequest } from '../xml-scenario/xml.request';
-import { SoapResponse } from './soap.response';
+import { SoapContext } from './soap.context';
 
 export class SoapScenario extends ScenarioType({
   name: 'SOAP',
 }) {
-  #response: SoapResponse | null = null;
+  #context: SoapContext | null = null;
   #adapter = new XmlAdapter();
 
   public readonly request = new XmlRequest(this.opts);
 
-  public get response(): SoapResponse | null {
-    return this.#response;
+  public get context(): SoapContext | null {
+    return this.#context;
   }
 
   public async execute() {
-    const resp = await this.#adapter.fetch(this.request);
-    this.#response = new SoapResponse(resp, this);
-    this.#response.statusCode.must.equal(this.statusCode || 200);
+    const response = await this.#adapter.fetch(this.request);
+    this.#context = new SoapContext(this, response);
+    this.#context.statusCode.must.equal(this.statusCode || 200);
   }
 }

@@ -26,7 +26,7 @@ npm run start
 
 ```typescript
 import { Scenario, Suite } from '@qaflag/core';
-import { JsonResponse, JsonScenario } from '@qaflag/json';
+import { JsonContext, JsonScenario } from '@qaflag/json';
 
 export class UsersSuite extends Suite(JsonScenario, {
   title: 'Test Users Endpoints',
@@ -37,8 +37,8 @@ export class UsersSuite extends Suite(JsonScenario, {
     statusCode: 200,
     schema: '@getUsers',
   })
-  async getListOfUsers(response: JsonResponse) {
-    const ids = response.find('[*].id');
+  async getListOfUsers(context: JsonContext) {
+    const ids = context.find('[*].id');
     ids.array.length.must.be.greaterThan(0);
     ids.must.all.be.greaterThan(0);
     this.set('userId', ids.first.$);
@@ -49,9 +49,9 @@ export class UsersSuite extends Suite(JsonScenario, {
     uri: 'GET https://jsonplaceholder.typicode.com/users/{userId}',
     step: 2,
   })
-  async getOneUser(response: JsonResponse) {
-    response.find('email').must.be.an.email();
-    response.find('email').must.be.a.string();
+  async getOneUser(context: JsonContext) {
+    context.find('email').must.be.an.email();
+    context.find('email').must.be.a.string();
   }
 }
 ```

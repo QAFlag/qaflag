@@ -1,23 +1,23 @@
 import { ScenarioType } from '@qaflag/core';
 import { XmlAdapter } from '../xml-scenario/xml.adapter';
 import { XmlRequest } from '../xml-scenario/xml.request';
-import { AtomResponse } from './atom.response';
+import { AtomContext } from './atom.context';
 
 export class AtomScenario extends ScenarioType({
   name: 'Atom',
 }) {
-  #response: AtomResponse | null = null;
+  #context: AtomContext | null = null;
   #adapter = new XmlAdapter();
 
   public readonly request = new XmlRequest(this.opts);
 
-  public get response(): AtomResponse | null {
-    return this.#response;
+  public get context(): AtomContext | null {
+    return this.#context;
   }
 
   public async execute() {
-    const resp = await this.#adapter.fetch(this.request);
-    this.#response = new AtomResponse(resp, this);
-    this.#response.statusCode.must.equal(this.statusCode || 200);
+    const response = await this.#adapter.fetch(this.request);
+    this.#context = new AtomContext(this, response);
+    this.#context.statusCode.must.equal(this.statusCode || 200);
   }
 }

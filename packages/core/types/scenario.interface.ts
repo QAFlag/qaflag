@@ -3,7 +3,7 @@ import { Persona } from '../models/persona';
 import { HttpVerbsCaseInsensitive } from './http.types';
 import { LogProvider } from './log-provider.interface';
 import { RequestInterface } from './request.interface';
-import { ResponseInterface } from './response.interface';
+import { ContextInterface } from './context.interface';
 import { SuiteInterface } from './suite.interface';
 
 export type ScenarioUri = `${HttpVerbsCaseInsensitive} ${string}`;
@@ -12,7 +12,7 @@ export interface ScenarioInterface extends LogProvider {
   type: string;
   suite: SuiteInterface;
   request: RequestInterface;
-  response: ResponseInterface | null;
+  context: ContextInterface | null;
   key: string | Symbol;
   title: string;
   description: string;

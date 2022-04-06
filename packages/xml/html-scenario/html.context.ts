@@ -1,4 +1,4 @@
-import { HttpResponse, ResponseType, test } from '@qaflag/core';
+import { HttpContext, HttpResponse } from '@qaflag/core';
 import * as cheerio from 'cheerio';
 import { XmlRequest } from '../xml-scenario/xml.request';
 import { isHtmlValid } from './html-validation';
@@ -7,14 +7,14 @@ import { HtmlValue } from './html.value';
 
 const validMimeTypes = ['application/xhtml+xml', 'text/html', 'text/html+xml'];
 
-export class HtmlResponse extends ResponseType {
+export class HtmlContext extends HttpContext {
   public cheerio: cheerio.CheerioAPI;
 
   constructor(
-    public httpResponse: HttpResponse<string, XmlRequest>,
     public scenario: HtmlScenario,
+    public httpResponse: HttpResponse<string, XmlRequest>,
   ) {
-    super(httpResponse, scenario);
+    super(scenario, httpResponse);
     this.cheerio = this.loadCheerio();
     this.header('content-type').must.startWith(validMimeTypes);
     isHtmlValid(this).as('Is HTML valid?').must.be.true();

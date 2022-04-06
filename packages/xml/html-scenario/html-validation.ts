@@ -1,7 +1,7 @@
 import { BooleanValue } from '@qaflag/core';
-import { HtmlResponse } from './html.response';
+import { HtmlContext } from './html.context';
 
-const htmlHasRequiredTags = (res: HtmlResponse): boolean => {
+const htmlHasRequiredTags = (res: HtmlContext): boolean => {
   // Must be one channel and one rss tag
   const html = res.cheerio('html');
   const head = html.children('head');
@@ -12,7 +12,7 @@ const htmlHasRequiredTags = (res: HtmlResponse): boolean => {
   return true;
 };
 
-export const isHtmlValid = (res: HtmlResponse) => {
+export const isHtmlValid = (res: HtmlContext) => {
   return new BooleanValue(htmlHasRequiredTags(res), {
     name: 'HTML Document',
     logger: res,

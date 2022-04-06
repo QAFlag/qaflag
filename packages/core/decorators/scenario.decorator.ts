@@ -18,7 +18,7 @@ export function Scenario(opts: ScenarioDecoratorOpts) {
       description: opts.description || '',
       step: opts.step || 1,
       next: async (scenario: ScenarioInterface) => {
-        return originalMethod.apply(scenario.suite, [scenario.response]);
+        return originalMethod.apply(scenario.suite, [scenario.context]);
       },
     };
     descriptor.value = () => {

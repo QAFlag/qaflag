@@ -1,22 +1,22 @@
 import { ScenarioType } from '@qaflag/core';
 import { PlaywrightAdapter } from './playwright.adapter';
 import { PlaywrightRequest } from './playwright.request';
-import { PlaywrightResponse } from './playwright.response';
+import { PlaywrightContext } from './playwright.context';
 
 export class PlaywrightScenario extends ScenarioType({
   name: 'Playwright',
 }) {
-  #response: PlaywrightResponse | null = null;
+  #context: PlaywrightContext | null = null;
   #adapter = new PlaywrightAdapter();
 
   public readonly request = new PlaywrightRequest(this.opts);
 
-  public get response(): PlaywrightResponse | null {
-    return this.#response;
+  public get context(): PlaywrightContext | null {
+    return this.#context;
   }
 
   public async execute() {
-    const resp = await this.#adapter.fetch(this.request);
-    this.#response = new PlaywrightResponse(resp, this);
+    const playwright = await this.#adapter.fetch(this.request);
+    this.#context = new PlaywrightContext(this, playwright);
   }
 }

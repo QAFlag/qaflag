@@ -1,7 +1,7 @@
 import { HttpResponse, test } from '@qaflag/core';
 import * as cheerio from 'cheerio';
 import { XmlRequest } from '../xml-scenario/xml.request';
-import { XmlResponse } from '../xml-scenario/xml.response';
+import { XmlContext } from '../xml-scenario/xml.context';
 import { isSoapValid } from './soap-validation';
 import { SoapScenario } from './soap.scenario';
 
@@ -13,14 +13,14 @@ const validMimeTypes = [
   'text/wsdl+xml',
 ];
 
-export class SoapResponse extends XmlResponse<SoapScenario> {
+export class SoapContext extends XmlContext<SoapScenario> {
   public cheerio: cheerio.CheerioAPI;
 
   constructor(
-    httpResponse: HttpResponse<string, XmlRequest>,
     scenario: SoapScenario,
+    httpResponse: HttpResponse<string, XmlRequest>,
   ) {
-    super(httpResponse, scenario);
+    super(scenario, httpResponse);
     this.header('content-type').must.startWith(validMimeTypes);
     isSoapValid(this).as('Is SOAP valid?').must.be.true();
   }
