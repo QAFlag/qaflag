@@ -10,16 +10,16 @@ export class XmlContext<
   public cheerio: cheerio.CheerioAPI;
 
   constructor(
-    public scenario: ScenarioType,
-    public httpResponse: HttpResponse<string, XmlRequest>,
+    public readonly scenario: ScenarioType,
+    protected readonly response: HttpResponse<string, XmlRequest>,
   ) {
-    super(scenario, httpResponse);
+    super(scenario, response);
     this.cheerio = this.loadCheerio();
   }
 
   protected loadCheerio() {
     return cheerio.load(
-      this.httpResponse.data,
+      this.response.data,
       {
         xmlMode: true,
         xml: {

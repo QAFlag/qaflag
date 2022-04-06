@@ -3,13 +3,23 @@ import {
   KeyValue,
   NumericValue,
   StringValue,
+  test,
   ValueAbstract,
 } from '@qaflag/core';
+import { Must } from '@qaflag/core/types/test.interface';
 import * as cheerio from 'cheerio';
 
 export type CheerioElement = cheerio.Cheerio<cheerio.Node>;
 
 export class XmlValue extends ValueAbstract<CheerioElement> {
+  public get must(): Must {
+    return test(this, 'must');
+  }
+
+  public get should(): Must {
+    return test(this, 'should');
+  }
+
   public get length(): NumericValue {
     return this.createNumber(this.$.length, `Length of ${this.name}`);
   }

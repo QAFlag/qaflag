@@ -17,10 +17,10 @@ export class SoapContext extends XmlContext<SoapScenario> {
   public cheerio: cheerio.CheerioAPI;
 
   constructor(
-    scenario: SoapScenario,
-    httpResponse: HttpResponse<string, XmlRequest>,
+    public readonly scenario: SoapScenario,
+    protected readonly response: HttpResponse<string, XmlRequest>,
   ) {
-    super(scenario, httpResponse);
+    super(scenario, response);
     this.header('content-type').must.startWith(validMimeTypes);
     isSoapValid(this).as('Is SOAP valid?').must.be.true();
   }

@@ -11,10 +11,10 @@ export class HtmlContext extends HttpContext {
   public cheerio: cheerio.CheerioAPI;
 
   constructor(
-    public scenario: HtmlScenario,
-    public httpResponse: HttpResponse<string, XmlRequest>,
+    public readonly scenario: HtmlScenario,
+    protected readonly response: HttpResponse<string, XmlRequest>,
   ) {
-    super(scenario, httpResponse);
+    super(scenario, response);
     this.cheerio = this.loadCheerio();
     this.header('content-type').must.startWith(validMimeTypes);
     isHtmlValid(this).as('Is HTML valid?').must.be.true();
@@ -22,7 +22,7 @@ export class HtmlContext extends HttpContext {
 
   protected loadCheerio() {
     return cheerio.load(
-      this.httpResponse.data,
+      this.response.data,
       {
         lowerCaseAttributeNames: true,
         lowerCaseTags: true,

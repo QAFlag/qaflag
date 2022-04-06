@@ -11,10 +11,10 @@ export class AtomContext extends XmlContext<AtomScenario> {
   public cheerio: cheerio.CheerioAPI;
 
   constructor(
-    scenario: AtomScenario,
-    httpResponse: HttpResponse<string, XmlRequest>,
+    public readonly scenario: AtomScenario,
+    protected readonly response: HttpResponse<string, XmlRequest>,
   ) {
-    super(scenario, httpResponse);
+    super(scenario, response);
     this.header('content-type').must.startWith(validMimeTypes);
     isValidAtomFeed(this).as('Is valid Atom Feed?').must.be.true();
   }

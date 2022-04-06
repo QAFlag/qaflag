@@ -11,10 +11,10 @@ export class RssContext extends XmlContext<RssScenario> {
   public cheerio: cheerio.CheerioAPI;
 
   constructor(
-    scenario: RssScenario,
-    httpResponse: HttpResponse<string, XmlRequest>,
+    public readonly scenario: RssScenario,
+    protected readonly response: HttpResponse<string, XmlRequest>,
   ) {
-    super(scenario, httpResponse);
+    super(scenario, response);
     this.header('content-type').must.startWith(validMimeTypes);
     isRssValid(this).as('Is RSS valid?').must.be.true();
   }

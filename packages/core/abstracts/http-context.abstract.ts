@@ -7,7 +7,7 @@ import { Context } from './context.abstract';
 export abstract class HttpContext extends Context implements ContextInterface {
   constructor(
     public readonly scenario: ScenarioInterface,
-    public readonly response: HttpResponseInterface,
+    protected readonly response: HttpResponseInterface,
   ) {
     super(scenario);
   }

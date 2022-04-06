@@ -11,14 +11,17 @@ export interface ValueInterface<InputType = any> {
   $: InputType;
   name: string;
   logger: LogProvider;
-  number: NumericValue;
+  must: any;
+  should: any;
   string: StringValue;
   array: ArrayValue;
+  as(newName: string): this;
+}
+
+export interface PrimitiveValueInterface<InputType = any>
+  extends ValueInterface<InputType> {
+  number: NumericValue;
   boolean: BooleanValue;
   must: Must;
   should: Must;
-  as(newName: string): this;
-  toString(): string;
-  toArray(): any[];
-  toNumber(): number;
 }

@@ -1,11 +1,14 @@
 import { Must } from '../types/test.interface';
 import { LogProvider } from '../types/log-provider.interface';
-import { ValueInterface } from '../types/value.interface';
+import {
+  ValueInterface,
+  PrimitiveValueInterface,
+} from '../types/value.interface';
 import { toType } from '../utils/to-type';
 import { test } from './test';
 import is from '@sindresorhus/is';
 
-interface ValueOpts {
+export interface ValueOpts {
   name: string;
   logger: LogProvider;
 }
@@ -13,119 +16,75 @@ interface ValueOpts {
 export abstract class ValueAbstract<InputType>
   implements ValueInterface<InputType>
 {
-  #input: InputType | undefined;
-  #alias: string | undefined = undefined;
-
+  protected alias: string | undefined = undefined;
   public logger: LogProvider;
 
-  constructor(input: InputType | undefined, protected opts: ValueOpts) {
-    this.#input = input;
+  constructor(
+    protected input: InputType | undefined,
+    protected opts: ValueOpts,
+  ) {
     this.logger = opts.logger;
   }
 
   public get $(): InputType {
-    return this.#input;
+    return this.input;
   }
 
   public get name(): string {
-    return this.#alias || this.opts.name;
+    return this.alias || this.opts.name;
   }
 
-  public get length(): NumericValue {
-    return new NumericValue(this.#input['length'] ? this.#input['length'] : 0, {
-      name: `Length of ${this.name}`,
-      logger: this.logger,
-    });
-  }
-
-  public get must(): Must {
-    return test(this, 'must');
-  }
-
-  public get should(): Must {
-    return test(this, 'should');
-  }
+  public abstract must: any;
+  public abstract should: any;
 
   public get type() {
-    return new StringValue(toType(this.#input), {
+    return new StringValue(toType(this.input), {
       ...this.opts,
       name: `Type of ${this.name}`,
     });
   }
 
-  public get boolean() {
-    return new BooleanValue(this.isTruthy(), this.opts);
-  }
-
-  public get number() {
-    return new NumericValue(this.toNumber(), this.opts);
+  public as(newName: string) {
+    this.alias = newName;
+    return this;
   }
 
   public get string() {
     return new StringValue(this.toString(), this.opts);
   }
 
+  public get boolean() {
+    return new BooleanValue(this.isTruthy(), this.opts);
+  }
+
   public get array() {
     return new ArrayValue(this.toArray(), this.opts);
   }
 
-  public get date() {
-    return new DateValue(this.toDate(), this.opts);
-  }
-
-  public get keys() {
-    return new ArrayValue(Object.keys(this.$), this.opts);
-  }
-
-  public get values() {
-    return new ArrayValue(Object.values(this.$), this.opts);
-  }
-
-  public get entries() {
-    return new ArrayValue(Object.entries(this.$), this.opts);
-  }
-
   protected isArray(): boolean {
-    return Array.isArray(this.#input);
+    return Array.isArray(this.input);
   }
 
   protected isTruthy(): boolean {
-    return !!this.#input;
+    return !!this.input;
   }
 
   protected isUndefined(): boolean {
-    return this.#input === undefined;
+    return this.input === undefined;
   }
 
   protected isNull(): boolean {
-    return this.#input === null;
+    return this.input === null;
   }
 
-  public toString(): string {
-    return typeof this.#input == 'string'
-      ? this.#input
-      : JSON.stringify(this.#input);
+  protected toString(): string {
+    return typeof this.input == 'string'
+      ? this.input
+      : JSON.stringify(this.input);
   }
 
-  public toDate(): Date {
-    try {
-      return is.date(this.#input) ? this.#input : new Date(this.toString());
-    } catch {
-      throw `Could not convert ${this.name} (${this.#input}) to date.`;
-    }
-  }
-
-  public toArray(): any[] {
-    return Array.isArray(this.#input) ? this.#input : [this.#input];
-  }
-
-  public toNumber(): number {
-    return Number(this.#input);
-  }
-
-  public as(newName: string) {
-    this.#alias = newName;
-    return this;
+  protected toArray(): any[] {
+    return Array.isArray(this.input) ? this.input : [this.input];
   }
 
   protected createGeneric(data: any, name: string, opts?: Partial<ValueOpts>) {
@@ -153,11 +112,63 @@ export abstract class ValueAbstract<InputType>
   }
 }
 
-export class GenericValue extends ValueAbstract<any> {}
+export abstract class PrimitiveValueAbstract<InputType>
+  extends ValueAbstract<InputType>
+  implements PrimitiveValueInterface<InputType>
+{
+  public get length(): NumericValue {
+    return new NumericValue(this.input['length'] ? this.input['length'] : 0, {
+      name: `Length of ${this.name}`,
+      logger: this.logger,
+    });
+  }
 
-export class BooleanValue extends ValueAbstract<boolean> {}
+  public get must(): Must {
+    return test(this, 'must');
+  }
 
-export class ArrayValue<T = any> extends ValueAbstract<T[]> {
+  public get should(): Must {
+    return test(this, 'should');
+  }
+
+  public get number() {
+    return new NumericValue(this.toNumber(), this.opts);
+  }
+
+  public get date() {
+    return new DateValue(this.toDate(), this.opts);
+  }
+
+  public get keys() {
+    return new ArrayValue(Object.keys(this.$), this.opts);
+  }
+
+  public get values() {
+    return new ArrayValue(Object.values(this.$), this.opts);
+  }
+
+  public get entries() {
+    return new ArrayValue(Object.entries(this.$), this.opts);
+  }
+
+  public toNumber(): number {
+    return Number(this.input);
+  }
+
+  public toDate(): Date {
+    try {
+      return is.date(this.input) ? this.input : new Date(this.toString());
+    } catch {
+      throw `Could not convert ${this.name} (${this.input}) to date.`;
+    }
+  }
+}
+
+export class GenericValue extends PrimitiveValueAbstract<any> {}
+
+export class BooleanValue extends PrimitiveValueAbstract<boolean> {}
+
+export class ArrayValue<T = any> extends PrimitiveValueAbstract<T[]> {
   public get first() {
     return new GenericValue(this.$[0], {
       ...this.opts,
@@ -188,9 +199,9 @@ export class ArrayValue<T = any> extends ValueAbstract<T[]> {
   }
 }
 
-export class NumericValue extends ValueAbstract<number> {}
+export class NumericValue extends PrimitiveValueAbstract<number> {}
 
-export class StringValue extends ValueAbstract<string> {
+export class StringValue extends PrimitiveValueAbstract<string> {
   public get trim() {
     return new StringValue(this.$.trim(), {
       ...this.opts,
@@ -199,7 +210,7 @@ export class StringValue extends ValueAbstract<string> {
   }
 }
 
-export class DateValue extends ValueAbstract<Date> {
+export class DateValue extends PrimitiveValueAbstract<Date> {
   public get unixTime() {
     return new NumericValue(Math.floor(this.$.getTime() / 1000), {
       ...this.opts,
