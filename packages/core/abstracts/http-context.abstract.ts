@@ -7,20 +7,20 @@ import { Context } from './context.abstract';
 export abstract class HttpContext extends Context implements ContextInterface {
   constructor(
     public readonly scenario: ScenarioInterface,
-    public readonly httpResponse: HttpResponseInterface,
+    public readonly response: HttpResponseInterface,
   ) {
     super(scenario);
   }
 
   public get statusCode(): NumericValue {
-    return new NumericValue(this.httpResponse.status.code, {
+    return new NumericValue(this.response.status.code, {
       name: 'HTTP Status Code',
       logger: this,
     });
   }
 
   public header(name: string) {
-    const header = Object.entries(this.httpResponse.headers).find(
+    const header = Object.entries(this.response.headers).find(
       ([key]) => key.toLocaleLowerCase() == name.toLocaleLowerCase(),
     );
     return new StringValue(header ? header[1] : undefined, {
@@ -30,7 +30,7 @@ export abstract class HttpContext extends Context implements ContextInterface {
   }
 
   public get requestDuration() {
-    return new NumericValue(this.httpResponse.duration, {
+    return new NumericValue(this.response.duration, {
       name: 'Request Duration',
       logger: this,
     });
