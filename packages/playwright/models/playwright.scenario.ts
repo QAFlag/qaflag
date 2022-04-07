@@ -9,7 +9,7 @@ export class PlaywrightScenario extends ScenarioType({
   #context: PlaywrightContext | null = null;
   #adapter = new PlaywrightAdapter();
 
-  public readonly request = new PlaywrightRequest(this.opts);
+  public readonly request = new PlaywrightRequest(this);
 
   public get context(): PlaywrightContext | null {
     return this.#context;

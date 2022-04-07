@@ -20,6 +20,29 @@ type HeaderFetcher = Fetcher & {
   parse: (response: HttpResponse) => Promise<HttpHeaders>;
 };
 
+export type Permission =
+  | 'geolocation'
+  | 'midi'
+  | 'midi-sysex'
+  | 'notifications'
+  | 'camera'
+  | 'microphone'
+  | 'background-sync'
+  | 'ambient-light-sensor'
+  | 'accelerometer'
+  | 'gyroscope'
+  | 'magnetometer'
+  | 'accessibility-events'
+  | 'clipboard-read'
+  | 'clipboard-write'
+  | 'payment-handler';
+
+type GeoLocation = {
+  latitude: number;
+  longitude: number;
+  accuracy?: number;
+};
+
 export interface PersonaInitOpts {
   name: string;
   story?: string;
@@ -32,6 +55,10 @@ export interface PersonaInitOpts {
   headers?: HttpHeaders | HeaderFetcher;
   cookies?: KeyValue;
   trailers?: KeyValue;
+  permissions?: Permission[];
+  geolocation?: GeoLocation;
+  offline?: boolean;
+  language?: string;
 }
 
 export class Persona {

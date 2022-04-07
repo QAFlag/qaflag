@@ -30,10 +30,6 @@ export interface HttpRequestOptions {
   maxRedirects?: number;
 }
 
-export interface RequestConstructor {
-  new (opts: HttpRequestOptions): RequestInterface;
-}
-
 export interface RequestInterface {
   pathReplace(variables: [string, any][]): void;
   uri: ScenarioUri;

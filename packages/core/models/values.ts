@@ -87,28 +87,44 @@ export abstract class ValueAbstract<InputType>
     return Array.isArray(this.input) ? this.input : [this.input];
   }
 
-  protected createGeneric(data: any, name: string, opts?: Partial<ValueOpts>) {
-    return new GenericValue(data, { logger: this.logger, name, ...opts });
+  protected createGeneric(data: any, opts?: Partial<ValueOpts>) {
+    return new GenericValue(data, {
+      logger: this.logger,
+      name: this.name,
+      ...opts,
+    });
   }
 
-  protected createString(str: string, name: string, opts?: Partial<ValueOpts>) {
-    return new StringValue(str, { logger: this.logger, name, ...opts });
+  protected createString(str: string, opts?: Partial<ValueOpts>) {
+    return new StringValue(str, {
+      logger: this.logger,
+      name: this.name,
+      ...opts,
+    });
   }
 
-  protected createNumber(num: number, name: string, opts?: Partial<ValueOpts>) {
-    return new NumericValue(num, { logger: this.logger, name, ...opts });
+  protected createNumber(num: number, opts?: Partial<ValueOpts>) {
+    return new NumericValue(num, {
+      logger: this.logger,
+      name: this.name,
+      ...opts,
+    });
   }
 
-  protected createBoolean(
-    bool: boolean,
-    name: string,
-    opts?: Partial<ValueOpts>,
-  ) {
-    return new BooleanValue(bool, { logger: this.logger, name, ...opts });
+  protected createBoolean(bool: boolean, opts?: Partial<ValueOpts>) {
+    return new BooleanValue(bool, {
+      logger: this.logger,
+      name: this.name,
+      ...opts,
+    });
   }
 
-  protected createArray<T>(data: T[], name: string, opts?: Partial<ValueOpts>) {
-    return new ArrayValue<T>(data, { logger: this.logger, name, ...opts });
+  protected createArray<T>(data: T[], opts?: Partial<ValueOpts>) {
+    return new ArrayValue<T>(data, {
+      logger: this.logger,
+      name: this.name,
+      ...opts,
+    });
   }
 }
 

@@ -15,6 +15,7 @@ export class PlaywrightAdapter {
     const context = await browser.newContext({
       /* pass any options */
     });
+    context.addCookies(req.getCookiesArray());
     const page = await context.newPage();
     await page.goto(req.url.href);
     return {
