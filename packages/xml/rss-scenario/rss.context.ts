@@ -1,4 +1,4 @@
-import { HttpResponse, test } from '@qaflag/core';
+import { HttpResponse } from '@qaflag/core';
 import * as cheerio from 'cheerio';
 import { XmlRequest } from '../xml-scenario/xml.request';
 import { XmlContext } from '../xml-scenario/xml.context';

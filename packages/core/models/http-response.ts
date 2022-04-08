@@ -50,7 +50,7 @@ export class HttpResponse<ResponseBodyType = any, RequestType = any>
     cookieHeaders
       .map(cookie => Cookie.parse(cookie))
       .forEach(cookie => {
-        cookies[cookie.key] = cookie;
+        if (cookie !== undefined) cookies[cookie.key] = cookie;
       });
     return cookies;
   }

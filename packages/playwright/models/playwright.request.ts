@@ -1,4 +1,4 @@
-import { Persona, RequestType } from '@qaflag/core';
+import { HttpRequest } from '@qaflag/core';
 import { PlaywrightScenario } from './playwright.scenario';
 
 type PlaywrightCookie = {
@@ -13,12 +13,9 @@ type PlaywrightCookie = {
   sameSite?: 'Strict' | 'Lax' | 'None';
 };
 
-export class PlaywrightRequest extends RequestType {
-  public persona: Persona;
-
+export class PlaywrightRequest extends HttpRequest {
   constructor(scenario: PlaywrightScenario) {
-    super(scenario.opts);
-    this.persona = scenario.persona;
+    super(scenario.opts, scenario.persona);
   }
 
   public getCookiesArray(): PlaywrightCookie[] {

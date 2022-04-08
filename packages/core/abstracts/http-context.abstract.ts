@@ -23,7 +23,7 @@ export abstract class HttpContext extends Context implements ContextInterface {
     const header = Object.entries(this.response.headers).find(
       ([key]) => key.toLocaleLowerCase() == name.toLocaleLowerCase(),
     );
-    return new StringValue(header ? header[1] : undefined, {
+    return new StringValue(header ? header[1] : '', {
       name: `HTTP Header: ${name}`,
       logger: this,
     });

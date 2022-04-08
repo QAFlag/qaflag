@@ -73,7 +73,7 @@ export class XmlValue extends ValueAbstract<CheerioElement> {
   }
 
   public attribute(name: string) {
-    return this.createString(this.$.attr(name), {
+    return this.createString(this.$.attr(name) || '', {
       name: `Attribute ${name} of ${this.name}`,
     });
   }

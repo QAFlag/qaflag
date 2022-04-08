@@ -3,7 +3,7 @@
     "module": "commonjs",
     "declaration": false,
     "noImplicitAny": false,
-    "noUnusedLocals": false,
+    "noUnusedLocals": true,
     "removeComments": true,
     "noLib": false,
     "emitDecoratorMetadata": true,
@@ -17,8 +17,10 @@
     "skipLibCheck": true,
     "suppressImplicitAnyIndexErrors": true,
     "strict": false,
-    "strictNullChecks": false,
-    "importHelpers": false
+    "strictNullChecks": true,
+    "importHelpers": false,
+    "allowUnreachableCode": false,
+    "exactOptionalPropertyTypes": false
   },
   "exclude": ["../node_modules", "**/*.spec.ts"]
 }

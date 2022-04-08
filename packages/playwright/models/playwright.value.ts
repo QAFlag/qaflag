@@ -74,9 +74,12 @@ export class PlaywrightValue
   }
 
   public async getAttribute(name: string, opts?: TimeoutOpts) {
-    return this.createString(await this.input.getAttribute(name, opts), {
-      name: `Attribute ${name} of ${this.name}`,
-    });
+    return this.createString(
+      (await this.input.getAttribute(name, opts)) || '',
+      {
+        name: `Attribute ${name} of ${this.name}`,
+      },
+    );
   }
 
   public async inputValue(opts?: TimeoutOpts) {
@@ -86,7 +89,7 @@ export class PlaywrightValue
   }
 
   public async textContent(opts?: TimeoutOpts) {
-    return this.createString(await this.input.textContent(opts), {
+    return this.createString((await this.input.textContent(opts)) || '', {
       name: `Text Content of ${this.name}`,
     });
   }

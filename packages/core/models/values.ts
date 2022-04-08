@@ -19,10 +19,7 @@ export abstract class ValueAbstract<InputType>
   protected alias: string | undefined = undefined;
   public logger: LogProvider;
 
-  constructor(
-    protected input: InputType | undefined,
-    protected opts: ValueOpts,
-  ) {
+  constructor(protected input: InputType, protected opts: ValueOpts) {
     this.logger = opts.logger;
   }
 

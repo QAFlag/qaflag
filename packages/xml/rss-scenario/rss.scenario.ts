@@ -9,7 +9,7 @@ export class RssScenario extends ScenarioType({
   #context: RssContext | null = null;
   #adapter = new XmlAdapter();
 
-  public readonly request = new XmlRequest(this.opts);
+  public readonly request = new XmlRequest(this.opts, this.persona);
 
   public get context(): RssContext | null {
     return this.#context;

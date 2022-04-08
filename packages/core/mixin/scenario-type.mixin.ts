@@ -2,7 +2,6 @@ import { ScenarioTemplate } from '../types/scenario.options';
 import { Logger } from '../models/logger';
 import { Persona } from '../models/persona';
 import { HttpVerbs } from '../types/http.types';
-import { RequestInterface } from '../types/request.interface';
 import { ContextInterface } from '../types/context.interface';
 import {
   ScenarioInterface,
@@ -11,6 +10,7 @@ import {
 } from '../types/scenario.interface';
 import { SuiteInterface } from '../types/suite.interface';
 import { MessageType } from '../models/message';
+import { RequestInterface } from '../types/request-interface';
 
 export type ScenarioTypeOpts = {
   name: string;
@@ -23,7 +23,7 @@ export function ScenarioType(initOpts: ScenarioTypeOpts) {
       public readonly suite: SuiteInterface,
     ) {
       this.key = opts.key;
-      this.description = opts.description;
+      this.description = opts.description || '';
       this.step = opts.step || 1;
       this.next = opts.next;
     }

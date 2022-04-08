@@ -1,5 +1,5 @@
-import { IsInt, IsString, IsEmail, ValidateNested } from 'class-validator';
-import { Type, Transform, plainToClass } from 'class-transformer';
+import { IsInt, IsString, IsEmail } from 'class-validator';
+import { Transform, plainToClass } from 'class-transformer';
 
 class Geo {
   @IsString()

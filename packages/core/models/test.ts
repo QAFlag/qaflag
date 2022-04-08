@@ -149,17 +149,17 @@ export class Test<InputType = unknown>
 
   public greaterThanOrEquals(value: number) {
     this.message.push(`greater than or equal to ${value}`);
-    this.execute(item => item >= value);
+    this.execute(item => Number(item) >= value);
   }
 
   public lessThan(value: number) {
     this.message.push(`less than ${value}`);
-    this.execute(item => item < value);
+    this.execute(item => Number(item) < value);
   }
 
   public lessThanOrEquals(value: number) {
     this.message.push(`less than or equal to ${value}`);
-    this.execute(item => item <= value);
+    this.execute(item => Number(item) <= value);
   }
 
   public between(valueA: number, valueB: number) {

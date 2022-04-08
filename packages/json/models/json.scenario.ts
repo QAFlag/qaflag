@@ -17,7 +17,7 @@ export class JsonScenario extends ScenarioType({
   #context: JsonContext | null = null;
   #adapter: JsonAdapter = new JsonAdapter();
 
-  public readonly request = new JsonRequest(this.opts);
+  public readonly request = new JsonRequest(this.opts, this.persona);
 
   public get context(): JsonContext | null {
     return this.#context;
@@ -46,7 +46,7 @@ export class JsonScenario extends ScenarioType({
       return {
         name: schema.name,
         type:
-          schema.type.toLowerCase() ||
+          schema.type?.toLowerCase() ||
           (typeof schema == 'string' ? 'jsonschema' : 'dto'),
       };
     }

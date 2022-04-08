@@ -9,7 +9,7 @@ export class XmlScenario extends ScenarioType({
   #context: XmlContext | null = null;
   #adapter = new XmlAdapter();
 
-  public readonly request = new XmlRequest(this.opts);
+  public readonly request = new XmlRequest(this.opts, this.persona);
 
   public get context(): XmlContext | null {
     return this.#context;

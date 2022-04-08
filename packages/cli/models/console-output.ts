@@ -107,8 +107,8 @@ export class ConsoleOutput {
       const text = align(
         line,
         lineLength,
-        this.opts.alignment,
-        this.opts.padding,
+        this.opts.alignment || 'left',
+        this.opts.padding || ' ',
       );
       console.log(this.opts.style ? this.opts.style(text) : text);
     });

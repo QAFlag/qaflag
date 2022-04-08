@@ -1,4 +1,3 @@
-import { printHeader } from '../utils/print';
 import { findSuites } from '../utils/find-suites';
 import { exitError } from '../utils/exit';
 import { prompt } from 'prompts';
@@ -12,7 +11,7 @@ export const run = async (project: Project, options: any) => {
   const selection = !options.args?.length
     ? await pickSuite(suites)
     : findSuiteByName(suites, options.args[0]);
-  if (!selection) exitError('No suite selected.');
+  if (!selection) return exitError('No suite selected.');
   const suite = loadSuite(selection);
   suite.events.once('completed').then(() => outputSuiteToConsole(suite));
   suite.execute();

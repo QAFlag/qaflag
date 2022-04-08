@@ -4,7 +4,7 @@ import { printLineBreak } from './print';
 
 export const exitSuccess = (message?: string) => {
   printLineBreak();
-  new ConsoleOutput(message, {
+  new ConsoleOutput(message || 'OK', {
     style: chalk.bgWhite.green,
   });
   printLineBreak();

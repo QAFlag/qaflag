@@ -1,10 +1,10 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { HttpResponse, ResponseMeta } from '../models/http-response';
 import { HttpBody } from '../types/http.types';
-import { RequestInterface } from '../types/request.interface';
 import { wrapper } from 'axios-cookiejar-support';
 import { CookieJar } from 'tough-cookie';
 import { AxiosMock } from './axios-mock';
+import { HttpRequestInterface } from '../types/http-request.interface';
 
 export const Mock = new AxiosMock(axios);
 
@@ -13,7 +13,7 @@ export type AxiosRequest = AxiosRequestConfig<HttpBody> & {
 };
 
 export const fetchWithAxios = async (
-  req: RequestInterface,
+  req: HttpRequestInterface,
 ): Promise<HttpResponse<HttpBody, AxiosRequest>> => {
   // https://axios-http.com/docs/req_config
   const axiosRequest: AxiosRequest = {

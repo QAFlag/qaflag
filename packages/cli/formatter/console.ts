@@ -61,7 +61,6 @@ export const outputSuiteToConsole = (suite: SuiteInterface) => {
             chalk.hex(theme.scenario.head.textColor).bold(`${scenario.title}`),
             scenario.description,
           ],
-          ,
           '',
         ],
         {

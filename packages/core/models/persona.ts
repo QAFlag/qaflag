@@ -1,74 +1,77 @@
 import { fetchWithAxios } from '../utils/axios';
-import { HttpResponse } from '../models/http-response';
-import { KeyValue } from '../types/general.types';
-import { HttpAuth, HttpHeaders } from '../types/http.types';
-import {
-  HttpRequestOptions,
-  RequestInterface,
-} from '../types/request.interface';
+import { HttpHeaders } from '../types/http.types';
+import { HttpRequestInterface } from '../types/http-request.interface';
 import { HttpRequest } from './http-request';
+import {
+  PersonaInitInterface,
+  PersonaInterface,
+} from '../types/persona.interface';
+import { HeaderFetcher, StringFetcher } from '../types/fetcher';
 
-type Fetcher = HttpRequestOptions & {
-  fetch?: (request: HttpRequest) => Promise<HttpResponse>;
-  parse?: (response: HttpResponse) => Promise<any>;
-};
-
-type StringFetcher = Fetcher & {
-  parse: (response: HttpResponse) => Promise<string>;
-};
-type HeaderFetcher = Fetcher & {
-  parse: (response: HttpResponse) => Promise<HttpHeaders>;
-};
-
-export type Permission =
-  | 'geolocation'
-  | 'midi'
-  | 'midi-sysex'
-  | 'notifications'
-  | 'camera'
-  | 'microphone'
-  | 'background-sync'
-  | 'ambient-light-sensor'
-  | 'accelerometer'
-  | 'gyroscope'
-  | 'magnetometer'
-  | 'accessibility-events'
-  | 'clipboard-read'
-  | 'clipboard-write'
-  | 'payment-handler';
-
-type GeoLocation = {
-  latitude: number;
-  longitude: number;
-  accuracy?: number;
-};
-
-export interface PersonaInitOpts {
-  name: string;
-  story?: string;
-  browser?: {
-    userAgent: string;
-    viewport: { width: number; height: number };
-  };
-  bearerToken?: string | StringFetcher;
-  auth?: HttpAuth;
-  headers?: HttpHeaders | HeaderFetcher;
-  cookies?: KeyValue;
-  trailers?: KeyValue;
-  permissions?: Permission[];
-  geolocation?: GeoLocation;
-  offline?: boolean;
-  language?: string;
-}
-
-export class Persona {
+export class Persona implements PersonaInterface {
   #bearerToken: string | undefined = undefined;
   #headers: HttpHeaders | undefined = undefined;
 
-  constructor(private readonly opts: PersonaInitOpts) {
+  constructor(private readonly opts: PersonaInitInterface) {
     if (typeof opts.bearerToken == 'string') {
       this.#bearerToken = opts.bearerToken;
     }
+  }
+
+  public get timezone() {
+    return this.opts.timezone;
+  }
+
+  public get trailers() {
+    return this.opts.trailers;
+  }
+
+  public get cookies() {
+    return this.opts.cookies;
+  }
+
+  public get headers() {
+    return this.#headers;
+  }
+
+  public get bearerToken() {
+    return this.#bearerToken;
+  }
+
+  public get userAgent() {
+    return this.opts.userAgent;
+  }
+
+  public get browser() {
+    return this.opts.browser;
+  }
+
+  public get viewport() {
+    return this.opts.viewport;
+  }
+
+  public get screenSize() {
+    return this.opts.screenSize;
+  }
+
+  public get proxy() {
+    return this.opts.proxy;
+  }
+
+  public get languageLocale() {
+    return this.opts.languageLocale;
+  }
+
+  public get basicAuthentication() {
+    return this.opts.basicAuthentication;
+  }
+
+  public get geolocation() {
+    return this.opts.geolocation;
+  }
+
+  public get isOnline(): boolean {
+    return !!this.opts.isOnline;
   }
 
   public get name() {
@@ -80,29 +83,28 @@ export class Persona {
   }
 
   public async authenticate(
-    request: RequestInterface,
-  ): Promise<RequestInterface> {
+    request: HttpRequestInterface,
+  ): Promise<HttpRequestInterface> {
     // Request has no bearer token, but our persona does
     if (!request.bearerToken && this.opts.bearerToken) {
-      // If we haven't gotten token yet, go get it
-      if (!this.#bearerToken) {
-        this.#bearerToken = await this.getToken(this.opts.bearerToken);
-      }
+      this.#bearerToken = await this.getToken(this.opts.bearerToken);
       request.bearerToken = this.#bearerToken;
     }
     // Apply headers from persona
+    this.#headers = await this.getHeaders(this.opts.headers);
     request.headers = {
-      ...(await this.getHeaders(this.opts.headers)),
+      ...this.#headers,
       ...request.headers,
     };
     // Apply basic/digest auth
-    if (this.opts.auth && !request.auth) {
-      request.auth = this.opts.auth;
+    if (this.opts.basicAuthentication && !request.auth) {
+      request.auth = this.opts.basicAuthentication;
     }
     return request;
   }
 
   private async getToken(fetcher: string | StringFetcher): Promise<string> {
+    if (this.#bearerToken) return this.#bearerToken;
     if (typeof fetcher == 'string') return fetcher;
     const req = new HttpRequest(fetcher);
     const res = await (fetcher.fetch === undefined
@@ -121,7 +123,6 @@ export class Persona {
     const res = await (fetcher.fetch === undefined
       ? fetchWithAxios(req)
       : fetcher.fetch(req));
-    this.#headers = await fetcher.parse(res);
-    return this.#headers;
+    return fetcher.parse(res);
   }
 }

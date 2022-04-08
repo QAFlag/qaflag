@@ -2,9 +2,9 @@ import { Logger } from '../models/logger';
 import { Persona } from '../models/persona';
 import { HttpVerbsCaseInsensitive } from './http.types';
 import { LogProvider } from './log-provider.interface';
-import { RequestInterface } from './request.interface';
 import { ContextInterface } from './context.interface';
 import { SuiteInterface } from './suite.interface';
+import { RequestInterface } from './request-interface';
 
 export type ScenarioUri = `${HttpVerbsCaseInsensitive} ${string}`;
 

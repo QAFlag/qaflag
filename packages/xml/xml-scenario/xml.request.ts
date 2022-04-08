@@ -1,3 +1,3 @@
-import { RequestType } from '@qaflag/core';
+import { HttpRequest } from '@qaflag/core';
 
-export class XmlRequest extends RequestType {}
+export class XmlRequest extends HttpRequest {}

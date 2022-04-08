@@ -30,7 +30,7 @@ export interface HttpRequestOptions {
   maxRedirects?: number;
 }
 
-export interface RequestInterface {
+export interface HttpRequestInterface {
   pathReplace(variables: [string, any][]): void;
   uri: ScenarioUri;
   url: URL;

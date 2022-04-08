@@ -34,7 +34,7 @@ const verbMap: { [key in HttpVerbs]?: MockListener } = {
 export class AxiosMock {
   private adapter: MockAdapter;
 
-  constructor(private axios: AxiosStatic) {
+  constructor(axios: AxiosStatic) {
     this.adapter = new MockAdapter(axios, { onNoMatch: 'passthrough' });
   }
 

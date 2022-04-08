@@ -1,7 +1,6 @@
 export * from './decorators/scenario.decorator';
 export * from './decorators/after.decorator';
 export * from './decorators/before.decorator';
-export * from './abstracts/request-type.abstract';
 export * from './abstracts/context.abstract';
 export * from './abstracts/http-context.abstract';
 export * from './mixin/scenario-type.mixin';
@@ -19,7 +18,7 @@ export * from './types/http.types';
 export * from './types/iterator.types';
 export * from './types/log-provider.interface';
 export * from './models/message';
-export * from './types/request.interface';
+export * from './types/http-request.interface';
 export * from './types/context.interface';
 export * from './types/scenario.interface';
 export * from './types/suite.interface';

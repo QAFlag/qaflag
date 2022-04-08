@@ -21,8 +21,11 @@ export default class Project implements ProjectInterface {
     };
   }
 
-  constructor(private readonly opts: ProjectOpts) {
-    this.configFile = path.resolve(process.cwd(), 'qaflag.json');
+  constructor(opts: ProjectOpts) {
+    this.configFile = path.resolve(
+      process.cwd(),
+      opts.configFile || 'qaflag.json',
+    );
     if (fs.existsSync(this.configFile)) {
       const fileContents = fs.readFileSync(this.configFile, 'utf8');
       this.settings = JSON.parse(fileContents);
@@ -36,6 +39,7 @@ export default class Project implements ProjectInterface {
   }
 
   public write() {
+    if (!this.configFile) return;
     fs.writeFileSync(
       this.configFile,
       JSON.stringify(this.serialize(), null, 2),

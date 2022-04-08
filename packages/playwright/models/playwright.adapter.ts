@@ -10,14 +10,21 @@ export type PlaywrightInstance = {
 };
 
 export class PlaywrightAdapter {
-  public async fetch(req: PlaywrightRequest): Promise<PlaywrightInstance> {
+  public async fetch(request: PlaywrightRequest): Promise<PlaywrightInstance> {
+    const persona = request.persona;
     const browser = await chromium.launch({ headless: false });
     const context = await browser.newContext({
       /* pass any options */
+      geolocation: persona?.geolocation,
+      httpCredentials: persona?.basicAuthentication,
+      locale: persona?.languageLocale,
+      acceptDownloads: false,
+      bypassCSP: false,
+      ignoreHTTPSErrors: false,
     });
-    context.addCookies(req.getCookiesArray());
+    context.addCookies(request.getCookiesArray());
     const page = await context.newPage();
-    await page.goto(req.url.href);
+    await page.goto(request.url.href);
     return {
       browser,
       context,

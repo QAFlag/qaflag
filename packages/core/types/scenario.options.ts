@@ -1,6 +1,6 @@
 import { Persona } from '../models/persona';
 import { ClassConstructor } from './general.types';
-import { HttpRequestOptions } from './request.interface';
+import { HttpRequestOptions } from './http-request.interface';
 import { ScenarioInterface } from './scenario.interface';
 import { SuiteInterface } from './suite.interface';
 
