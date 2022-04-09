@@ -13,4 +13,9 @@ export class Keyboard {
     this.locator.logger.log('action', `TYPE: ${text}`);
     return this.locator.$.type(text, opts);
   }
+
+  public async pressKey(key: string, opts?: KeyboardOpts) {
+    this.locator.logger.log('action', `KEYPRESS: ${key}`);
+    this.locator.$.press(key, opts);
+  }
 }

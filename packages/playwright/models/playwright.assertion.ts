@@ -3,7 +3,7 @@ import { PlaywrightValue } from './playwright.value';
 export type AwaitedAssertion = (data: unknown) => Promise<boolean>;
 export type mustOrShould = 'must' | 'should';
 
-export class PlayweightAssertion {
+export class PlaywrightAssertion {
   protected message: string[];
   protected isNot: boolean = false;
   protected evalType: 'standard' | 'every' | 'some' = 'standard';

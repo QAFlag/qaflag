@@ -2,8 +2,9 @@ import { ValueAbstract, ValueInterface, ValueOpts } from '@qaflag/core';
 import { Locator } from 'playwright';
 import { Keyboard } from './keyboard';
 import { Mouse } from './mouse';
-import { PlayweightAssertion } from './playwright.assertion';
+import { PlaywrightAssertion } from './playwright.assertion';
 import { FindOpts } from './playwright.context';
+import { Touch } from './touch';
 
 export interface LocatorOpts extends ValueOpts {
   selector: string;
@@ -29,12 +30,16 @@ export class PlaywrightValue
     return new Mouse(this);
   }
 
+  public get touch() {
+    return new Touch(this);
+  }
+
   public get must() {
-    return new PlayweightAssertion(this, 'must');
+    return new PlaywrightAssertion(this, 'must');
   }
 
   public get should() {
-    return new PlayweightAssertion(this, 'should');
+    return new PlaywrightAssertion(this, 'should');
   }
 
   public get first() {

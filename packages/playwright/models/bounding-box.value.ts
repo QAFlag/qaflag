@@ -1,12 +1,15 @@
 import { test, ValueAbstract } from '@qaflag/core';
 import { Must } from '@qaflag/core/types/test.interface';
 
-export type BoundingBox = {
+export interface PagePosition {
   x: number;
   y: number;
+}
+
+export interface BoundingBox extends PagePosition {
   width: number;
   height: number;
-};
+}
 
 export class BoundingBoxValue extends ValueAbstract<BoundingBox> {
   public get must(): Must {
