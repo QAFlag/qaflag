@@ -1,5 +1,7 @@
 import { ValueAbstract, ValueInterface, ValueOpts } from '@qaflag/core';
 import { Locator } from 'playwright';
+import { Keyboard } from './keyboard';
+import { Mouse } from './mouse';
 import { PlayweightAssertion } from './playwright.assertion';
 import { FindOpts } from './playwright.context';
 
@@ -17,6 +19,14 @@ export class PlaywrightValue
 {
   constructor(input: Locator, protected opts: ValueOpts) {
     super(input, opts);
+  }
+
+  public get keyboard() {
+    return new Keyboard(this);
+  }
+
+  public get mouse() {
+    return new Mouse(this);
   }
 
   public get must() {
