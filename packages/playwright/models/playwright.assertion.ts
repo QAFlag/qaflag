@@ -87,37 +87,37 @@ export class PlayweightAssertion {
 
   public async visible() {
     this.message.push('visible');
-    this.execute(() => this.input.$.isVisible());
+    return this.execute(() => this.input.$.isVisible());
   }
 
   public async hidden() {
     this.message.push('hidden');
-    this.execute(() => this.input.$.isHidden());
+    return this.execute(() => this.input.$.isHidden());
   }
 
   public async checked() {
     this.message.push('checked');
-    this.execute(() => this.input.$.isChecked());
+    return this.execute(() => this.input.$.isChecked());
   }
 
   public async editable() {
     this.message.push('editable');
-    this.execute(() => this.input.$.isEditable());
+    return this.execute(() => this.input.$.isEditable());
   }
 
   public async enabled() {
     this.message.push('enabled');
-    this.execute(() => this.input.$.isEnabled());
+    return this.execute(() => this.input.$.isEnabled());
   }
 
   public async disabled() {
     this.message.push('disabled');
-    this.execute(() => this.input.$.isDisabled());
+    return this.execute(() => this.input.$.isDisabled());
   }
 
   public async exist() {
     this.message.push('exist');
-    this.execute(async () => {
+    return this.execute(async () => {
       return (await this.input.$.count()) > 0;
     });
   }

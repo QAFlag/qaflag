@@ -15,7 +15,7 @@ export class PlaywrightValue
   extends ValueAbstract<Locator>
   implements ValueInterface<Locator>
 {
-  constructor(input: Locator, protected opts: LocatorOpts) {
+  constructor(input: Locator, protected opts: ValueOpts) {
     super(input, opts);
   }
 

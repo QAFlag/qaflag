@@ -39,6 +39,8 @@ export function ScenarioType(initOpts: ScenarioTypeOpts) {
     public next: (...args: any[]) => Promise<void>;
     public readonly logger = new Logger();
 
+    public async tearDown(): Promise<void> {}
+
     public log(type: MessageType, text: string) {
       return this.logger.log(type, text);
     }

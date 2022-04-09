@@ -25,6 +25,7 @@ export interface ScenarioInterface extends LogProvider {
   logger: Logger;
   next: (...args: any[]) => Promise<void>;
   execute(): Promise<void>;
+  tearDown(): Promise<void>;
 }
 
 export type ScenarioStatus = 'not started' | 'in progress' | 'pass' | 'fail';

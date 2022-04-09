@@ -1,6 +1,7 @@
 import { Context, ContextInterface, ScenarioInterface } from '@qaflag/core';
 import { Locator } from 'playwright';
 import { PlaywrightInstance } from './playwright.adapter';
+import { PlaywrightValue } from './playwright.value';
 
 export type FindOpts = {
   has?: Locator;
@@ -28,10 +29,19 @@ export class PlaywrightContext extends Context implements ContextInterface {
   }
 
   public find(selector: string, opts?: FindOpts) {
-    return this.playwright.page.locator(selector, opts);
+    return new PlaywrightValue(this.playwright.page.locator(selector, opts), {
+      name: selector,
+      logger: this.scenario,
+    });
   }
 
-  public close() {
+  public async exists(selector: string, opts?: FindOpts) {
+    const locator = this.find(selector, opts);
+    await locator.must.exist();
+    return locator;
+  }
+
+  public async close() {
     return this.playwright.browser.close();
   }
 }

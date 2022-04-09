@@ -91,6 +91,7 @@ export function Suite<ScenarioType extends ScenarioInterface>(
             await scenario.execute();
             await scenario.next(scenario);
             scenario.logger.end();
+            await scenario.tearDown();
             this.events.emit('afterEach', scenario);
             this.log(
               scenario.status == 'pass' ? 'pass' : 'fail',

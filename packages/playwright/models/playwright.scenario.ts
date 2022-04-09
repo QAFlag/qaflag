@@ -7,7 +7,6 @@ export class PlaywrightScenario extends ScenarioType({
   name: 'Playwright',
 }) {
   #context: PlaywrightContext | null = null;
-  #adapter = new PlaywrightAdapter();
 
   public readonly request = new PlaywrightRequest(this);
 
@@ -16,7 +15,12 @@ export class PlaywrightScenario extends ScenarioType({
   }
 
   public async execute() {
-    const playwright = await this.#adapter.fetch(this.request);
+    const adapter = new PlaywrightAdapter();
+    const playwright = await adapter.fetch(this.request);
     this.#context = new PlaywrightContext(this, playwright);
+  }
+
+  public override async tearDown(): Promise<void> {
+    return this.context?.close();
   }
 }
