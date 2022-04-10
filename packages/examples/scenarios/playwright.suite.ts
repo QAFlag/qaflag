@@ -11,8 +11,8 @@ export class GoogleSearch extends Suite(PlaywrightScenario, {
   async getSearchPage(context: PlaywrightContext) {
     const button = await context.exists("text='Google Search' >> visible=true");
     const input = await context.exists("[aria-label='Search']");
-    await input.keyboard.type('Jason Byrne Github');
-    await button.pointer.click();
+    await input.keyboard.input('Jason Byrne Github');
+    await button.mouse.click();
     await context.page.waitForNavigation();
     await context.exists("'Jason Byrne jasonbyrne - GitHub' >> visible=true");
   }

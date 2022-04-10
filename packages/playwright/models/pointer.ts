@@ -1,3 +1,4 @@
+import { PointerInterface } from '@qaflag/core';
 import { PagePosition } from './bounding-box.value';
 import { PlaywrightValue } from './playwright.value';
 
@@ -59,8 +60,8 @@ export interface DragOpts {
   trial?: boolean | undefined;
 }
 
-export class Pointer {
-  constructor(private locator: PlaywrightValue) {}
+export class Mouse implements PointerInterface {
+  constructor(protected locator: PlaywrightValue) {}
 
   public async tap(opts?: TouchOpts) {
     this.locator.logger.log('action', `TAP`);
@@ -86,7 +87,7 @@ export class Pointer {
 
   public async doubleClick(opts?: ClickOpts) {
     this.locator.logger.log('action', `DOUBLECLICK`);
-    return this.locator.$.click(opts);
+    return this.locator.$.dblclick(opts);
   }
 
   public async longPress(opts?: LongPressOpts) {
@@ -109,5 +110,19 @@ export class Pointer {
 
   public async selectText(opts?: PointerOpts) {
     return this.locator.$.selectText(opts);
+  }
+}
+
+export class Touch extends Mouse implements PointerInterface {
+  public async click(opts?: TouchOpts) {
+    this.locator.logger.log('action', `TAP`);
+    return this.locator.$.tap(opts);
+  }
+
+  public async doubleClick(opts?: DoubleTapOpts) {
+    const page = this.locator.$.page();
+    await this.locator.$.tap(opts);
+    await page.waitForTimeout(opts?.delayBetweenMs || 300);
+    await this.locator.$.tap(opts);
   }
 }

@@ -1,3 +1,4 @@
+import { FormInterface } from '@qaflag/core';
 import { ElementHandle } from 'playwright';
 import { PagePosition } from './bounding-box.value';
 import { PlaywrightValue } from './playwright.value';
@@ -31,7 +32,7 @@ export type InputFiles =
   | { name: string; mimeType: string; buffer: Buffer }
   | { name: string; mimeType: string; buffer: Buffer }[];
 
-export class Form {
+export class Form implements FormInterface {
   constructor(private locator: PlaywrightValue) {}
 
   public async check(isChecked: boolean = true, opts?: FormPointerOpts) {
@@ -39,16 +40,16 @@ export class Form {
     return this.locator.$.setChecked(isChecked, opts);
   }
 
-  public async fill(value: string, opts?: FormOpts) {
+  public async input(value: string, opts?: FormOpts) {
     this.locator.logger.log('action', `FILL: ${value}`);
     return this.locator.$.fill(value, opts);
   }
 
-  public async selectOption(values: SelectOption, opts?: FormOpts) {
+  public async select(values: string | string[], opts?: FormOpts) {
     return this.locator.$.selectOption(values, opts);
   }
 
-  public async inputFiles(files: InputFiles, opts?: FormOpts) {
+  public async file(files: InputFiles, opts?: FormOpts) {
     return this.locator.$.setInputFiles(files, opts);
   }
 }

@@ -26,15 +26,45 @@ export interface PrimitiveValueInterface<InputType = any>
   should: Must;
 }
 
-export interface UiElementInterface<InputType = any>
+export interface FormInterface {
+  check(isChecked: boolean): Promise<void>;
+  select(value: string | string[]): Promise<string[]>;
+  input(text: string): Promise<void>;
+  file(path: string | string[]): Promise<void>;
+}
+
+export interface KeyboardInterface {
+  input(text: string): Promise<void>;
+  press(text: string): Promise<void>;
+  down(text: string): Promise<void>;
+  up(text: string): Promise<void>;
+}
+
+export interface PointerInterface {
+  click(): Promise<void>;
+  doubleClick(): Promise<void>;
+  hover(): Promise<void>;
+  longPress(): Promise<void>;
+  selectText(): Promise<void>;
+  dragTo(destination: any): Promise<void>;
+}
+
+export interface UiElementInterface<InputType>
   extends ValueInterface<InputType> {
   first: UiElementInterface<InputType>;
   last: UiElementInterface<InputType>;
+  keyboard?: KeyboardInterface;
+  mouse?: PointerInterface;
+  touch?: PointerInterface;
+  form?: FormInterface;
   nth(i: number): UiElementInterface<InputType>;
   find(selector: string): UiElementInterface<InputType>;
   text(): StringValue | Promise<StringValue>;
   count(): NumericValue | Promise<NumericValue>;
-  value(): StringValue | ArrayValue<string>;
+  value():
+    | StringValue
+    | ArrayValue<string>
+    | Promise<StringValue | ArrayValue<string>>;
   attribute(name: string): StringValue | Promise<StringValue>;
-  tagName(): StringValue;
+  tagName(): StringValue | Promise<StringValue>;
 }

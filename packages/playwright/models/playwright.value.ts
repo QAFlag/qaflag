@@ -1,8 +1,13 @@
-import { ValueAbstract, ValueInterface, ValueOpts } from '@qaflag/core';
+import {
+  UiElementInterface,
+  ValueAbstract,
+  ValueInterface,
+  ValueOpts,
+} from '@qaflag/core';
 import { Locator } from 'playwright';
 import { Form } from './form';
 import { Keyboard } from './keyboard';
-import { Pointer } from './pointer';
+import { Mouse, Touch } from './pointer';
 import { PlaywrightAssertion } from './playwright.assertion';
 import { FindOpts } from './playwright.context';
 
@@ -16,7 +21,7 @@ interface TimeoutOpts {
 
 export class PlaywrightValue
   extends ValueAbstract<Locator>
-  implements ValueInterface<Locator>
+  implements ValueInterface<Locator>, UiElementInterface<Locator>
 {
   constructor(input: Locator, protected opts: ValueOpts) {
     super(input, opts);
@@ -26,8 +31,12 @@ export class PlaywrightValue
     return new Keyboard(this);
   }
 
-  public get pointer() {
-    return new Pointer(this);
+  public get mouse() {
+    return new Mouse(this);
+  }
+
+  public get touch() {
+    return new Touch(this);
   }
 
   public get form() {
@@ -70,7 +79,7 @@ export class PlaywrightValue
     });
   }
 
-  public async innerText(opts?: TimeoutOpts) {
+  public async text(opts?: TimeoutOpts) {
     return this.createString(await this.input.first().innerText(opts), {
       name: `Inner Text of ${this.name}`,
     });
@@ -115,7 +124,7 @@ export class PlaywrightValue
     );
   }
 
-  public async inputValue(opts?: TimeoutOpts) {
+  public async value(opts?: TimeoutOpts) {
     return this.createString(await this.input.inputValue(opts), {
       name: `Input Value of ${this.name}`,
     });
