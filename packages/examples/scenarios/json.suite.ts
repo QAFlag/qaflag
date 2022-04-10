@@ -44,9 +44,10 @@ const GetList = Template({
   schema: '@getUsers',
 });
 
-export class UsersSuite extends Suite(JsonScenario, {
+export class UsersSuite extends Suite({
   title: 'Test Users Endpoints',
   persona: GuestPersona,
+  type: JsonScenario,
 }) {
   @GetList() async getListOfUsers(context: JsonContext) {
     context.requestDuration.should.be.lessThan(100);

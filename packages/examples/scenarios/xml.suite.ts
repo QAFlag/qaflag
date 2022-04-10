@@ -14,13 +14,14 @@ Mock.on('GET http://localhost/music', {
   },
 });
 
-export class XmlMusicSuite extends Suite(XmlScenario, {
+export class XmlMusicSuite extends Suite({
   title: 'Test XML Scenario',
   persona: GuestPersona,
 }) {
   @Scenario({
     uri: 'GET http://localhost/music',
     statusCode: 200,
+    type: XmlScenario,
   })
   async getListOfCds(context: XmlContext) {
     const title = context.exists('cd title').first.as('First CD Title');

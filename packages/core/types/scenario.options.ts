@@ -6,6 +6,7 @@ import { SuiteInterface } from './suite.interface';
 
 export interface ScenarioDecoratorOpts extends HttpRequestOptions {
   description?: string;
+  type?: ScenarioConstructor;
   step?: number;
   persona?: Persona;
   statusCode?: number;

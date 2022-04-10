@@ -1,8 +1,9 @@
 import { Scenario, Suite } from '@qaflag/core';
 import { PlaywrightContext, PlaywrightScenario } from '@qaflag/playwright';
 
-export class GoogleSearch extends Suite(PlaywrightScenario, {
+export class GoogleSearch extends Suite({
   title: 'Test Google Search',
+  type: PlaywrightScenario,
 }) {
   @Scenario({
     uri: 'GET https://www.google.com',

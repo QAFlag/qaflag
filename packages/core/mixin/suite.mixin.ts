@@ -16,12 +16,10 @@ export const AfterAlls = Symbol('AfterAlls');
 export type SuiteOpts = {
   title: string;
   persona?: Persona;
+  type?: ScenarioConstructor;
 };
 
-export function Suite<ScenarioType extends ScenarioInterface>(
-  scenarioConstructor: ScenarioConstructor<ScenarioType>,
-  initOpts: SuiteOpts,
-) {
+export function Suite(initOpts: SuiteOpts) {
   return class SuiteAbstract implements SuiteInterface {
     #befores: string[] = [];
     #afters: string[] = [];
@@ -37,8 +35,8 @@ export function Suite<ScenarioType extends ScenarioInterface>(
       passed: never;
       failed: never;
     }>();
-    public readonly scenarios: ScenarioType[] = [];
-    public readonly steps: SuiteStep<ScenarioType>[] = [];
+    public readonly scenarios: ScenarioInterface[] = [];
+    public readonly steps: SuiteStep[] = [];
     public readonly persona: Persona =
       initOpts.persona || new Persona({ name: 'Default ' });
 
@@ -60,6 +58,10 @@ export function Suite<ScenarioType extends ScenarioInterface>(
         Object.values(scenarioMethods)
           .sort((a, b) => a.step - b.step)
           .forEach(template => {
+            const scenarioConstructor = template.type || initOpts.type;
+            if (!scenarioConstructor) {
+              throw 'No Scenario Type defined. It must be set either in the Scenario decorator in the Suite decorator, as a default.';
+            }
             const scenario = this.addScenarioToStep(
               new scenarioConstructor(template, this),
             );
@@ -100,12 +102,12 @@ export function Suite<ScenarioType extends ScenarioInterface>(
       this.logger.end();
     }
 
-    private getStep(stepNumber: number): SuiteStep<ScenarioType> {
+    private getStep(stepNumber: number): SuiteStep {
       // Look for existing step with this number
       const step = this.steps.find(step => step.stepNumber === stepNumber);
       if (step) return step;
       // Create new step
-      const newStep: SuiteStep<ScenarioType> = {
+      const newStep: SuiteStep = {
         stepNumber,
         scenarios: [],
       };
@@ -114,7 +116,7 @@ export function Suite<ScenarioType extends ScenarioInterface>(
       return newStep;
     }
 
-    private addScenarioToStep(scenario: ScenarioType) {
+    private addScenarioToStep(scenario: ScenarioInterface) {
       const step = this.getStep(scenario.step);
       step.scenarios.push(scenario);
       return scenario;

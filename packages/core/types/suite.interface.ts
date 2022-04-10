@@ -4,14 +4,14 @@ import { Persona } from '../models/persona';
 import { LogProvider } from './log-provider.interface';
 import { ScenarioInterface } from './scenario.interface';
 
-export interface SuiteStep<ScenarioType> {
+export interface SuiteStep {
   stepNumber: number;
-  scenarios: ScenarioType[];
+  scenarios: ScenarioInterface[];
 }
 
 export interface SuiteInterface extends LogProvider {
   title: string;
-  steps: SuiteStep<ScenarioInterface>[];
+  steps: SuiteStep[];
   scenarios: ScenarioInterface[];
   events: Emittery<{
     beforeAll: never;
