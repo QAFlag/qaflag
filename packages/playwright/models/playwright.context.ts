@@ -40,8 +40,4 @@ export class PlaywrightContext extends Context implements ContextInterface {
     await locator.must.exist();
     return locator;
   }
-
-  public async close() {
-    return this.playwright.browser.close();
-  }
 }

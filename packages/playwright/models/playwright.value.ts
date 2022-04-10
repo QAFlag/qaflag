@@ -1,10 +1,10 @@
 import { ValueAbstract, ValueInterface, ValueOpts } from '@qaflag/core';
 import { Locator } from 'playwright';
+import { Form } from './form';
 import { Keyboard } from './keyboard';
-import { Mouse } from './mouse';
+import { Pointer } from './pointer';
 import { PlaywrightAssertion } from './playwright.assertion';
 import { FindOpts } from './playwright.context';
-import { Touch } from './touch';
 
 export interface LocatorOpts extends ValueOpts {
   selector: string;
@@ -26,12 +26,12 @@ export class PlaywrightValue
     return new Keyboard(this);
   }
 
-  public get mouse() {
-    return new Mouse(this);
+  public get pointer() {
+    return new Pointer(this);
   }
 
-  public get touch() {
-    return new Touch(this);
+  public get form() {
+    return new Form(this);
   }
 
   public get must() {
@@ -122,6 +122,14 @@ export class PlaywrightValue
   }
 
   public async boundingBox(opts?: TimeoutOpts) {
-    this.input.boundingBox(opts);
+    return this.input.boundingBox(opts);
+  }
+
+  public async focus(opts?: TimeoutOpts) {
+    return this.input.focus(opts);
+  }
+
+  public async scrollTo(opts?: TimeoutOpts) {
+    return this.input.scrollIntoViewIfNeeded(opts);
   }
 }

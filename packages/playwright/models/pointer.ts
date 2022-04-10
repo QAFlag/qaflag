@@ -1,6 +1,18 @@
-import { Page } from 'playwright';
 import { PagePosition } from './bounding-box.value';
 import { PlaywrightValue } from './playwright.value';
+
+export interface TouchOpts {
+  force?: boolean | undefined;
+  modifiers?: ('Alt' | 'Control' | 'Meta' | 'Shift')[] | undefined;
+  noWaitAfter?: boolean | undefined;
+  position?: PagePosition | undefined;
+  timeout?: number | undefined;
+  trial?: boolean | undefined;
+}
+
+export interface DoubleTapOpts extends TouchOpts {
+  delayBetweenMs?: number | undefined;
+}
 
 export interface ClickOpts {
   button?: 'left' | 'right' | 'middle' | undefined;
@@ -32,6 +44,12 @@ export interface HoverOpts {
   trial?: boolean | undefined;
 }
 
+export interface PointerOpts {
+  force?: boolean | undefined;
+  noWaitAfter?: boolean | undefined;
+  timeout?: number | undefined;
+}
+
 export interface DragOpts {
   force?: boolean | undefined;
   noWaitAfter?: boolean | undefined;
@@ -41,8 +59,20 @@ export interface DragOpts {
   trial?: boolean | undefined;
 }
 
-export class Mouse {
+export class Pointer {
   constructor(private locator: PlaywrightValue) {}
+
+  public async tap(opts?: TouchOpts) {
+    this.locator.logger.log('action', `TAP`);
+    return this.locator.$.tap(opts);
+  }
+
+  public async doubleTap(opts?: DoubleTapOpts) {
+    const page = this.locator.$.page();
+    await this.locator.$.tap(opts);
+    await page.waitForTimeout(opts?.delayBetweenMs || 300);
+    await this.locator.$.tap(opts);
+  }
 
   public async click(opts?: ClickOpts) {
     this.locator.logger.log('action', `CLICK`);
@@ -75,5 +105,9 @@ export class Mouse {
   public async dragTo(destination: PlaywrightValue, opts?: DragOpts) {
     this.locator.logger.log('action', `DRAG`);
     return this.locator.$.dragTo(destination.$, opts);
+  }
+
+  public async selectText(opts?: PointerOpts) {
+    return this.locator.$.selectText(opts);
   }
 }
