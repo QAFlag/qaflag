@@ -1,6 +1,6 @@
 import { HttpContext, HttpResponse } from '@qaflag/core';
 import * as cheerio from 'cheerio';
-import { XmlRequest } from '../xml-scenario/xml.request';
+import { XmlRequest } from '@qaflag/xml';
 import { isHtmlValid } from './html-validation';
 import { HtmlScenario } from './html.scenario';
 import { HtmlValue } from './html.value';

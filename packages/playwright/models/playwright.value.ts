@@ -71,15 +71,33 @@ export class PlaywrightValue
   }
 
   public async innerText(opts?: TimeoutOpts) {
-    return this.createString(await this.input.innerText(opts), {
+    return this.createString(await this.input.first().innerText(opts), {
       name: `Inner Text of ${this.name}`,
     });
   }
 
   public async innerHTML(opts?: TimeoutOpts) {
-    return this.createString(await this.input.innerHTML(opts), {
+    return this.createString(await this.input.first().innerHTML(opts), {
       name: `Inner HTML of ${this.name}`,
     });
+  }
+
+  public async outerHTML(opts?: TimeoutOpts) {
+    return this.createString(
+      await this.input.first().evaluate(el => el.outerHTML, opts),
+      {
+        name: `Inner HTML of ${this.name}`,
+      },
+    );
+  }
+
+  public async tagName(opts?: TimeoutOpts) {
+    return this.createString(
+      await this.input.first().evaluate(el => el.tagName, opts),
+      {
+        name: `Tag of ${this.name}`,
+      },
+    );
   }
 
   public async count() {
@@ -88,9 +106,9 @@ export class PlaywrightValue
     });
   }
 
-  public async getAttribute(name: string, opts?: TimeoutOpts) {
+  public async attribute(name: string, opts?: TimeoutOpts) {
     return this.createString(
-      (await this.input.getAttribute(name, opts)) || '',
+      (await this.input.first().getAttribute(name, opts)) || '',
       {
         name: `Attribute ${name} of ${this.name}`,
       },

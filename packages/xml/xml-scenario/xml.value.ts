@@ -1,11 +1,4 @@
-import {
-  ArrayValue,
-  KeyValue,
-  NumericValue,
-  StringValue,
-  test,
-  ValueAbstract,
-} from '@qaflag/core';
+import { KeyValue, test, ValueAbstract } from '@qaflag/core';
 import { Must } from '@qaflag/core/types/test.interface';
 import * as cheerio from 'cheerio';
 
@@ -20,36 +13,12 @@ export class XmlValue extends ValueAbstract<CheerioElement> {
     return test(this, 'should');
   }
 
-  public get length(): NumericValue {
+  public get length() {
     return this.createNumber(this.$.length, { name: `Length of ${this.name}` });
-  }
-
-  public get outer(): StringValue {
-    return this.createString(this.toString(), {
-      name: `Outer Markup of ${this.name}`,
-    });
   }
 
   public get string() {
     return this.createString(this.toString(), { name: this.name });
-  }
-
-  public get text(): StringValue {
-    return this.createString(this.$.text(), {
-      name: `Text within ${this.name}`,
-    });
-  }
-
-  public get contents() {
-    return this.createElement(this.$.contents(), {
-      name: `Contents of ${this.name}`,
-    });
-  }
-
-  public get tagName(): StringValue {
-    return this.createString(String(this.$.get(0)['tagName']), {
-      name: `Tag of ${this.name}`,
-    });
   }
 
   public get first() {
@@ -62,14 +31,24 @@ export class XmlValue extends ValueAbstract<CheerioElement> {
     return this.createElement(this.$.last(), { name: `Last in ${this.name}` });
   }
 
-  public get parent() {
-    return this.createElement(this.$.parent(), {
-      name: `Parent of ${this.name}`,
+  public find(selector: string) {
+    const results = this.$.find(selector);
+    return this.createElement(results, {
+      name: `${selector} within ${this.name}`,
+      logger: this.logger,
     });
   }
 
-  public get value() {
-    return this.createGeneric(this.$.val(), { name: `Value of ${this.name}` });
+  public nth(index: number) {
+    return this.createElement(this.$.eq(index), {
+      name: `nth(${index}) in ${this.name}`,
+    });
+  }
+
+  public text() {
+    return this.createString(this.$.text(), {
+      name: `Text within ${this.name}`,
+    });
   }
 
   public attribute(name: string) {
@@ -78,9 +57,51 @@ export class XmlValue extends ValueAbstract<CheerioElement> {
     });
   }
 
+  public value() {
+    const val = this.$.val();
+    const opts = { name: `Value of ${this.name}` };
+    if (Array.isArray(val)) {
+      return this.createArray(
+        val.map(item => String(item)),
+        opts,
+      );
+    }
+    return this.createString(val || '', opts);
+  }
+
+  public tagName() {
+    return this.createString(String(this.$.get(0)['tagName']), {
+      name: `Tag of ${this.name}`,
+    });
+  }
+
+  public get outer() {
+    return this.createString(this.toString(), {
+      name: `Outer Markup of ${this.name}`,
+    });
+  }
+
+  public get inner() {
+    return this.createString(this.$.html() || '', {
+      name: `Inner Markup within ${this.name}`,
+    });
+  }
+
+  public get contents() {
+    return this.createElement(this.$.contents(), {
+      name: `Contents of ${this.name}`,
+    });
+  }
+
+  public get parent() {
+    return this.createElement(this.$.parent(), {
+      name: `Parent of ${this.name}`,
+    });
+  }
+
   public mapText() {
     const array = this.$.map((i, el) => cheerio.default(el).text()).toArray();
-    return new ArrayValue<string>(array, {
+    return this.createArray<string>(array, {
       ...this.opts,
       name: `Text of ${this.name}`,
     });
@@ -90,17 +111,9 @@ export class XmlValue extends ValueAbstract<CheerioElement> {
     const array = this.$.map((i, el) =>
       cheerio.default(el).attr(attributeName),
     ).toArray();
-    return new ArrayValue<string>(array, {
+    return this.createArray<string>(array, {
       ...this.opts,
       name: `Attributes ${attributeName} of ${this.name}`,
-    });
-  }
-
-  public find(selector: string) {
-    const results = this.$.find(selector);
-    return new XmlValue(results, {
-      name: `${selector} within ${this.name}`,
-      logger: this.logger,
     });
   }
 
@@ -143,12 +156,6 @@ export class XmlValue extends ValueAbstract<CheerioElement> {
   public getDataAttribute(name: string) {
     return this.createGeneric(this.$.data(name), {
       name: `Data attribute ${name} in ${this.name}`,
-    });
-  }
-
-  public nth(index: number) {
-    return this.createElement(this.$.eq(index), {
-      name: `nth(${index}) in ${this.name}`,
     });
   }
 

@@ -1,6 +1,5 @@
 import { ScenarioType } from '@qaflag/core';
-import { XmlAdapter } from '../xml-scenario/xml.adapter';
-import { XmlRequest } from '../xml-scenario/xml.request';
+import { XmlAdapter, XmlRequest } from '@qaflag/xml';
 import { HtmlContext } from './html.context';
 
 export class HtmlScenario extends ScenarioType({

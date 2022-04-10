@@ -9,6 +9,3 @@ export * from './atom-scenario/atom.scenario';
 export * from './atom-scenario/atom.context';
 export * from './soap-scenario/soap.scenario';
 export * from './soap-scenario/soap.context';
-export * from './html-scenario/html.scenario';
-export * from './html-scenario/html.context';
-export * from './html-scenario/html.value';

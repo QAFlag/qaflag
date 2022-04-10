@@ -24,8 +24,8 @@ export class XmlMusicSuite extends Suite(XmlScenario, {
   })
   async getListOfCds(context: XmlContext) {
     const title = context.exists('cd title').first.as('First CD Title');
-    title.text.as('Title of the CD').must.be.equalTo('Empire Burlesque');
-    title.tagName.must.equal('title');
+    title.text().must.be.equalTo('Empire Burlesque');
+    title.tagName().must.equal('title');
     const artists = context.find('cd artist').mapText().as('Artists');
     artists.first.must.be.a.string();
     artists.must.all.be.a.string();

@@ -25,3 +25,16 @@ export interface PrimitiveValueInterface<InputType = any>
   must: Must;
   should: Must;
 }
+
+export interface UiElementInterface<InputType = any>
+  extends ValueInterface<InputType> {
+  first: UiElementInterface<InputType>;
+  last: UiElementInterface<InputType>;
+  nth(i: number): UiElementInterface<InputType>;
+  find(selector: string): UiElementInterface<InputType>;
+  text(): StringValue | Promise<StringValue>;
+  count(): NumericValue | Promise<NumericValue>;
+  value(): StringValue | ArrayValue<string>;
+  attribute(name: string): StringValue | Promise<StringValue>;
+  tagName(): StringValue;
+}
