@@ -17,7 +17,7 @@ export * from './types/general.types';
 export * from './types/http.types';
 export * from './types/iterator.types';
 export * from './types/log-provider.interface';
-export * from './models/message';
+export * from './models/log-message';
 export * from './types/http-request.interface';
 export * from './types/context.interface';
 export * from './types/scenario.interface';

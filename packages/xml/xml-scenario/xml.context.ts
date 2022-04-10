@@ -40,7 +40,7 @@ export class XmlContext<
     const results = this.cheerio(selector);
     return new XmlValue(results, {
       name: selector,
-      logger: this,
+      logger: this.logger,
     });
   }
 

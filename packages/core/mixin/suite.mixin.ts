@@ -8,7 +8,6 @@ import { Logger } from '../models/logger';
 import { Persona } from '../models/persona';
 import { ScenarioInterface } from '../types/scenario.interface';
 import { SuiteInterface, SuiteStep } from '../types/suite.interface';
-import { MessageType } from '../models/message';
 
 export const ScenarioDefinitions = Symbol('ScenarioDefinitions');
 export const BeforeAlls = Symbol('BeforeAlls');
@@ -42,10 +41,6 @@ export function Suite<ScenarioType extends ScenarioInterface>(
     public readonly steps: SuiteStep<ScenarioType>[] = [];
     public readonly persona: Persona =
       initOpts.persona || new Persona({ name: 'Default ' });
-
-    public log(type: MessageType, text: string) {
-      return this.logger.log(type, text);
-    }
 
     constructor() {
       if (this[BeforeAlls]) {
@@ -93,10 +88,9 @@ export function Suite<ScenarioType extends ScenarioInterface>(
             scenario.logger.end();
             await scenario.tearDown();
             this.events.emit('afterEach', scenario);
-            this.log(
-              scenario.status == 'pass' ? 'pass' : 'fail',
-              scenario.title,
-            );
+            this.logger.log(scenario.status == 'pass' ? 'pass' : 'fail', {
+              text: scenario.title,
+            });
           }),
         );
       }

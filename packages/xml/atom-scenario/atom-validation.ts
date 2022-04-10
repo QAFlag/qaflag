@@ -42,6 +42,6 @@ const hasRequiredAtomFields = (res: AtomContext): boolean => {
 export const isValidAtomFeed = (res: AtomContext): BooleanValue => {
   return new BooleanValue(hasRequiredAtomFields(res), {
     name: 'Atom Document',
-    logger: res,
+    logger: res.logger,
   });
 };

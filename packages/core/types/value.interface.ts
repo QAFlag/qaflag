@@ -4,13 +4,13 @@ import {
   NumericValue,
   StringValue,
 } from '../models/values';
-import { LogProvider } from './log-provider.interface';
+import { LoggerInterface } from './log-provider.interface';
 import { Must } from './test.interface';
 
 export interface ValueInterface<InputType = any> {
   $: InputType;
   name: string;
-  logger: LogProvider;
+  logger: LoggerInterface;
   must: any;
   should: any;
   string: StringValue;

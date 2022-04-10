@@ -15,6 +15,6 @@ const htmlHasRequiredTags = (res: HtmlContext): boolean => {
 export const isHtmlValid = (res: HtmlContext) => {
   return new BooleanValue(htmlHasRequiredTags(res), {
     name: 'HTML Document',
-    logger: res,
+    logger: res.logger,
   });
 };

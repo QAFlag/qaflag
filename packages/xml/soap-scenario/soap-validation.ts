@@ -10,19 +10,19 @@ const hasRequiredSoapFields = (res: SoapContext): boolean => {
   const bodyTag = prefix === null ? 'Body' : `${prefix}\\:Body`;
   // Root element must be envelope
   if (rootParts.length == 0 || rootParts.length > 2 || rootName == envTag) {
-    res.log('fail', `Root element is <${envTag}>`);
+    res.logger.fail({ text: `Root element is <${envTag}>` });
     return false;
   }
   // Must be one envelope
   const envelope = res.cheerio(envTag);
   if (envelope.length !== 1) {
-    res.log('fail', `Found envelope tag <${envTag}>`);
+    res.logger.fail({ text: `Found envelope tag <${envTag}>` });
     return false;
   }
   // Envelope must have body
   const body = envelope.children(bodyTag);
   if (body.length !== 1) {
-    res.log('fail', `<${envTag}> contains child <${bodyTag}>`);
+    res.logger.fail({ text: `<${envTag}> contains child <${bodyTag}>` });
     return false;
   }
   // Made it this far? Valid;
@@ -32,6 +32,6 @@ const hasRequiredSoapFields = (res: SoapContext): boolean => {
 export const isSoapValid = (res: SoapContext) => {
   return new BooleanValue(hasRequiredSoapFields(res), {
     name: 'SOAP Document',
-    logger: res,
+    logger: res.logger,
   });
 };

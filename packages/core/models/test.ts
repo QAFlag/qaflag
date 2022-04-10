@@ -109,12 +109,15 @@ export class Test<InputType = unknown>
       return assertion(this.input.$);
     })();
     const pass = this.isNot ? !result : result;
+    const text = this.message.join(' ');
     this.input.logger.log(
       pass ? 'pass' : this.mustOrShould == 'should' ? 'optionalFail' : 'fail',
-      this.message.join(' '),
+      { text },
     );
     if (!pass) {
-      this.input.logger.log('info', `Actual Value: ${this.input.string.$}`);
+      this.input.logger.log('info', {
+        text: `Actual Value: ${this.input.string.$}`,
+      });
     }
   }
 

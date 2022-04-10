@@ -36,7 +36,7 @@ export class PlaywrightContext extends Context implements ContextInterface {
   public get url() {
     return new StringValue(this.page.url(), {
       name: 'URL',
-      logger: this,
+      logger: this.logger,
     });
   }
 
@@ -55,7 +55,7 @@ export class PlaywrightContext extends Context implements ContextInterface {
   public find(selector: string, opts?: FindOpts) {
     return new PlaywrightValue(this.playwright.page.locator(selector, opts), {
       name: selector,
-      logger: this.scenario,
+      logger: this.scenario.logger,
     });
   }
 

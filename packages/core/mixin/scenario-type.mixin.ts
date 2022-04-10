@@ -9,7 +9,6 @@ import {
   ScenarioStatus,
 } from '../types/scenario.interface';
 import { SuiteInterface } from '../types/suite.interface';
-import { MessageType } from '../models/message';
 import { RequestInterface } from '../types/request-interface';
 
 export type ScenarioTypeOpts = {
@@ -40,10 +39,6 @@ export function ScenarioType(initOpts: ScenarioTypeOpts) {
     public readonly logger = new Logger();
 
     public async tearDown(): Promise<void> {}
-
-    public log(type: MessageType, text: string) {
-      return this.logger.log(type, text);
-    }
 
     public get title() {
       return String(this.key);

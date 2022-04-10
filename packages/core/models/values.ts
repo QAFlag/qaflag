@@ -1,5 +1,5 @@
 import { Must } from '../types/test.interface';
-import { LogProvider } from '../types/log-provider.interface';
+import { LoggerInterface } from '../types/log-provider.interface';
 import {
   ValueInterface,
   PrimitiveValueInterface,
@@ -10,14 +10,14 @@ import is from '@sindresorhus/is';
 
 export interface ValueOpts {
   name: string;
-  logger: LogProvider;
+  logger: LoggerInterface;
 }
 
 export abstract class ValueAbstract<InputType>
   implements ValueInterface<InputType>
 {
   protected alias: string | undefined = undefined;
-  public logger: LogProvider;
+  public logger: LoggerInterface;
 
   constructor(protected input: InputType, protected opts: ValueOpts) {
     this.logger = opts.logger;
