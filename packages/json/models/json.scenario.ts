@@ -17,7 +17,7 @@ export class JsonScenario extends ScenarioType({
   #context: JsonContext | null = null;
   #adapter: JsonAdapter = new JsonAdapter();
 
-  public readonly request = new JsonRequest(this.opts, this.persona);
+  public readonly request = new JsonRequest(this.opts);
 
   public get context(): JsonContext | null {
     return this.#context;

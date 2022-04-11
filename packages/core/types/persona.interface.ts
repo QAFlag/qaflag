@@ -1,8 +1,10 @@
 import { Cookie } from 'tough-cookie';
-import { HeaderFetcher, StringFetcher } from './fetcher';
+import { CookieFetcher, HeaderFetcher, StringFetcher } from './fetcher';
 import { KeyValue } from './general.types';
-import { HttpRequestInterface } from './http-request.interface';
 import { HttpAuth, HttpHeaders, HttpProxy } from './http.types';
+
+export type DeviceInput = 'touch' | 'mouse' | 'keyboard';
+export type DeviceType = 'phone' | 'tablet' | 'desktop' | 'laptop';
 
 export type Permission =
   | 'geolocation'
@@ -27,10 +29,10 @@ type GeoLocation = {
   accuracy: number | undefined;
 };
 
-type ColorSchemePreference = null | 'light' | 'dark' | 'no-preference';
-type ForcedColors = null | 'active' | 'none';
-type MediaType = null | 'screen' | 'print';
-type ReducedMotion = null | 'reduce' | 'no-preference';
+type ColorSchemePreference = undefined | 'light' | 'dark' | 'no-preference';
+type ForcedColors = undefined | 'active' | 'none';
+type MediaType = undefined | 'screen' | 'print';
+type ReducedMotion = undefined | 'reduce' | 'no-preference';
 type WidthAndHeight = { width: number; height: number };
 
 type StorageOrigins = {
@@ -42,13 +44,19 @@ type StorageOrigins = {
 };
 
 type BrowserOptions = {
+  engine?: 'chromium' | 'firefox' | 'webkit';
+  // "chrome", "chrome-beta", "chrome-dev", "chrome-canary", "msedge",  "msedge-beta", "msedge-dev", "msedge-canary"
+  channel?: string;
+  args?: Array<string>;
+  chromiumSandbox?: boolean;
+  devtools?: boolean;
+  executablePath?: string;
+  userPrefs?: { [key: string]: string | number | boolean };
   colorScheme?: ColorSchemePreference;
   forcedColors?: ForcedColors;
   mediaType?: MediaType;
   reducedMotion?: ReducedMotion;
   deviceScaleFactor?: number;
-  hasTouch?: boolean;
-  isMobile?: boolean;
   javaScriptEnabled?: boolean;
   storage?: StorageOrigins[];
   permissions?: Permission[];
@@ -63,22 +71,28 @@ export interface PersonaInterface {
   basicAuthentication: HttpAuth | undefined;
   proxy: HttpProxy | undefined;
   headers: HttpHeaders | undefined;
-  cookies: KeyValue | Cookie[] | undefined;
+  cookies: Cookie[];
   trailers: KeyValue | undefined;
   geolocation: GeoLocation | undefined;
-  isOnline: boolean | undefined;
+  isOffline: boolean;
   languageLocale: string | undefined;
   timezone: string | undefined;
   viewport: WidthAndHeight | undefined;
   screenSize: WidthAndHeight | undefined;
-  authenticate(request: HttpRequestInterface): Promise<HttpRequestInterface>;
+  deviceInputs: DeviceInput[];
+  deviceType: DeviceType;
+  authenticate(): Promise<this>;
 }
 
 export interface PersonaInitInterface
   extends Partial<
-    Omit<PersonaInterface, 'authenticate' | 'headers' | 'bearerToken' | 'name'>
+    Omit<
+      PersonaInterface,
+      'authenticate' | 'headers' | 'bearerToken' | 'name' | 'cookies'
+    >
   > {
   name: string;
   headers?: HttpHeaders | HeaderFetcher | undefined;
   bearerToken?: string | StringFetcher | undefined;
+  cookies?: KeyValue<string> | Cookie[] | CookieFetcher;
 }

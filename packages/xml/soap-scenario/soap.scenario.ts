@@ -9,7 +9,7 @@ export class SoapScenario extends ScenarioType({
   #context: SoapContext | null = null;
   #adapter = new XmlAdapter();
 
-  public readonly request = new XmlRequest(this.opts, this.persona);
+  public readonly request = new XmlRequest(this.opts);
 
   public get context(): SoapContext | null {
     return this.#context;

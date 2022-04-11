@@ -8,7 +8,7 @@ export class HtmlScenario extends ScenarioType({
   #context: HtmlContext | null = null;
   #adapter = new XmlAdapter();
 
-  public readonly request = new XmlRequest(this.opts, this.persona);
+  public readonly request = new XmlRequest(this.opts);
 
   public get context(): HtmlContext | null {
     return this.#context;

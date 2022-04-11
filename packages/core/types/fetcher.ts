@@ -2,6 +2,7 @@ import { HttpResponse } from '../models/http-response';
 import { HttpRequest } from '../models/http-request';
 import { HttpRequestOptions } from './http-request.interface';
 import { HttpHeaders } from './http.types';
+import { InputCookies } from '../utils/cookies';
 
 export type Fetcher = HttpRequestOptions & {
   fetch?: (request: HttpRequest) => Promise<HttpResponse>;
@@ -14,4 +15,8 @@ export type StringFetcher = Fetcher & {
 
 export type HeaderFetcher = Fetcher & {
   parse: (response: HttpResponse) => Promise<HttpHeaders>;
+};
+
+export type CookieFetcher = Fetcher & {
+  parse: (response: HttpResponse) => Promise<InputCookies>;
 };

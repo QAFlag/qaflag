@@ -1,7 +1,9 @@
 import { HttpRequest } from '@qaflag/core';
 import { PlaywrightScenario } from './playwright.scenario';
 
-type PlaywrightCookie = {
+type SameSite = 'Strict' | 'Lax' | 'None';
+
+interface PlaywrightCookie {
   name: string;
   value: string;
   url?: string;
@@ -10,15 +12,26 @@ type PlaywrightCookie = {
   expires?: number;
   httpOnly?: boolean;
   secure?: boolean;
-  sameSite?: 'Strict' | 'Lax' | 'None';
-};
+  sameSite?: SameSite;
+}
 
 export class PlaywrightRequest extends HttpRequest {
   constructor(scenario: PlaywrightScenario) {
-    super(scenario.opts, scenario.persona);
+    super(scenario.opts);
   }
 
-  public getCookiesArray(): PlaywrightCookie[] {
-    return [];
+  public getCookies(): PlaywrightCookie[] {
+    return this.cookies.map(cookie => ({
+      name: cookie.key,
+      value: cookie.value,
+      doamin: cookie.domain || undefined,
+      path: cookie.path || undefined,
+      expires: cookie.expiryTime(),
+      httpOnly: cookie.httpOnly,
+      secure: cookie.secure,
+      sameSite: ['Strict', 'Lax', 'None'].includes(cookie.sameSite)
+        ? (cookie.sameSite as SameSite)
+        : undefined,
+    }));
   }
 }

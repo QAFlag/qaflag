@@ -80,9 +80,7 @@ export function Suite(initOpts: SuiteOpts) {
         await Promise.all(
           step.scenarios.map(async scenario => {
             this.events.emit('beforeEach', scenario);
-            scenario.request = await scenario.persona.authenticate(
-              scenario.request,
-            );
+            scenario.request.setPersona(await scenario.persona.authenticate());
             scenario.request.pathReplace(this.store.entries());
             scenario.logger.start();
             await scenario.execute();

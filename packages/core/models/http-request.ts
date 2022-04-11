@@ -12,16 +12,21 @@ import {
 import { Persona } from './persona';
 import { ScenarioUri } from '../types/scenario.interface';
 import { parseUri } from '../utils/uri';
+import { getCookieArray } from '../utils/cookies';
+import { Cookie } from 'tough-cookie';
 
 export class HttpRequest implements HttpRequestInterface {
   #method: HttpVerbs;
   #path: string;
+  #persona: Persona | undefined;
 
-  constructor(
-    public readonly opts: HttpRequestOptions,
-    public readonly persona?: Persona,
-  ) {
+  constructor(public readonly opts: HttpRequestOptions, persona?: Persona) {
     this.uri = opts.uri;
+    this.#persona = persona;
+  }
+
+  public get persona() {
+    return this.#persona;
   }
 
   public get responseType() {
@@ -70,6 +75,10 @@ export class HttpRequest implements HttpRequestInterface {
     return this.opts.timeout || 10000;
   }
 
+  public setPersona(persona: Persona) {
+    this.#persona = persona;
+  }
+
   public pathReplace(variables: [string, any][]): void {
     let path = this.path;
     variables.forEach(([key, value]) => {
@@ -79,7 +88,7 @@ export class HttpRequest implements HttpRequestInterface {
   }
 
   public get proxy() {
-    return this.opts.proxy;
+    return this.opts.proxy || this.persona?.proxy;
   }
 
   public get userAgent() {
@@ -87,12 +96,16 @@ export class HttpRequest implements HttpRequestInterface {
       this.opts.userAgent ||
       (this.opts.headers && this.opts.headers['user-agent']) ||
       this.persona?.userAgent ||
+      this.persona?.headers['user-agent'] ||
       'Flagpole';
     return Array.isArray(ua) ? ua.join(' ') : ua;
   }
 
-  public get cookies() {
-    return this.opts.cookies || {};
+  public get cookies(): Cookie[] {
+    return [
+      ...getCookieArray(this.persona?.cookies),
+      ...getCookieArray(this.opts.cookies),
+    ];
   }
 
   public get headers() {

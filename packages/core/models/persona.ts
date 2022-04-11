@@ -1,16 +1,20 @@
 import { fetchWithAxios } from '../utils/axios';
 import { HttpHeaders } from '../types/http.types';
-import { HttpRequestInterface } from '../types/http-request.interface';
 import { HttpRequest } from './http-request';
 import {
+  DeviceInput,
   PersonaInitInterface,
   PersonaInterface,
 } from '../types/persona.interface';
-import { HeaderFetcher, StringFetcher } from '../types/fetcher';
+import { CookieFetcher, HeaderFetcher } from '../types/fetcher';
+import { InputCookies } from '../utils/cookies';
+import { Cookie } from 'tough-cookie';
+import { KeyValue } from '../types/general.types';
 
 export class Persona implements PersonaInterface {
   #bearerToken: string | undefined = undefined;
   #headers: HttpHeaders | undefined = undefined;
+  #cookies: InputCookies | undefined = undefined;
 
   constructor(private readonly opts: PersonaInitInterface) {
     if (typeof opts.bearerToken == 'string') {
@@ -27,11 +31,18 @@ export class Persona implements PersonaInterface {
   }
 
   public get cookies() {
-    return this.opts.cookies;
+    if (!this.#cookies) return [];
+    if (Array.isArray(this.#cookies)) return this.#cookies;
+    return Object.entries(this.#cookies).map(cookie => {
+      return new Cookie({
+        key: cookie[0],
+        value: cookie[1],
+      });
+    });
   }
 
   public get headers() {
-    return this.#headers;
+    return this.#headers || {};
   }
 
   public get bearerToken() {
@@ -39,7 +50,7 @@ export class Persona implements PersonaInterface {
   }
 
   public get userAgent() {
-    return this.opts.userAgent;
+    return this.opts.userAgent || 'QA Flag';
   }
 
   public get browser() {
@@ -70,10 +81,6 @@ export class Persona implements PersonaInterface {
     return this.opts.geolocation;
   }
 
-  public get isOnline(): boolean {
-    return !!this.opts.isOnline;
-  }
-
   public get name() {
     return this.opts.name;
   }
@@ -82,30 +89,47 @@ export class Persona implements PersonaInterface {
     return this.opts.story;
   }
 
-  public async authenticate(
-    request: HttpRequestInterface,
-  ): Promise<HttpRequestInterface> {
-    // Request has no bearer token, but our persona does
-    if (!request.bearerToken && this.opts.bearerToken) {
-      this.#bearerToken = await this.getToken(this.opts.bearerToken);
-      request.bearerToken = this.#bearerToken;
-    }
-    // Apply headers from persona
-    this.#headers = await this.getHeaders(this.opts.headers);
-    request.headers = {
-      ...this.#headers,
-      ...request.headers,
-    };
-    // Apply basic/digest auth
-    if (this.opts.basicAuthentication && !request.auth) {
-      request.auth = this.opts.basicAuthentication;
-    }
-    return request;
+  public get deviceInputs(): DeviceInput[] {
+    if (this.opts.deviceInputs) return this.opts.deviceInputs;
+    if (this.isMobile) return ['keyboard', 'touch'];
+    return ['keyboard', 'mouse'];
   }
 
-  private async getToken(fetcher: string | StringFetcher): Promise<string> {
+  public get isMobile() {
+    return ['phone', 'tablet'].includes(this.deviceType);
+  }
+
+  public get deviceType() {
+    return this.opts.deviceType || 'laptop';
+  }
+
+  public get isOffline() {
+    return this.opts.isOffline || false;
+  }
+
+  public async authenticate(): Promise<this> {
+    this.#bearerToken = await this.fetchBearerToken();
+    this.#headers = await this.fetchHeaders();
+    this.#cookies = await this.fetchCookies();
+    return this;
+  }
+
+  private async fetchBearerToken(): Promise<string | undefined> {
+    const bearerToken = this.opts.bearerToken;
     if (this.#bearerToken) return this.#bearerToken;
-    if (typeof fetcher == 'string') return fetcher;
+    if (typeof bearerToken == 'string' || !bearerToken) return bearerToken;
+    const req = new HttpRequest(bearerToken);
+    const res = await (bearerToken.fetch === undefined
+      ? fetchWithAxios(req)
+      : bearerToken.fetch(req));
+    return bearerToken.parse(res);
+  }
+
+  private async fetchHeaders(): Promise<HttpHeaders> {
+    const headers = this.opts.headers;
+    if (this.#headers) return this.#headers;
+    if (!headers?.parse) return (headers as HttpHeaders) || {};
+    const fetcher = headers as HeaderFetcher;
     const req = new HttpRequest(fetcher);
     const res = await (fetcher.fetch === undefined
       ? fetchWithAxios(req)
@@ -113,13 +137,13 @@ export class Persona implements PersonaInterface {
     return fetcher.parse(res);
   }
 
-  private async getHeaders(
-    personaHeaders?: HttpHeaders | HeaderFetcher,
-  ): Promise<HttpHeaders> {
-    if (this.#headers) return this.#headers;
-    if (!personaHeaders?.parse) return (personaHeaders as HttpHeaders) || {};
-    const fetcher = personaHeaders as HeaderFetcher;
-    const req = new HttpRequest(fetcher as HeaderFetcher);
+  private async fetchCookies(): Promise<InputCookies> {
+    const cookies = this.opts.cookies;
+    if (this.#cookies) return this.#cookies;
+    if (Array.isArray(cookies)) return cookies;
+    if (!cookies?.parse) return (cookies as KeyValue<string>) || {};
+    const fetcher = cookies as CookieFetcher;
+    const req = new HttpRequest(fetcher);
     const res = await (fetcher.fetch === undefined
       ? fetchWithAxios(req)
       : fetcher.fetch(req));

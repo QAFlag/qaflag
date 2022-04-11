@@ -1,3 +1,6 @@
+import { Persona } from '../models/persona';
+import { Cookie } from 'tough-cookie';
+import { InputCookies } from '../utils/cookies';
 import { KeyValue } from './general.types';
 import {
   HttpAuth,
@@ -8,6 +11,7 @@ import {
   HttpResponseType,
   HttpVerbs,
 } from './http.types';
+import { PersonaInterface } from './persona.interface';
 import { ScenarioUri } from './scenario.interface';
 
 /**
@@ -18,7 +22,7 @@ export interface HttpRequestOptions {
   baseUrl?: string;
   bearerToken?: string;
   headers?: HttpHeaders;
-  cookies?: KeyValue<string>;
+  cookies?: InputCookies;
   queryString?: KeyValue<string>;
   auth?: HttpAuth;
   userAgent?: string;
@@ -37,8 +41,9 @@ export interface HttpRequestInterface {
   baseUrl: string | undefined;
   method: HttpVerbs;
   path: string;
+  persona: Persona | undefined;
   headers: HttpHeaders;
-  cookies: KeyValue;
+  cookies: Cookie[];
   bearerToken: string | undefined;
   auth: HttpAuth | undefined;
   proxy: HttpProxy | undefined;
@@ -48,4 +53,5 @@ export interface HttpRequestInterface {
   queryString: KeyValue<string>;
   timeout: number;
   maxRedirects: number;
+  setPersona(persona: PersonaInterface): void;
 }
