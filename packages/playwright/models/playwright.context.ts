@@ -65,23 +65,27 @@ export class PlaywrightContext extends Context implements ContextInterface {
     return locator;
   }
 
-  public async screenshot(opts: PageScreenshotOptions) {
+  public screenshot(opts: PageScreenshotOptions) {
     return this.page.screenshot(opts);
   }
 
-  public async reload(opts: NavigationOpts) {
+  public reload(opts: NavigationOpts) {
     return this.page.reload(opts);
   }
 
-  public async goForward(opts: NavigationOpts) {
+  public goForward(opts: NavigationOpts) {
     return this.page.goForward(opts);
   }
 
-  public async goBack(opts: NavigationOpts) {
+  public goBack(opts: NavigationOpts) {
     return this.page.goBack(opts);
   }
 
-  public async goTo(url: string, opts: NavigationOpts) {
+  public goTo(url: string, opts: NavigationOpts) {
     return this.page.goto(url, opts);
+  }
+
+  public waitForNavigation() {
+    return this.page.waitForNavigation();
   }
 }

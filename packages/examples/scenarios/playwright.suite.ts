@@ -7,14 +7,13 @@ export class GoogleSearch extends Suite({
 }) {
   @Scenario({
     uri: 'GET https://www.google.com',
-    statusCode: 200,
   })
-  async getSearchPage(context: PlaywrightContext) {
+  async queryForMyGithub(context: PlaywrightContext) {
     const button = await context.exists("text='Google Search' >> visible=true");
-    const input = await context.exists("[aria-label='Search']");
-    await input.keyboard.input('Jason Byrne Github');
+    const textbox = await context.exists("[aria-label='Search']");
+    await textbox.keyboard.input('Jason Byrne Github');
     await button.mouse.click();
-    await context.page.waitForNavigation();
+    await context.waitForNavigation();
     await context.exists("'Jason Byrne jasonbyrne - GitHub' >> visible=true");
   }
 }
