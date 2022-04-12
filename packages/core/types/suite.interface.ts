@@ -23,8 +23,24 @@ export interface SuiteInterface extends LogProvider {
   }>;
   persona: Persona;
   logger: Logger;
+  results: SuiteResults;
   set<T>(key: string, value: T): T;
   get(key: string): any;
   push(key: string, value: any): any;
   execute(): Promise<void>;
+}
+
+export type SuiteStatus = 'not started' | 'in progress' | 'pass' | 'fail';
+
+export interface SuiteResults {
+  status: SuiteStatus;
+  scenarios: {
+    passCount: number;
+    failCount: number;
+  };
+  assertions: {
+    passCount: number;
+    failCount: number;
+    optionalFailCount: number;
+  };
 }

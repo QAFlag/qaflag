@@ -7,7 +7,11 @@ import { KvStore } from '../models/kv-store';
 import { Logger } from '../models/logger';
 import { Persona } from '../models/persona';
 import { ScenarioInterface } from '../types/scenario.interface';
-import { SuiteInterface, SuiteStep } from '../types/suite.interface';
+import {
+  SuiteInterface,
+  SuiteResults,
+  SuiteStep,
+} from '../types/suite.interface';
 
 export const ScenarioDefinitions = Symbol('ScenarioDefinitions');
 export const BeforeAlls = Symbol('BeforeAlls');
@@ -130,6 +134,35 @@ export function Suite(suiteOpts: SuiteOpts) {
 
     public push(key: string, value: any): any {
       return this.store.push(key, value);
+    }
+
+    public get results() {
+      const results: SuiteResults = {
+        status: 'pass',
+        assertions: {
+          passCount: 0,
+          failCount: 0,
+          optionalFailCount: 0,
+        },
+        scenarios: {
+          passCount: 0,
+          failCount: 0,
+        },
+      };
+      this.scenarios.forEach(scenario => {
+        const scenarioResult = scenario.result;
+        results.assertions.passCount += scenarioResult.passCount;
+        results.assertions.failCount += scenarioResult.failCount;
+        results.assertions.optionalFailCount +=
+          scenarioResult.optionalFailCount;
+        if (scenarioResult.failCount > 0) {
+          results.status = 'fail';
+          results.scenarios.failCount++;
+        } else {
+          results.scenarios.passCount++;
+        }
+      });
+      return results;
     }
   };
 }

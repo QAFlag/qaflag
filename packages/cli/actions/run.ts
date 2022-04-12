@@ -5,24 +5,58 @@ import { loadSuite } from '../utils/load-suite';
 import { outputSuiteToConsole } from '../formatter/console';
 import { SuiteClass, SuiteCollection } from '../types/suite-collection';
 import Project from '../models/project';
+import { Command } from 'commander';
+import * as pLimit from 'p-limit';
+import { printLines } from '../utils/print';
 
-export const run = async (project: Project, options: any) => {
+export const run = async (
+  project: Project,
+  command: Command,
+  options: { [key: string]: string | boolean },
+) => {
   const suites = findSuites(project);
-  const selection = !options.args?.length
-    ? await pickSuite(suites)
-    : findSuiteByName(suites, options.args[0]);
-  if (!selection) return exitError('No suite selected.');
-  const suite = loadSuite(selection);
-  suite.events.once('completed').then(() => outputSuiteToConsole(suite));
-  suite.execute();
+  const selections = options.all
+    ? suites.suiteClasses
+    : command.args?.length
+    ? findSuiteByName(suites, command.args)
+    : [await pickSuite(suites)];
+  if (!selections.length) return exitError('No suites selected.');
+  const limit = pLimit(1);
+  const completed = await Promise.all(
+    selections.map(selection =>
+      limit(async () => {
+        const suite = loadSuite(selection);
+        suite.events.once('completed').then(() => outputSuiteToConsole(suite));
+        await suite.execute();
+        return suite;
+      }),
+    ),
+  );
+  if (selections.length > 1) {
+    const results = completed.map(suite => suite.results.status == 'pass');
+    printLines([
+      '',
+      'Suite Results:',
+      `${results.filter(pass => pass).length} passed`,
+      `${results.filter(pass => !pass).length} failed`,
+      '',
+    ]);
+  }
 };
 
 const findSuiteByName = (
   suites: SuiteCollection,
-  name: string,
-): SuiteClass | undefined => {
-  const pattern = new RegExp('^' + name.replace('*', '.*') + '$', 'i');
-  return suites.suiteClasses.find(suite => pattern.test(suite.className));
+  names: string[],
+): SuiteClass[] => {
+  const out: SuiteClass[] = [];
+  names.forEach(name => {
+    const pattern = new RegExp('^' + name.replace('*', '.*') + '$', 'i');
+    const matches = suites.suiteClasses.filter(suite =>
+      pattern.test(suite.className),
+    );
+    if (matches.length) out.push(...matches);
+  });
+  return out;
 };
 
 const pickSuite = async (suites: SuiteCollection): Promise<SuiteClass> => {

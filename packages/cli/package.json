@@ -25,6 +25,7 @@
     "cli-table3": "^0.6.1",
     "commander": "^9.1.0",
     "fs-extra": "^10.0.1",
+    "p-limit": "3.1.0",
     "prompts": "^2.4.2",
     "string-width": "4.2.2"
   },

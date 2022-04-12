@@ -36,8 +36,9 @@ program
 program
   .command('run')
   .description('Run a test suite')
+  .option('--all', 'Run every suite')
   .action(async (str, options) => {
-    await run(project, options);
+    await run(project, options, str);
   });
 
 program
