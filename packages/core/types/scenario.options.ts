@@ -19,7 +19,7 @@ export interface ScenarioDecoratorOpts extends HttpRequestOptions {
       };
 }
 
-export type ScenarioTemplate = ScenarioDecoratorOpts & {
+export type ScenarioInitOpts = ScenarioDecoratorOpts & {
   key: string | Symbol;
   step: number;
   next: (...args: any[]) => Promise<void>;
@@ -28,5 +28,5 @@ export type ScenarioTemplate = ScenarioDecoratorOpts & {
 export interface ScenarioConstructor<
   ScenarioType extends ScenarioInterface = ScenarioInterface,
 > {
-  new (opts: ScenarioTemplate, suite: SuiteInterface): ScenarioType;
+  new (opts: ScenarioInitOpts, suite: SuiteInterface): ScenarioType;
 }

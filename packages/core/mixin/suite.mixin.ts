@@ -1,7 +1,7 @@
 import Emittery = require('emittery');
 import {
   ScenarioConstructor,
-  ScenarioTemplate,
+  ScenarioInitOpts,
 } from '../types/scenario.options';
 import { KvStore } from '../models/kv-store';
 import { Logger } from '../models/logger';
@@ -19,12 +19,12 @@ export type SuiteOpts = {
   type?: ScenarioConstructor;
 };
 
-export function Suite(initOpts: SuiteOpts) {
+export function Suite(suiteOpts: SuiteOpts) {
   return class SuiteAbstract implements SuiteInterface {
     #befores: string[] = [];
     #afters: string[] = [];
 
-    public readonly title = initOpts.title;
+    public readonly title = suiteOpts.title;
     public readonly store = new KvStore();
     public readonly logger = new Logger();
     public readonly events = new Emittery<{
@@ -38,7 +38,7 @@ export function Suite(initOpts: SuiteOpts) {
     public readonly scenarios: ScenarioInterface[] = [];
     public readonly steps: SuiteStep[] = [];
     public readonly persona: Persona =
-      initOpts.persona || new Persona({ name: 'Default ' });
+      suiteOpts.persona || new Persona({ name: 'Default ' });
 
     constructor() {
       if (this[BeforeAlls]) {
@@ -52,18 +52,18 @@ export function Suite(initOpts: SuiteOpts) {
         );
       }
       // Add scenarios to this instance
-      const scenarioMethods: { [methodName: string]: ScenarioTemplate } =
+      const scenarioMethods: { [methodName: string]: ScenarioInitOpts } =
         this[ScenarioDefinitions];
       if (scenarioMethods) {
         Object.values(scenarioMethods)
           .sort((a, b) => a.step - b.step)
-          .forEach(template => {
-            const scenarioConstructor = template.type || initOpts.type;
+          .forEach(scenarioOpts => {
+            const scenarioConstructor = scenarioOpts.type || suiteOpts.type;
             if (!scenarioConstructor) {
               throw 'No Scenario Type defined. It must be set either in the Scenario decorator in the Suite decorator, as a default.';
             }
             const scenario = this.addScenarioToStep(
-              new scenarioConstructor(template, this),
+              new scenarioConstructor(scenarioOpts, this),
             );
             this.scenarios.push(scenario);
           });

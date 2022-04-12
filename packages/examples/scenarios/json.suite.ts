@@ -49,7 +49,8 @@ export class UsersSuite extends Suite({
   persona: GuestPersona,
   type: JsonScenario,
 }) {
-  @GetList() async getListOfUsers(context: JsonContext) {
+  @GetList()
+  async getListOfUsers(context: JsonContext) {
     context.requestDuration.should.be.lessThan(100);
     const items = context.find('[*]');
     items.must.all.match.dto(UserDto);

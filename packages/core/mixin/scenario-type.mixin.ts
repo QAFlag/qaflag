@@ -1,4 +1,4 @@
-import { ScenarioTemplate } from '../types/scenario.options';
+import { ScenarioInitOpts } from '../types/scenario.options';
 import { Logger } from '../models/logger';
 import { Persona } from '../models/persona';
 import { HttpVerbs } from '../types/http.types';
@@ -18,7 +18,7 @@ export type ScenarioTypeOpts = {
 export function ScenarioType(initOpts: ScenarioTypeOpts) {
   abstract class ScenarioAbstract implements ScenarioInterface {
     constructor(
-      public readonly opts: ScenarioTemplate,
+      public readonly opts: ScenarioInitOpts,
       public readonly suite: SuiteInterface,
     ) {
       this.key = opts.key;

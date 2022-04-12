@@ -1,6 +1,6 @@
 import {
   ScenarioDecoratorOpts,
-  ScenarioTemplate,
+  ScenarioInitOpts,
 } from '../types/scenario.options';
 import { ScenarioDefinitions } from '../mixin/suite.mixin';
 import { ScenarioInterface } from '../types/scenario.interface';
@@ -12,7 +12,7 @@ export function Scenario(opts: ScenarioDecoratorOpts) {
     descriptor: PropertyDescriptor,
   ) {
     const originalMethod = descriptor.value;
-    const scenario: ScenarioTemplate = {
+    const scenario: ScenarioInitOpts = {
       ...opts,
       key: methodName,
       description: opts.description || '',
