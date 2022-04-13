@@ -7,6 +7,8 @@ import cli from './cli';
 import Project from './models/project';
 import { init } from './actions/init';
 import { run } from './actions/run';
+import { startServer } from './webserver/server';
+import * as open from 'open';
 
 // Initialize Project
 const project = new Project({
@@ -18,6 +20,14 @@ const program = new Command()
   .name('qaflag')
   .description('QA Flag test automation CLI')
   .version(cli.version);
+
+program
+  .command('server')
+  .description('Run the QA Flag web interface.')
+  .action(async (str, options) => {
+    const server = await startServer();
+    open(`http://localhost:${server.port}`);
+  });
 
 program
   .command('list')

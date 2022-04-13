@@ -1,5 +1,5 @@
 import { findSuites } from '../utils/find-suites';
-import { exitError } from '../utils/exit';
+import { exitError, exitSuccess } from '../utils/exit';
 import { prompt } from 'prompts';
 import { loadSuite } from '../utils/load-suite';
 import { outputSuiteToConsole } from '../formatter/console';
@@ -32,16 +32,21 @@ export const run = async (
       }),
     ),
   );
+  const results = completed.map(suite => suite.results.status == 'pass');
+  const passCount = results.filter(pass => pass).length;
+  const failCount = results.filter(pass => !pass).length;
   if (selections.length > 1) {
-    const results = completed.map(suite => suite.results.status == 'pass');
     printLines([
       '',
       'Suite Results:',
-      `${results.filter(pass => pass).length} passed`,
-      `${results.filter(pass => !pass).length} failed`,
+      `${passCount} passed`,
+      `${failCount} failed`,
       '',
     ]);
   }
+  return failCount
+    ? exitError('Some suites failed.')
+    : exitSuccess('All suites passed.');
 };
 
 const findSuiteByName = (

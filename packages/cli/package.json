@@ -14,7 +14,9 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "npm run clean && tsc && npm run copy-files && chmod +x dist/index.js",
+    "clean": "rimraf dist/",
+    "copy-files": "copyfiles -u 1 ./**/*.html ./**/*.css dist/",
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "author": "Jason Byrne",
@@ -25,12 +27,16 @@
     "cli-table3": "^0.6.1",
     "commander": "^9.1.0",
     "fs-extra": "^10.0.1",
+    "minikin": "^1.0.36",
+    "open": "7.4.2",
     "p-limit": "3.1.0",
     "prompts": "^2.4.2",
     "string-width": "4.2.2"
   },
   "devDependencies": {
     "@types/fs-extra": "^9.0.13",
-    "@types/prompts": "^2.0.14"
+    "@types/prompts": "^2.0.14",
+    "copyfiles": "^2.4.1",
+    "rimraf": "^3.0.2"
   }
 }
