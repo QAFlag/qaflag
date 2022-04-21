@@ -1,0 +1,135 @@
+@import url('https://fonts.googleapis.com/css2?family=Akshar:wght@300;600&family=Nanum+Gothic+Coding:wght@400;700&display=swap');
+
+* {
+  box-sizing: border-box;
+  font-size: 1.6rem;
+}
+
+html {
+  background-color: black;
+  color: white;
+  font-size: 10px;
+  font-family: 'Akshar', sans-serif;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+}
+
+pre {
+  font-family: 'Nanum Gothic Coding', monospace;
+  font-size: 1rem;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  padding: 0;
+  margin: 0;
+}
+
+h1 {
+  font-size: 4rem;
+}
+h2 {
+  font-size: 3rem;
+}
+h3 {
+  font-size: 2.5rem;
+}
+h4 {
+  font-size: 2rem;
+}
+h5 {
+  font-size: 1.8rem;
+}
+h6 {
+  font-size: 1.6rem;
+}
+
+body > header {
+  padding: 1rem;
+  border-bottom: solid 0.25rem white;
+  margin-bottom: 1rem;
+}
+
+body > main {
+  padding: 1rem;
+  font-size: 1.6rem;
+  line-height: 2rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+}
+
+td,
+th {
+  text-align: left;
+  padding: 0.5rem;
+}
+
+th {
+  font-weight: 600;
+  background-color: rgb(50, 50, 50);
+}
+
+tbody td {
+  border-bottom: solid 0.1rem rgb(200, 200, 200);
+}
+
+a {
+  color: rgb(255, 255, 0);
+}
+
+ul,
+ol {
+  margin: 0;
+  padding: 2rem;
+}
+
+li {
+  margin-bottom: 1rem;
+}
+
+code {
+  font-family: 'Nanum Gothic Coding', monospace;
+  font-size: 1.5rem;
+  background-color: rgba(255, 255, 255, 0.8);
+  color: rgb(0, 0, 0);
+  padding: 0.25rem;
+  display: inline-block;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}
+
+pre {
+  font-family: 'Nanum Gothic Coding', monospace;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: rgb(255, 255, 255);
+  padding: 1rem;
+  font-size: 1.6rem;
+}
+
+button {
+  appearance: none;
+  background-color: transparent;
+  color: rgb(255, 255, 255);
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  border-radius: 0.5rem;
+  border: solid 0.1rem rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+}

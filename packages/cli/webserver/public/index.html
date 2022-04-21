@@ -1,0 +1,39 @@
+<html>
+  <head>
+    <title>QA Flag</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <h1>QA Flag</h1>
+    </header>
+    <main>
+    	<table id="suites">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Path</th>
+					</tr>
+				<thead>
+				<tbody>
+				</tbody>
+			</table>
+    </main>
+    <script
+      src="https://code.jquery.com/jquery-3.6.0.min.js"
+      crossorigin="anonymous">
+    </script>
+    <script>
+      $.getJSON('/api/suites', (data) => {
+        $('#suites tbody').html(
+          data.map((suite) => `
+            <tr>
+              <td>${suite.name}</td>
+              <td>${suite.relativePath}</td>
+            </tr>
+          `)
+        )
+      });
+    </script>
+  </body>
+</html>

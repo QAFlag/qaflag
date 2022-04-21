@@ -25,7 +25,7 @@ program
   .command('server')
   .description('Run the QA Flag web interface.')
   .action(async (str, options) => {
-    const server = await startServer();
+    const server = await startServer(project);
     open(`http://localhost:${server.port}`);
   });
 
