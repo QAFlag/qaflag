@@ -18,5 +18,6 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
     "jmespath": "^0.16.0"
-  }
+  },
+  "gitHead": "677d744f44775d4e3ef1487fbef2035ea763cec9"
 }

@@ -17,5 +17,6 @@
     "@qaflag/core": "^0.0.2",
     "@qaflag/xml": "^0.0.2",
     "cheerio": "^1.0.0-rc.10"
-  }
+  },
+  "gitHead": "677d744f44775d4e3ef1487fbef2035ea763cec9"
 }

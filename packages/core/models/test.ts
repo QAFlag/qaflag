@@ -349,6 +349,10 @@ export class Test<InputType = unknown>
     this.is('falsy');
   }
 
+  public mongoId() {
+    this.validator('isMongoId', 'Mongo ID');
+  }
+
   public type(typeName: string) {
     this.message.push(typeName);
     this.execute(

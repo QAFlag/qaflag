@@ -1,5 +1,5 @@
 ![QA Flag](/assets/qaflag.png)
 
-Test XML, SOAP, RSS, and ATOM responses
+Test JSON responses
 
 More details: [https://github.com/QAFlag/qaflag]

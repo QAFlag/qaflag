@@ -1,5 +1,5 @@
 ![QA Flag](/assets/qaflag.png)
 
-Test XML, SOAP, RSS, and ATOM responses
+Test with headless or headful browser for web applications, using Playwright
 
 More details: [https://github.com/QAFlag/qaflag]

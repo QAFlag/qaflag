@@ -1,5 +1,5 @@
 ![QA Flag](/assets/qaflag.png)
 
-Test XML, SOAP, RSS, and ATOM responses
+Test HTML scenarios, without a full browser by using Cheerio
 
 More details: [https://github.com/QAFlag/qaflag]
