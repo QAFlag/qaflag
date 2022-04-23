@@ -1,6 +1,6 @@
 {
   "name": "@qaflag/html",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "",
   "author": "Jason Byrne",
   "homepage": "https://github.com/QAFlag/qaflag#readme",
@@ -14,8 +14,8 @@
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "dependencies": {
-    "@qaflag/core": "^0.0.4",
-    "@qaflag/xml": "^0.0.4",
+    "@qaflag/core": "^0.0.5",
+    "@qaflag/xml": "^0.0.5",
     "cheerio": "^1.0.0-rc.10"
   },
   "gitHead": "ff2b9fa885aba8ac96c521adb9f8f75e315a0761",
