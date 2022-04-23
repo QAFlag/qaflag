@@ -19,7 +19,7 @@
     "class-validator": "^0.13.2",
     "jmespath": "^0.16.0"
   },
-  "gitHead": "ff2b9fa885aba8ac96c521adb9f8f75e315a0761",
+  "gitHead": "0cf5cd6ba6109991b47293f14e9c9c029b180038",
   "devDependencies": {
     "husky": "^7.0.4"
   }
