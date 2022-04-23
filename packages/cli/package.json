@@ -37,7 +37,8 @@
     "@types/fs-extra": "^9.0.13",
     "@types/prompts": "^2.0.14",
     "copyfiles": "^2.4.1",
+    "husky": "^7.0.4",
     "rimraf": "^3.0.2"
   },
-  "gitHead": "677d744f44775d4e3ef1487fbef2035ea763cec9"
+  "gitHead": "63090f715578acbb9dec448980c1b76d59a5a2d8"
 }
