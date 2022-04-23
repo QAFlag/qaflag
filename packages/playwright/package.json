@@ -1,6 +1,6 @@
 {
   "name": "@qaflag/playwright",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "",
   "author": "Jason Byrne",
   "homepage": "https://github.com/QAFlag/qaflag#readme",
@@ -14,7 +14,7 @@
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "dependencies": {
-    "@qaflag/core": "^0.0.3",
+    "@qaflag/core": "^0.0.4",
     "playwright": "^1.20.2"
   },
   "gitHead": "63090f715578acbb9dec448980c1b76d59a5a2d8",
