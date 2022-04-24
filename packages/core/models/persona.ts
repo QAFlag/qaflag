@@ -117,9 +117,8 @@ export class Persona implements PersonaInterface {
   private async fetchBearerToken(): Promise<string | undefined> {
     const bearerToken = this.opts.bearerToken;
     if (this.#bearerToken) return this.#bearerToken;
-    if (typeof bearerToken == 'string' || bearerToken === undefined) {
-      return bearerToken;
-    }
+    if (bearerToken === undefined) return undefined;
+    if (typeof bearerToken == 'string') return String(bearerToken);
     const req = new HttpRequest(bearerToken);
     const res = await (bearerToken.fetch === undefined
       ? fetchWithAxios(req)

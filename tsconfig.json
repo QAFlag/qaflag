@@ -1,6 +1,9 @@
 {
   "compilerOptions": {
     "module": "commonjs",
+    "target": "es6",
+    "lib": ["es7"],
+    "outDir": "dist",
     "declaration": false,
     "noImplicitAny": false,
     "noUnusedLocals": true,
@@ -9,14 +12,9 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "useUnknownInCatchVariables": false,
-    "target": "es6",
-    "sourceMap": true,
-    "allowJs": true,
-    "outDir": "dist",
-    "lib": ["es7"],
     "skipLibCheck": true,
     "suppressImplicitAnyIndexErrors": true,
-    "strict": true,
+    "strict": false,
     "strictNullChecks": true,
     "importHelpers": false,
     "allowUnreachableCode": false,
@@ -29,7 +27,9 @@
     "noUnusedParameters": true,
     "strictBindCallApply": true,
     "strictFunctionTypes": true,
-    "strictPropertyInitialization": true
+    "strictPropertyInitialization": true,
+    "sourceMap": true,
+    "allowJs": true
   },
   "include": ["packages/**/*"],
   "exclude": ["node_modules", "**/*.spec.ts"]
