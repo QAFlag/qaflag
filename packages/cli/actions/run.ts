@@ -8,12 +8,14 @@ import Project from '../models/project';
 import { Command } from 'commander';
 import * as pLimit from 'p-limit';
 import { printLines } from '../utils/print';
+import { build } from './build';
 
 export const run = async (
   project: Project,
   command: Command,
   options: { [key: string]: string | boolean },
 ) => {
+  if (options.build) await build(project);
   const suites = findSuites(project);
   const selections = options.all
     ? suites.suiteClasses

@@ -1,6 +1,13 @@
 import prompts = require('prompts');
-import { printHeader, printLines } from '../utils/print';
+import {
+  printHeader,
+  printLineBreak,
+  printLines,
+  printList,
+} from '../utils/print';
 import Project from '../models/project';
+import { addPackages } from 'utils/install';
+import { humanReadableList } from '@qaflag/core/utils/helpers';
 
 export const init = async (project: Project) => {
   printHeader();
@@ -18,14 +25,30 @@ export const init = async (project: Project) => {
       message: `Source folder where test suites will live`,
       initial: './src',
     },
+    {
+      type: 'multiselect',
+      name: 'types',
+      message: 'Pick the test types for this project',
+      choices: [
+        { title: 'JSON', value: '@qaflag/json' },
+        { title: 'Browser (Playwright)', value: '@qaflag/playwright' },
+        { title: 'HTML', value: '@qaflag/html' },
+        { title: 'XML, SOAP, RSS, or ATOM', value: '@qaflag/xml' },
+      ],
+      min: 1,
+      hint: '- Space to select. Return to submit',
+    },
   ]);
+  await addPackages(['@qaflag/core', ...responses.types]);
   project.settings.defaultDomain = responses.defaultDomain;
   project.settings.input.path = responses.src;
   project.write();
-  printLines([
-    '',
-    '* Created qaflag.json',
-    '* Created qaflag.tsconfig.json',
-    '',
+  printLineBreak();
+  printList([
+    'Installed QA Flag core depdenency',
+    `Installed QA Flag types: ${humanReadableList(responses.types)}`,
+    'Created qaflag.json',
+    'Created qaflag.tsconfig.json',
   ]);
+  printLineBreak();
 };

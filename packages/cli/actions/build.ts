@@ -1,7 +1,7 @@
 import Project from '../models/project';
-import { exec } from 'child_process';
+import { shell } from '../utils/shell';
 
 export const build = async (project: Project) => {
   const command = `tsc --project qaflag.tsconfig.json`;
-  exec(command);
+  return shell(command);
 };
