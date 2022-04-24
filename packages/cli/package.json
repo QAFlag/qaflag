@@ -8,7 +8,7 @@
   ],
   "main": "./dist/index.js",
   "bin": {
-    "flagpole": "./dist/index.js"
+    "qaflag": "./dist/index.js"
   },
   "publishConfig": {
     "access": "public"
