@@ -9,6 +9,7 @@ import { init } from './actions/init';
 import { run } from './actions/run';
 import { startServer } from './webserver/server';
 import * as open from 'open';
+import { build } from './actions/build';
 
 // Initialize Project
 const project = new Project({
@@ -56,6 +57,13 @@ program
   .description('Get test plan for a suite')
   .action(async (str, options) => {
     await init(project);
+  });
+
+program
+  .command('build')
+  .description('Trailspile test suites from TypeScript to Javascript')
+  .action(async (str, options) => {
+    await build(project);
   });
 
 program.parse();

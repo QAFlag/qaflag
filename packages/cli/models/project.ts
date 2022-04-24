@@ -1,6 +1,6 @@
 import path = require('path');
 import fs = require('fs');
-import { ProjectInterface, ProjectTests } from '../types/project.interface';
+import { ProjectInterface } from '../types/project.interface';
 
 interface ProjectOpts {
   configFile?: string;
@@ -14,10 +14,17 @@ export default class Project implements ProjectInterface {
     return this.settings !== null;
   }
 
-  public get tests(): ProjectTests {
+  public get input() {
     return {
-      path: this.settings?.tests.path || ['dist'],
-      pattern: this.settings?.tests.pattern || [`\.suite\.js`],
+      path: this.settings?.input?.path || './src',
+      pattern: this.settings?.input?.pattern || `**/*.suite.ts`,
+    };
+  }
+
+  public get output() {
+    return {
+      path: this.settings?.output?.path || './qaflag/suites',
+      pattern: this.settings?.output?.pattern || `\.suite\.js`,
     };
   }
 
@@ -34,7 +41,8 @@ export default class Project implements ProjectInterface {
 
   public serialize(): ProjectInterface {
     return {
-      tests: this.tests,
+      input: this.input,
+      output: this.output,
     };
   }
 
@@ -43,6 +51,26 @@ export default class Project implements ProjectInterface {
     fs.writeFileSync(
       this.configFile,
       JSON.stringify(this.serialize(), null, 2),
+    );
+    fs.writeFileSync(
+      './qaflag.tsconfig.json',
+      JSON.stringify(
+        {
+          compilerOptions: {
+            module: 'commonjs',
+            target: 'es6',
+            rootDir: this.input.path,
+            outDir: this.output.path,
+            allowJs: true,
+            removeComments: true,
+            experimentalDecorators: true,
+          },
+          include: [`${this.input.path}/${this.input.pattern}`],
+          exclude: ['node_modules', '**/*.spec.ts'],
+        },
+        null,
+        2,
+      ),
     );
   }
 }

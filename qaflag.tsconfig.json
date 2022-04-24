@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es6",
+    "rootDir": "packages/examples",
+    "outDir": "./packages/examples/dist",
+    "allowJs": true,
+    "removeComments": true,
+    "experimentalDecorators": true
+  },
+  "include": ["packages/examples/**/*.suite.ts"],
+  "exclude": ["node_modules", "**/*.spec.ts"]
+}

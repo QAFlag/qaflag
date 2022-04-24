@@ -4,8 +4,8 @@ import { SuiteCollection, SuiteClass } from '../types/suite-collection';
 import { findFiles } from './find-files';
 
 export const findSuites = (project: Project): SuiteCollection => {
-  const folder = path.resolve(process.cwd(), project.tests.path[0]);
-  const pattern = new RegExp(project.tests.pattern[0] || '\\.suite\\.', 'i');
+  const folder = path.resolve(process.cwd(), project.output.path);
+  const pattern = new RegExp(project.output.pattern || '\\.suite\\.', 'i');
   const files = findFiles(folder, pattern);
   const suiteClasses: SuiteClass[] = [];
   files.files.forEach(file => {
