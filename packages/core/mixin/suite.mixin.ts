@@ -104,7 +104,7 @@ export function Suite(suiteOpts: SuiteOpts) {
       this.logger.end();
     }
 
-    private getStep(stepNumber: number): SuiteStep {
+    public getStep(stepNumber: number): SuiteStep {
       // Look for existing step with this number
       const step = this.steps.find(step => step.stepNumber === stepNumber);
       if (step) return step;
@@ -118,7 +118,7 @@ export function Suite(suiteOpts: SuiteOpts) {
       return newStep;
     }
 
-    private addScenarioToStep(scenario: ScenarioInterface) {
+    public addScenarioToStep(scenario: ScenarioInterface) {
       const step = this.getStep(scenario.step);
       step.scenarios.push(scenario);
       return scenario;
