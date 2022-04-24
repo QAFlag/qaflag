@@ -7,7 +7,7 @@ import {
 } from '../utils/print';
 import Project from '../models/project';
 import { addPackages } from '../utils/install';
-import { humanReadableList } from '@qaflag/core/utils/helpers';
+import { humanReadableList } from '@qaflag/core';
 
 export const init = async (project: Project) => {
   printHeader();
