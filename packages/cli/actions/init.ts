@@ -6,7 +6,7 @@ import {
   printList,
 } from '../utils/print';
 import Project from '../models/project';
-import { addPackages } from 'utils/install';
+import { addPackages } from '../utils/install';
 import { humanReadableList } from '@qaflag/core/utils/helpers';
 
 export const init = async (project: Project) => {
