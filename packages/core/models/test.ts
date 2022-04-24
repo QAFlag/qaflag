@@ -8,6 +8,8 @@ import {
   MustMatch,
 } from '../types/test.interface';
 import is from '@sindresorhus/is';
+import { humanReadableList } from '../utils/helpers';
+import { ArrayValue, NumericValue } from './values';
 
 export type assertion = (data: unknown) => boolean;
 export type mustOrShould = 'must' | 'should';
@@ -16,14 +18,15 @@ export class Test<InputType = unknown>
   implements MustBe, MustHave, Must, MustBeAn, MustMatch
 {
   protected message: string[];
-  protected isNot: boolean = false;
-  protected evalType: 'standard' | 'every' | 'some' = 'standard';
 
   constructor(
     protected input: ValueInterface<InputType>,
     protected mustOrShould: mustOrShould,
+    protected isNot: boolean = false,
+    protected evalType: 'standard' | 'every' | 'some' = 'standard',
+    message?: string[],
   ) {
-    this.message = [input.name, mustOrShould];
+    this.message = message || [input.name, mustOrShould];
   }
 
   public get not() {
@@ -121,6 +124,38 @@ export class Test<InputType = unknown>
     }
   }
 
+  private clone<T>(input: ValueInterface<T>, pushWord: string) {
+    return new Test(input, this.mustOrShould, this.isNot, this.evalType, [
+      ...this.message,
+      pushWord,
+    ]);
+  }
+
+  public get length() {
+    const getLength = (item: unknown) =>
+      Array.isArray(item) ? item.length : String(item).length;
+    const length =
+      this.evalType == 'standard'
+        ? getLength(this.input.$)
+        : this.input.array.$.map(item => getLength(item));
+    if (typeof length == 'number') {
+      return this.clone(
+        new NumericValue(length, {
+          name: `Length of ${this.input.name}`,
+          logger: this.input.logger,
+        }),
+        'length',
+      );
+    }
+    return this.clone(
+      new ArrayValue(Array.isArray(length) ? length : [length], {
+        name: `Lengths of ${this.input.name}`,
+        logger: this.input.logger,
+      }),
+      'length',
+    );
+  }
+
   public equal(value: any) {
     this.message.push(`equal ${value}`);
     this.execute(item => item == value);
@@ -210,6 +245,22 @@ export class Test<InputType = unknown>
       }
       return false;
     });
+  }
+
+  public property(propertyName: string) {
+    this.message.push(`property ${propertyName}`);
+    this.execute(
+      item => is.object(item) && item[propertyName] !== this.undefined,
+    );
+  }
+
+  public properties(propertyNames: string[]) {
+    this.message.push(`properties ${humanReadableList(propertyNames)}`);
+    this.execute(
+      item =>
+        is.object(item) &&
+        propertyNames.every(prop => item[prop] !== this.undefined),
+    );
   }
 
   public regularExpression(value: RegExp) {

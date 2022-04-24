@@ -6,21 +6,39 @@ interface ProjectOpts {
   configFile?: string;
 }
 
+type PackageConfig = { name: string };
+
 export default class Project {
   public readonly configPath: string;
+  public readonly packagePath: string;
   public readonly settings: ProjectInterface;
+  public readonly package: PackageConfig;
 
   constructor(opts: ProjectOpts) {
     this.configPath = path.resolve(
       process.cwd(),
       opts.configFile || 'qaflag.json',
     );
+    this.packagePath = path.resolve(process.cwd(), 'package.json');
     const initial: Partial<ProjectInterface> = (() => {
       if (this.isConfigFile) {
         const fileContents = fs.readFileSync(this.configPath, 'utf8');
         return JSON.parse(fileContents);
       }
       return {};
+    })();
+    this.package = (() => {
+      const defaultPkg = {
+        name: 'My Project',
+      };
+      if (fs.existsSync(this.packagePath)) {
+        const fileContents = fs.readFileSync(this.packagePath, 'utf8');
+        return {
+          ...defaultPkg,
+          ...JSON.parse(fileContents),
+        };
+      }
+      return defaultPkg;
     })();
     this.settings = {
       defaultDomain:
@@ -32,7 +50,7 @@ export default class Project {
         pattern: initial.input?.pattern || '**/*.suite.ts',
       },
       output: {
-        path: initial.output?.path || './qaflag',
+        path: initial.output?.path || './qaflag/tests',
         pattern: initial.output?.pattern || '**/*.suite.js',
       },
     };

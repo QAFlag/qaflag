@@ -55,12 +55,17 @@ export class UsersSuite extends Suite({
     const items = context.find('[*]');
     items.must.all.match.dto(UserDto);
     items.must.be.an.array();
+    items.must.all.have.properties(['name', 'username']);
+    items.must.have.length.greaterThan(0);
+    items.array.length.must.be.greaterThan(0);
     const ids = context.find('[*].id');
     ids.must.all.be.greaterThan(0);
     ids.must.not.have.any.be.lessThan(0);
     ids.must.have.some.be.greaterThan(0);
     const names = context.find('[*].name').array;
     names.length.must.equal(10);
+    names.first.must.have.length.greaterThan(0);
+    names.first.length.must.be.greaterThan(0);
     this.set('firstUserId', ids.array.first.$);
     this.set('lastUserId', ids.array.last.$);
   }

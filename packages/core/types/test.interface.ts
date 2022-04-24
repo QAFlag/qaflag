@@ -32,6 +32,17 @@ export interface MustHave {
   some: MustHaveSome;
   any: MustHaveAny;
   none: MustHaveNone;
+  length: MustBeNumber;
+  property(propertyName: string): void;
+  properties(propertyNames: string[]): void;
+}
+
+export interface MustBeNumber {
+  equalTo(value: any): void;
+  greaterThan(value: number): void;
+  greaterThanOrEquals(value: number): void;
+  lessThan(value: number): void;
+  lessThanOrEquals(value: number): void;
 }
 
 export interface MustBe extends MustBeAn {
