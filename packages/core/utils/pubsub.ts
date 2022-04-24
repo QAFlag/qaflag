@@ -12,7 +12,7 @@ class Subscription<Payload> {
 
 export class PubSub<Events extends { [eventName: string]: unknown }> {
   public _subscribers: {
-    [eventName: string]: Subscription<unknown>[];
+    [eventName: string]: Subscription<any>[];
   } = {};
 
   public on<Key extends keyof Events>(eventName: Key) {

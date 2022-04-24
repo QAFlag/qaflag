@@ -247,7 +247,7 @@ export class Test<InputType = unknown>
 
   public arrayOf(typeName: 'string' | 'number' | 'boolean' | 'object') {
     this.message.push(`array of ${typeName}s`);
-    this.execute(value => is.array(value, is[typeName]));
+    this.execute(value => is.array(value, is[typeName as string]));
   }
 
   public number() {

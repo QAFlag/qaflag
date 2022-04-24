@@ -16,8 +16,8 @@ import { getCookieArray } from '../utils/cookies';
 import { Cookie } from 'tough-cookie';
 
 export class HttpRequest implements HttpRequestInterface {
-  #method: HttpVerbs;
-  #path: string;
+  #method: HttpVerbs = 'get';
+  #path: string = '/';
   #persona: Persona | undefined;
 
   constructor(public readonly opts: HttpRequestOptions, persona?: Persona) {

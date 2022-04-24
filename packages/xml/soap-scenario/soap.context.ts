@@ -1,5 +1,4 @@
 import { HttpResponse } from '@qaflag/core';
-import * as cheerio from 'cheerio';
 import { XmlRequest } from '../xml-scenario/xml.request';
 import { XmlContext } from '../xml-scenario/xml.context';
 import { isSoapValid } from './soap-validation';
@@ -14,8 +13,6 @@ const validMimeTypes = [
 ];
 
 export class SoapContext extends XmlContext<SoapScenario> {
-  public cheerio: cheerio.CheerioAPI;
-
   constructor(
     public readonly scenario: SoapScenario,
     protected readonly response: HttpResponse<string, XmlRequest>,
