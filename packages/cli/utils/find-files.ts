@@ -2,12 +2,14 @@ import * as fs from 'fs-extra';
 import { sep } from 'path';
 import path = require('path');
 import { FileResults } from '../types/file-results';
+import * as picomatch from 'picomatch';
 
 export const findFiles = (
   startFolder: string,
-  pattern: RegExp,
+  pattern: string,
   maxDepth: number = 2,
 ): FileResults => {
+  const isMatch = picomatch(pattern);
   const results: FileResults = {
     baseFolder: startFolder,
     files: [],
@@ -18,7 +20,7 @@ export const findFiles = (
       // Read contents
       const files = fs.readdirSync(dir);
       files
-        .filter(file => pattern.test(file))
+        .filter(file => isMatch(file))
         .forEach(fileName => {
           const fullPath = path.resolve(dir, fileName);
           // Drill into sub-folders, but only once!
@@ -36,6 +38,6 @@ export const findFiles = (
         });
     }
   }
-  findFiles(startFolder, 0);
+  findFiles(startFolder, 5);
   return results;
 };

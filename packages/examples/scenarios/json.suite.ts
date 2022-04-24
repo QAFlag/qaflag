@@ -6,7 +6,7 @@ import { UserDto } from '../schemas/user.dto';
 import { GuestPersona } from '../personas/guest.persona';
 import { StandardUserPersona } from '../personas/user.persona';
 
-Mock.on('GET http://rest-api/users', {
+Mock.on('GET http://localhost/users', {
   statusCode: 200,
   data: async () => {
     return readFileSync(
@@ -16,7 +16,7 @@ Mock.on('GET http://rest-api/users', {
   },
 });
 
-Mock.on('GET http://rest-api/users/1', {
+Mock.on('GET http://localhost/users/1', {
   statusCode: 200,
   data: async () => {
     return readFileSync(
@@ -26,7 +26,7 @@ Mock.on('GET http://rest-api/users/1', {
   },
 });
 
-Mock.on('GET http://rest-api/users/10', {
+Mock.on('GET http://localhost/users/10', {
   statusCode: 200,
   data: async () => {
     return readFileSync(
@@ -37,7 +37,7 @@ Mock.on('GET http://rest-api/users/10', {
 });
 
 const GetList = Template({
-  uri: 'GET http://rest-api/users',
+  uri: 'GET /users',
   step: 1,
   statusCode: 200,
   persona: StandardUserPersona,
@@ -67,7 +67,7 @@ export class UsersSuite extends Suite({
 
   @Scenario({
     description: 'Get first user',
-    uri: 'GET http://rest-api/users/{firstUserId}',
+    uri: 'GET /users/{firstUserId}',
     schema: {
       name: '@userJtd',
       type: 'jtd',
@@ -81,7 +81,7 @@ export class UsersSuite extends Suite({
 
   @Scenario({
     description: 'Get the last user in the list',
-    uri: 'GET http://rest-api/users/{lastUserId}',
+    uri: 'GET /users/{lastUserId}',
     schema: UserDto,
     step: 2,
   })

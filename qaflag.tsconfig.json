@@ -3,11 +3,16 @@
     "module": "commonjs",
     "target": "es6",
     "rootDir": "packages/examples",
-    "outDir": "./packages/examples/dist",
+    "outDir": "./packages/examples/dist/scenarios",
     "allowJs": true,
     "removeComments": true,
     "experimentalDecorators": true
   },
-  "include": ["packages/examples/**/*.suite.ts"],
-  "exclude": ["node_modules", "**/*.spec.ts"]
+  "include": [
+    "packages/examples/**/*.suite.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/*.spec.ts"
+  ]
 }

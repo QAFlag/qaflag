@@ -4,7 +4,7 @@ import { readFileSync } from 'fs';
 import path = require('path');
 import { GuestPersona } from '../personas/guest.persona';
 
-Mock.on('GET http://localhost/music', {
+Mock.on('GET /music', {
   statusCode: 200,
   data: async () => {
     return readFileSync(
@@ -19,7 +19,7 @@ export class XmlMusicSuite extends Suite({
   persona: GuestPersona,
 }) {
   @Scenario({
-    uri: 'GET http://localhost/music',
+    uri: 'GET /music',
     statusCode: 200,
     type: XmlScenario,
   })

@@ -6,52 +6,44 @@ interface ProjectOpts {
   configFile?: string;
 }
 
-export default class Project implements ProjectInterface {
-  private readonly configFile: string | null = null;
-  private readonly settings: ProjectInterface | null = null;
-
-  public get isInitialized(): boolean {
-    return this.settings !== null;
-  }
-
-  public get input() {
-    return {
-      path: this.settings?.input?.path || './src',
-      pattern: this.settings?.input?.pattern || `**/*.suite.ts`,
-    };
-  }
-
-  public get output() {
-    return {
-      path: this.settings?.output?.path || './qaflag/suites',
-      pattern: this.settings?.output?.pattern || `\.suite\.js`,
-    };
-  }
+export default class Project {
+  public readonly configPath: string;
+  public readonly settings: ProjectInterface;
 
   constructor(opts: ProjectOpts) {
-    this.configFile = path.resolve(
+    this.configPath = path.resolve(
       process.cwd(),
       opts.configFile || 'qaflag.json',
     );
-    if (fs.existsSync(this.configFile)) {
-      const fileContents = fs.readFileSync(this.configFile, 'utf8');
-      this.settings = JSON.parse(fileContents);
-    }
-  }
-
-  public serialize(): ProjectInterface {
-    return {
-      input: this.input,
-      output: this.output,
+    const initial: Partial<ProjectInterface> = (() => {
+      if (this.isConfigFile) {
+        const fileContents = fs.readFileSync(this.configPath, 'utf8');
+        return JSON.parse(fileContents);
+      }
+      return {};
+    })();
+    this.settings = {
+      defaultDomain:
+        process.env.QAFLAG_DEFAULT_DOMAIN ||
+        initial.defaultDomain ||
+        'http://localhost:3000',
+      input: {
+        path: initial.input?.path || './src',
+        pattern: initial.input?.pattern || '**/*.suite.ts',
+      },
+      output: {
+        path: initial.output?.path || './qaflag',
+        pattern: initial.output?.pattern || '**/*.suite.js',
+      },
     };
   }
 
+  public get isConfigFile(): boolean {
+    return fs.existsSync(this.configPath);
+  }
+
   public write() {
-    if (!this.configFile) return;
-    fs.writeFileSync(
-      this.configFile,
-      JSON.stringify(this.serialize(), null, 2),
-    );
+    fs.writeFileSync(this.configPath, JSON.stringify(this.settings, null, 2));
     fs.writeFileSync(
       './qaflag.tsconfig.json',
       JSON.stringify(
@@ -59,13 +51,15 @@ export default class Project implements ProjectInterface {
           compilerOptions: {
             module: 'commonjs',
             target: 'es6',
-            rootDir: this.input.path,
-            outDir: this.output.path,
+            rootDir: this.settings.input.path,
+            outDir: this.settings.output.path,
             allowJs: true,
             removeComments: true,
             experimentalDecorators: true,
           },
-          include: [`${this.input.path}/${this.input.pattern}`],
+          include: [
+            `${this.settings.input.path}/${this.settings.input.pattern}`,
+          ],
           exclude: ['node_modules', '**/*.spec.ts'],
         },
         null,

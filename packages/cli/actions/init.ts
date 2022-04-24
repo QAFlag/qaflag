@@ -4,13 +4,14 @@ import Project from '../models/project';
 
 export const init = async (project: Project) => {
   printHeader();
-  const response = await prompts({
-    name: 'create',
-    type: 'confirm',
-    message: 'Create a QA Flag init file?',
-    initial: true,
-  });
-  if (response.create) {
-    project.write();
-  }
+  const responses = await prompts([
+    {
+      type: 'text',
+      name: 'defaultDomain',
+      message: `Default Domain to use for relative paths`,
+      initial: 'http://localhost:3000',
+    },
+  ]);
+  project.settings.defaultDomain = responses.defaultDomain;
+  project.write();
 };

@@ -7,6 +7,7 @@ import { Logger } from '../models/logger';
 import { Persona } from '../models/persona';
 import { ScenarioInterface } from '../types/scenario.interface';
 import {
+  SuiteDefaults,
   SuiteEvents,
   SuiteInterface,
   SuiteResults,
@@ -23,6 +24,7 @@ export type SuiteOpts = {
   title: string;
   persona?: Persona;
   type?: ScenarioConstructor;
+  baseUrl?: string;
 };
 
 export function Suite(suiteOpts: SuiteOpts) {
@@ -31,6 +33,7 @@ export function Suite(suiteOpts: SuiteOpts) {
     #afters: string[] = [];
 
     public readonly title = suiteOpts.title;
+    public readonly baseUrl = suiteOpts.baseUrl;
     public readonly store = new KvStore();
     public readonly logger = new Logger();
 
@@ -40,7 +43,7 @@ export function Suite(suiteOpts: SuiteOpts) {
     public readonly persona: Persona =
       suiteOpts.persona || new Persona({ name: 'Default ' });
 
-    constructor() {
+    constructor(defaultOpts?: SuiteDefaults) {
       if (this[BeforeAlls]) {
         Object.keys(this[BeforeAlls]).forEach(methodName =>
           this.#befores.push(methodName),
@@ -63,7 +66,15 @@ export function Suite(suiteOpts: SuiteOpts) {
               throw 'No Scenario Type defined. It must be set either in the Scenario decorator in the Suite decorator, as a default.';
             }
             const scenario = this.addScenarioToStep(
-              new scenarioConstructor(scenarioOpts, this),
+              new scenarioConstructor(
+                {
+                  ...{
+                    baseUrl: this.baseUrl || defaultOpts?.baseUrl,
+                  },
+                  ...scenarioOpts,
+                },
+                this,
+              ),
             );
             this.scenarios.push(scenario);
           });

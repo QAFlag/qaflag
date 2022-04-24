@@ -4,9 +4,10 @@ import { PlaywrightContext, PlaywrightScenario } from '@qaflag/playwright';
 export class GoogleSearch extends Suite({
   title: 'Test Google Search',
   type: PlaywrightScenario,
+  baseUrl: 'https://www.google.com',
 }) {
   @Scenario({
-    uri: 'GET https://www.google.com',
+    uri: 'GET /',
   })
   async queryForMyGithub(context: PlaywrightContext) {
     const button = await context.exists("text='Google Search' >> visible=true");

@@ -1,4 +1,5 @@
 export interface ProjectInterface {
+  defaultDomain: string;
   input: {
     path: string;
     pattern: string;

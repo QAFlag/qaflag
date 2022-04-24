@@ -25,7 +25,7 @@ export const run = async (
   const completed = await Promise.all(
     selections.map(selection =>
       limit(async () => {
-        const suite = loadSuite(selection);
+        const suite = loadSuite(selection, project);
         suite.events.on('completed', () => outputSuiteToConsole(suite));
         await suite.execute();
         return suite;

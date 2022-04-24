@@ -1,7 +1,15 @@
 import { SuiteClass } from '../types/suite-collection';
-import { SuiteInterface } from '@qaflag/core';
+import { SuiteConstructor, SuiteInterface } from '@qaflag/core';
+import Project from '../models/project';
 
-export const loadSuite = (suite: SuiteClass): SuiteInterface => {
-  const file = require(suite.fullPath);
-  return new file[suite.className]();
+export const loadSuite = (
+  selectedSuite: SuiteClass,
+  project: Project,
+): SuiteInterface => {
+  const file = require(selectedSuite.fullPath);
+  const suiteConstructor: SuiteConstructor = file[selectedSuite.className];
+  const suite = new suiteConstructor({
+    baseUrl: project.settings.defaultDomain,
+  });
+  return suite;
 };

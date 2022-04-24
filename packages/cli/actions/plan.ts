@@ -31,7 +31,7 @@ export const plan = async (project: Project) => {
   if (!selection.suite) {
     return exitError('No suite selected.');
   }
-  const suite = loadSuite(selection.suite);
+  const suite = loadSuite(selection.suite, project);
   printLineBreak();
   printLines([suite.title], { style: chalk.yellowBright });
   printLineBreak();

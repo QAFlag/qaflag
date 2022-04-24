@@ -18,6 +18,14 @@ export type SuiteEvents = {
   failed: () => void;
 };
 
+export type SuiteDefaults = {
+  baseUrl?: string;
+};
+
+export interface SuiteConstructor {
+  new (defaults?: SuiteDefaults): SuiteInterface;
+}
+
 export interface SuiteInterface extends LogProvider {
   title: string;
   steps: SuiteStep[];

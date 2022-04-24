@@ -1,10 +1,11 @@
 {
+  "defaultDomain": "http://localhost",
   "input": {
     "path": "packages/examples",
     "pattern": "**/*.suite.ts"
   },
   "output": {
     "path": "./packages/examples/dist/scenarios",
-    "pattern": "\\.suite\\.js"
+    "pattern": "**/*.suite.js"
   }
 }
