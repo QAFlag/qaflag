@@ -1,4 +1,4 @@
-import Emittery = require('emittery');
+import { PubSub } from '../utils/pubsub';
 import { Logger } from '../models/logger';
 import { Persona } from '../models/persona';
 import { LogProvider } from './log-provider.interface';
@@ -13,7 +13,7 @@ export interface SuiteInterface extends LogProvider {
   title: string;
   steps: SuiteStep[];
   scenarios: ScenarioInterface[];
-  events: Emittery<{
+  events: PubSub<{
     beforeAll: never;
     beforeEach: ScenarioInterface;
     afterEach: ScenarioInterface;

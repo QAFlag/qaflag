@@ -1,4 +1,3 @@
-import Emittery = require('emittery');
 import {
   ScenarioConstructor,
   ScenarioInitOpts,
@@ -12,6 +11,7 @@ import {
   SuiteResults,
   SuiteStep,
 } from '../types/suite.interface';
+import { PubSub } from '../utils/pubsub';
 
 export const ScenarioDefinitions = Symbol('ScenarioDefinitions');
 export const BeforeAlls = Symbol('BeforeAlls');
@@ -31,7 +31,7 @@ export function Suite(suiteOpts: SuiteOpts) {
     public readonly title = suiteOpts.title;
     public readonly store = new KvStore();
     public readonly logger = new Logger();
-    public readonly events = new Emittery<{
+    public readonly events = new PubSub<{
       beforeAll: never;
       beforeEach: ScenarioInterface;
       afterEach: ScenarioInterface;
