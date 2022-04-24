@@ -1,6 +1,6 @@
 {
   "name": "@qaflag/cli",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "description": "QA Flag CLI",
   "files": [
     "dist/",
@@ -22,7 +22,7 @@
   "author": "Jason Byrne",
   "license": "MIT",
   "dependencies": {
-    "@qaflag/core": "^0.0.16",
+    "@qaflag/core": "^0.0.17",
     "chalk": "4.1.2",
     "cli-table3": "^0.6.1",
     "commander": "^9.1.0",
