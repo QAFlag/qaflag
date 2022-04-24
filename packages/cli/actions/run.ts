@@ -26,7 +26,7 @@ export const run = async (
     selections.map(selection =>
       limit(async () => {
         const suite = loadSuite(selection);
-        suite.events.once('completed').then(() => outputSuiteToConsole(suite));
+        suite.events.on('completed', () => outputSuiteToConsole(suite));
         await suite.execute();
         return suite;
       }),

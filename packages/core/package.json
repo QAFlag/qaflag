@@ -32,7 +32,8 @@
     "@types/fs-extra": "^9.0.13",
     "@types/tough-cookie": "^4.0.1",
     "@types/validator": "^13.7.2",
-    "husky": "^7.0.4"
+    "husky": "^7.0.4",
+    "typed-emitter": "^2.1.0"
   },
   "gitHead": "0cf5cd6ba6109991b47293f14e9c9c029b180038"
 }

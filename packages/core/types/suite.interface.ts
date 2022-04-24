@@ -1,26 +1,28 @@
-import { PubSub } from '../utils/pubsub';
 import { Logger } from '../models/logger';
 import { Persona } from '../models/persona';
 import { LogProvider } from './log-provider.interface';
 import { ScenarioInterface } from './scenario.interface';
+import TypedEmitter from 'typed-emitter';
 
 export interface SuiteStep {
   stepNumber: number;
   scenarios: ScenarioInterface[];
 }
 
+export type SuiteEvents = {
+  beforeAll: () => void;
+  beforeEach: (scenario: ScenarioInterface) => void;
+  afterEach: (scenario: ScenarioInterface) => void;
+  completed: () => void;
+  passed: () => void;
+  failed: () => void;
+};
+
 export interface SuiteInterface extends LogProvider {
   title: string;
   steps: SuiteStep[];
   scenarios: ScenarioInterface[];
-  events: PubSub<{
-    beforeAll: never;
-    beforeEach: ScenarioInterface;
-    afterEach: ScenarioInterface;
-    completed: never;
-    passed: never;
-    failed: never;
-  }>;
+  events: TypedEmitter<SuiteEvents>;
   persona: Persona;
   logger: Logger;
   results: SuiteResults;

@@ -7,11 +7,13 @@ import { Logger } from '../models/logger';
 import { Persona } from '../models/persona';
 import { ScenarioInterface } from '../types/scenario.interface';
 import {
+  SuiteEvents,
   SuiteInterface,
   SuiteResults,
   SuiteStep,
 } from '../types/suite.interface';
-import { PubSub } from '../utils/pubsub';
+import { EventEmitter } from 'events';
+import TypedEmitter from 'typed-emitter';
 
 export const ScenarioDefinitions = Symbol('ScenarioDefinitions');
 export const BeforeAlls = Symbol('BeforeAlls');
@@ -31,14 +33,8 @@ export function Suite(suiteOpts: SuiteOpts) {
     public readonly title = suiteOpts.title;
     public readonly store = new KvStore();
     public readonly logger = new Logger();
-    public readonly events = new PubSub<{
-      beforeAll: never;
-      beforeEach: ScenarioInterface;
-      afterEach: ScenarioInterface;
-      completed: never;
-      passed: never;
-      failed: never;
-    }>();
+
+    public readonly events = new EventEmitter() as TypedEmitter<SuiteEvents>;
     public readonly scenarios: ScenarioInterface[] = [];
     public readonly steps: SuiteStep[] = [];
     public readonly persona: Persona =
@@ -99,9 +95,9 @@ export function Suite(suiteOpts: SuiteOpts) {
         );
       }
       await Promise.all(this.#afters.map(methodName => this[methodName]()));
+      this.logger.end();
       this.events.emit('completed');
       this.events.emit(this.logger.failed ? 'failed' : 'passed');
-      this.logger.end();
     }
 
     public getStep(stepNumber: number): SuiteStep {
