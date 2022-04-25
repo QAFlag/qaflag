@@ -1,3 +1,3 @@
-export * from './scenarios/xml.suite';
-export * from './scenarios/json.suite';
-export * from './scenarios/rss.suite';
+export * from './suites/xml.suite';
+export * from './suites/json.suite';
+export * from './suites/rss.suite';
