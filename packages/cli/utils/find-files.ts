@@ -7,7 +7,7 @@ import * as picomatch from 'picomatch';
 export const findFiles = (
   startFolder: string,
   pattern: string,
-  maxDepth: number = 2,
+  maxDepth: number = 8,
 ): FileResults => {
   const isMatch = picomatch(pattern);
   const results: FileResults = {
@@ -19,25 +19,23 @@ export const findFiles = (
     if (fs.pathExistsSync(dir)) {
       // Read contents
       const files = fs.readdirSync(dir);
-      files
-        .filter(file => isMatch(file))
-        .forEach(fileName => {
-          const fullPath = path.resolve(dir, fileName);
-          // Drill into sub-folders, but only once!
-          if (depth < maxDepth && fs.statSync(fullPath).isDirectory()) {
-            findFiles(`${fullPath}${sep}`, depth + 1);
-          }
-          // Push in any JS files
-          else if (fullPath.endsWith('.js')) {
-            results.files.push({
-              fullPath,
-              relativePath: fullPath.replace(startFolder, ''),
-              fileName,
-            });
-          }
-        });
+      files.forEach(fileName => {
+        const fullPath = path.resolve(dir, fileName);
+        // Drill into sub-folders, but only once!
+        if (depth < maxDepth && fs.statSync(fullPath).isDirectory()) {
+          findFiles(`${fullPath}${sep}`, depth + 1);
+        }
+        // Push in any JS files
+        else if (isMatch(fileName)) {
+          results.files.push({
+            fullPath,
+            relativePath: fullPath.replace(startFolder, ''),
+            fileName,
+          });
+        }
+      });
     }
   }
-  findFiles(startFolder, 5);
+  findFiles(startFolder, 0);
   return results;
 };

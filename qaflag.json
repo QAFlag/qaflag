@@ -5,7 +5,7 @@
     "pattern": "**/*.suite.ts"
   },
   "output": {
-    "path": "./packages/examples/dist/scenarios",
+    "path": "./packages/examples/dist",
     "pattern": "**/*.suite.js"
   }
 }
