@@ -1,9 +1,4 @@
-import {
-  printHeader,
-  printLineBreak,
-  printLines,
-  printTable,
-} from '../utils/print';
+import { printLineBreak, printLines, printTable } from '../utils/print';
 import * as prompts from 'prompts';
 import { exitError } from '../utils/exit';
 import { findSuites } from '../utils/find-suites';
@@ -13,7 +8,7 @@ import Project from '../models/project';
 
 export const plan = async (project: Project) => {
   const suites = findSuites(project);
-  printHeader();
+  printLines(['', 'Show test plan', '']);
   if (suites.suiteClasses.length == 0) {
     return exitError('No suites found.');
   }
