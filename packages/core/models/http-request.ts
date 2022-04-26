@@ -92,13 +92,12 @@ export class HttpRequest implements HttpRequestInterface {
   }
 
   public get userAgent() {
-    const ua =
+    return (
       this.opts.userAgent ||
       (this.opts.headers && this.opts.headers['user-agent']) ||
       this.persona?.userAgent ||
-      this.persona?.headers['user-agent'] ||
-      'Flagpole';
-    return Array.isArray(ua) ? ua.join(' ') : ua;
+      'QA Flag'
+    );
   }
 
   public get cookies(): Cookie[] {

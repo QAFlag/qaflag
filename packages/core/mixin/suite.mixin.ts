@@ -33,7 +33,6 @@ export function Suite(suiteOpts: SuiteOpts) {
     #afters: string[] = [];
 
     public readonly title = suiteOpts.title;
-    public readonly baseUrl = suiteOpts.baseUrl;
     public readonly store = new KvStore();
     public readonly logger = new Logger();
 
@@ -42,8 +41,16 @@ export function Suite(suiteOpts: SuiteOpts) {
     public readonly steps: SuiteStep[] = [];
     public readonly persona: Persona =
       suiteOpts.persona || new Persona({ name: 'Default ' });
+    public readonly baseUrl: string | undefined;
 
-    constructor(defaultOpts?: SuiteDefaults) {
+    public get defaultScenarioOpts() {
+      return {
+        baseUrl: this.baseUrl,
+      };
+    }
+
+    constructor(public readonly defaultOpts: SuiteDefaults = {}) {
+      this.baseUrl = suiteOpts.baseUrl || defaultOpts.baseUrl;
       if (this[BeforeAlls]) {
         Object.keys(this[BeforeAlls]).forEach(methodName =>
           this.#befores.push(methodName),
@@ -68,9 +75,7 @@ export function Suite(suiteOpts: SuiteOpts) {
             const scenario = this.addScenarioToStep(
               new scenarioConstructor(
                 {
-                  ...{
-                    baseUrl: this.baseUrl || defaultOpts?.baseUrl,
-                  },
+                  ...this.defaultScenarioOpts,
                   ...scenarioOpts,
                 },
                 this,
@@ -81,8 +86,6 @@ export function Suite(suiteOpts: SuiteOpts) {
       }
     }
 
-    public async init() {}
-
     public async execute() {
       this.logger.start();
       this.events.emit('beforeAll');
@@ -91,12 +94,9 @@ export function Suite(suiteOpts: SuiteOpts) {
         await Promise.all(
           step.scenarios.map(async scenario => {
             this.events.emit('beforeEach', scenario);
-            scenario.request.setPersona(await scenario.persona.authenticate());
-            scenario.request.pathReplace(this.store.entries());
-            scenario.logger.start();
+            await scenario.startUp();
             await scenario.execute();
             await scenario.next(scenario);
-            scenario.logger.end();
             await scenario.tearDown();
             this.events.emit('afterEach', scenario);
             this.logger.log(scenario.status == 'pass' ? 'pass' : 'fail', {

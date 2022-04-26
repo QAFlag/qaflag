@@ -38,7 +38,18 @@ export function ScenarioType(initOpts: ScenarioTypeOpts) {
     public next: (...args: any[]) => Promise<void>;
     public readonly logger = new Logger();
 
-    public async tearDown(): Promise<void> {}
+    public async startUp(): Promise<void> {
+      await this.persona.authenticate({
+        baseUrl: this.suite.baseUrl,
+      });
+      this.request.setPersona(this.persona);
+      this.request.pathReplace(this.suite.store.entries());
+      this.logger.start();
+    }
+
+    public async tearDown(): Promise<void> {
+      this.logger.end();
+    }
 
     public get title() {
       return String(this.key);

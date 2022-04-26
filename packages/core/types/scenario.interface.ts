@@ -24,6 +24,7 @@ export interface ScenarioInterface extends LogProvider {
   result: ScenarioResult;
   logger: Logger;
   next: (...args: any[]) => Promise<void>;
+  startUp(): Promise<void>;
   execute(): Promise<void>;
   tearDown(): Promise<void>;
 }

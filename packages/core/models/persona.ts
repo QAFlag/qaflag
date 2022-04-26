@@ -1,37 +1,77 @@
-import { fetchWithAxios } from '../utils/axios';
-import { HttpHeaders } from '../types/http.types';
-import { HttpRequest } from './http-request';
 import {
+  BrowserOptions,
   DeviceInput,
+  DeviceType,
+  GeoLocation,
   PersonaInitInterface,
   PersonaInterface,
+  WidthAndHeight,
 } from '../types/persona.interface';
-import { CookieFetcher, HeaderFetcher } from '../types/fetcher';
-import { InputCookies } from '../utils/cookies';
 import { Cookie } from 'tough-cookie';
+import { HttpAuth, HttpHeaders, HttpProxy } from '../types/http.types';
 import { KeyValue } from '../types/general.types';
 
+export interface PersonaAuthenticateOpts {
+  baseUrl?: string;
+}
+
 export class Persona implements PersonaInterface {
-  #bearerToken: string | undefined = undefined;
-  #headers: HttpHeaders | undefined = undefined;
-  #cookies: InputCookies | undefined = undefined;
+  #cookies: Cookie[] | KeyValue<string>;
+  #deviceInputs: DeviceInput[] | undefined;
+  #userAgent: string | undefined;
 
-  constructor(private readonly opts: PersonaInitInterface) {
-    if (typeof opts.bearerToken == 'string') {
-      this.#bearerToken = opts.bearerToken;
-    }
+  constructor(opts: PersonaInitInterface) {
+    this.name = opts.name || 'Default';
+    this.story = opts.story;
+    this.#userAgent = opts.userAgent;
+    this.bearerToken = opts.bearerToken;
+    this.basicAuthentication = opts.basicAuthentication;
+    this.proxy = opts.proxy;
+    this.headers = opts.headers || {};
+    this.#cookies = opts.cookies || [];
+    this.trailers = opts.trailers || {};
+    this.geolocation = opts.geolocation;
+    this.isOffline = opts.isOffline || false;
+    this.languageLocale = opts.languageLocale;
+    this.timezone = opts.timezone;
+    this.viewport = opts.viewport;
+    this.screenSize = opts.screenSize;
+    this.deviceType = opts.deviceType || 'laptop';
+    this.#deviceInputs = opts.deviceInputs;
   }
 
-  public get timezone() {
-    return this.opts.timezone;
+  public name: string;
+  public story: string | undefined;
+  public browser: BrowserOptions | undefined;
+  public bearerToken: string | undefined;
+  public basicAuthentication: HttpAuth | undefined;
+  public proxy: HttpProxy | undefined;
+  public headers: HttpHeaders;
+  public trailers: KeyValue<string>;
+  public geolocation: GeoLocation | undefined;
+  public isOffline: boolean;
+  public languageLocale: string | undefined;
+  public timezone: string | undefined;
+  public viewport: WidthAndHeight | undefined;
+  public screenSize: WidthAndHeight | undefined;
+  public deviceType: DeviceType;
+
+  public get userAgent(): string {
+    if (this.#userAgent) return this.#userAgent;
+    if (this.headers['user-agent']) return this.headers['user-agent'];
+    return 'QA Flag';
   }
 
-  public get trailers() {
-    return this.opts.trailers;
+  public get deviceInputs(): DeviceInput[] {
+    if (this.#deviceInputs) return this.#deviceInputs;
+    return this.isMobile ? ['keyboard', 'touch'] : ['keyboard', 'mouse'];
+  }
+
+  public get isMobile() {
+    return ['phone', 'tablet'].includes(this.deviceType);
   }
 
   public get cookies() {
-    if (!this.#cookies) return [];
     if (Array.isArray(this.#cookies)) return this.#cookies;
     return Object.entries(this.#cookies).map(cookie => {
       return new Cookie({
@@ -41,113 +81,8 @@ export class Persona implements PersonaInterface {
     });
   }
 
-  public get headers() {
-    return this.#headers || {};
-  }
-
-  public get bearerToken() {
-    return this.#bearerToken;
-  }
-
-  public get userAgent() {
-    return this.opts.userAgent || 'QA Flag';
-  }
-
-  public get browser() {
-    return this.opts.browser;
-  }
-
-  public get viewport() {
-    return this.opts.viewport;
-  }
-
-  public get screenSize() {
-    return this.opts.screenSize;
-  }
-
-  public get proxy() {
-    return this.opts.proxy;
-  }
-
-  public get languageLocale() {
-    return this.opts.languageLocale;
-  }
-
-  public get basicAuthentication() {
-    return this.opts.basicAuthentication;
-  }
-
-  public get geolocation() {
-    return this.opts.geolocation;
-  }
-
-  public get name() {
-    return this.opts.name;
-  }
-
-  public get story() {
-    return this.opts.story;
-  }
-
-  public get deviceInputs(): DeviceInput[] {
-    if (this.opts.deviceInputs) return this.opts.deviceInputs;
-    if (this.isMobile) return ['keyboard', 'touch'];
-    return ['keyboard', 'mouse'];
-  }
-
-  public get isMobile() {
-    return ['phone', 'tablet'].includes(this.deviceType);
-  }
-
-  public get deviceType() {
-    return this.opts.deviceType || 'laptop';
-  }
-
-  public get isOffline() {
-    return this.opts.isOffline || false;
-  }
-
-  public async authenticate(): Promise<this> {
-    this.#bearerToken = await this.fetchBearerToken();
-    this.#headers = await this.fetchHeaders();
-    this.#cookies = await this.fetchCookies();
+  public async authenticate(opts: PersonaAuthenticateOpts = {}): Promise<this> {
+    // TODO: Fix authenticate back up to fetch details. Make sure we only do it once
     return this;
-  }
-
-  private async fetchBearerToken(): Promise<string | undefined> {
-    const bearerToken = this.opts.bearerToken;
-    if (this.#bearerToken) return this.#bearerToken;
-    if (bearerToken === undefined) return undefined;
-    if (typeof bearerToken == 'string') return String(bearerToken);
-    const req = new HttpRequest(bearerToken);
-    const res = await (bearerToken.fetch === undefined
-      ? fetchWithAxios(req)
-      : bearerToken.fetch(req));
-    return bearerToken.parse(res);
-  }
-
-  private async fetchHeaders(): Promise<HttpHeaders> {
-    const headers = this.opts.headers;
-    if (this.#headers) return this.#headers;
-    if (!headers?.parse) return (headers as HttpHeaders) || {};
-    const fetcher = headers as HeaderFetcher;
-    const req = new HttpRequest(fetcher);
-    const res = await (fetcher.fetch === undefined
-      ? fetchWithAxios(req)
-      : fetcher.fetch(req));
-    return fetcher.parse(res);
-  }
-
-  private async fetchCookies(): Promise<InputCookies> {
-    const cookies = this.opts.cookies;
-    if (this.#cookies) return this.#cookies;
-    if (Array.isArray(cookies)) return cookies;
-    if (!cookies?.parse) return (cookies as KeyValue<string>) || {};
-    const fetcher = cookies as CookieFetcher;
-    const req = new HttpRequest(fetcher);
-    const res = await (fetcher.fetch === undefined
-      ? fetchWithAxios(req)
-      : fetcher.fetch(req));
-    return fetcher.parse(res);
   }
 }

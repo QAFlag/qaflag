@@ -1,10 +1,14 @@
+import { HttpRequest } from '../models/http-request';
+import { HttpResponse } from '../models/http-response';
 import { Cookie } from 'tough-cookie';
-import { CookieFetcher, HeaderFetcher, StringFetcher } from './fetcher';
 import { KeyValue } from './general.types';
+import { HttpRequestOptions } from './http-request.interface';
 import { HttpAuth, HttpHeaders, HttpProxy } from './http.types';
 
 export type DeviceInput = 'touch' | 'mouse' | 'keyboard';
 export type DeviceType = 'phone' | 'tablet' | 'desktop' | 'laptop';
+
+export type Cookies = KeyValue<string> | Cookie[];
 
 export type Permission =
   | 'geolocation'
@@ -23,7 +27,7 @@ export type Permission =
   | 'clipboard-write'
   | 'payment-handler';
 
-type GeoLocation = {
+export type GeoLocation = {
   latitude: number;
   longitude: number;
   accuracy: number | undefined;
@@ -33,7 +37,7 @@ type ColorSchemePreference = undefined | 'light' | 'dark' | 'no-preference';
 type ForcedColors = undefined | 'active' | 'none';
 type MediaType = undefined | 'screen' | 'print';
 type ReducedMotion = undefined | 'reduce' | 'no-preference';
-type WidthAndHeight = { width: number; height: number };
+export type WidthAndHeight = { width: number; height: number };
 
 type StorageOrigins = {
   origin: string;
@@ -43,7 +47,7 @@ type StorageOrigins = {
   }[];
 };
 
-type BrowserOptions = {
+export type BrowserOptions = {
   engine?: 'chromium' | 'firefox' | 'webkit';
   // "chrome", "chrome-beta", "chrome-dev", "chrome-canary", "msedge",  "msedge-beta", "msedge-dev", "msedge-canary"
   channel?: string;
@@ -60,6 +64,12 @@ type BrowserOptions = {
   javaScriptEnabled?: boolean;
   storage?: StorageOrigins[];
   permissions?: Permission[];
+};
+
+export type PersonaSetup = {
+  request: HttpRequestOptions;
+  fetch?: (request: HttpRequest) => Promise<HttpResponse>;
+  init: (persona: PersonaInterface, response?: HttpResponse) => Promise<void>;
 };
 
 export interface PersonaInterface {
@@ -85,14 +95,6 @@ export interface PersonaInterface {
 }
 
 export interface PersonaInitInterface
-  extends Partial<
-    Omit<
-      PersonaInterface,
-      'authenticate' | 'headers' | 'bearerToken' | 'name' | 'cookies'
-    >
-  > {
-  name: string;
-  headers?: HttpHeaders | HeaderFetcher | undefined;
-  bearerToken?: string | StringFetcher | undefined;
-  cookies?: KeyValue<string> | Cookie[] | CookieFetcher;
+  extends Partial<Omit<PersonaInterface, 'authenticate' | 'cookies'>> {
+  cookies?: Cookie[] | KeyValue<string>;
 }

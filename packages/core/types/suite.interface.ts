@@ -3,6 +3,7 @@ import { Persona } from '../models/persona';
 import { LogProvider } from './log-provider.interface';
 import { ScenarioInterface } from './scenario.interface';
 import TypedEmitter from 'typed-emitter';
+import { KvStore } from '../models/kv-store';
 
 export interface SuiteStep {
   stepNumber: number;
@@ -34,6 +35,8 @@ export interface SuiteInterface extends LogProvider {
   persona: Persona;
   logger: Logger;
   results: SuiteResults;
+  store: KvStore;
+  baseUrl: string | undefined;
   set<T>(key: string, value: T): T;
   get(key: string): any;
   push(key: string, value: any): any;
