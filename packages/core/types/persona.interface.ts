@@ -72,29 +72,34 @@ export type PersonaSetup = {
   init: (persona: PersonaInterface, response?: HttpResponse) => Promise<void>;
 };
 
-export interface PersonaInterface {
+export interface PersonaInitInterface {
   name: string;
-  story: string | undefined;
-  userAgent: string | undefined;
-  browser: BrowserOptions | undefined;
-  bearerToken: string | undefined;
-  basicAuthentication: HttpAuth | undefined;
-  proxy: HttpProxy | undefined;
-  headers: HttpHeaders | undefined;
-  cookies: Cookie[];
-  trailers: KeyValue | undefined;
-  geolocation: GeoLocation | undefined;
-  isOffline: boolean;
-  languageLocale: string | undefined;
-  timezone: string | undefined;
-  viewport: WidthAndHeight | undefined;
-  screenSize: WidthAndHeight | undefined;
-  deviceInputs: DeviceInput[];
-  deviceType: DeviceType;
-  authenticate(): Promise<this>;
+  story?: string;
+  userAgent?: string;
+  browser?: BrowserOptions;
+  bearerToken?: string;
+  basicAuthentication?: HttpAuth;
+  proxy?: HttpProxy;
+  headers?: HttpHeaders;
+  trailers?: HttpHeaders;
+  cookies?: Cookie[] | KeyValue<string>;
+  geolocation?: GeoLocation;
+  isOffline?: boolean;
+  languageLocale?: string;
+  timezone?: string;
+  viewport?: WidthAndHeight;
+  screenSize?: WidthAndHeight;
+  deviceInputs?: DeviceInput[];
+  deviceType?: DeviceType;
 }
 
-export interface PersonaInitInterface
-  extends Partial<Omit<PersonaInterface, 'authenticate' | 'cookies'>> {
-  cookies?: Cookie[] | KeyValue<string>;
+export interface PersonaInterface extends PersonaInitInterface {
+  isMobile: boolean;
+  isOffline: boolean;
+  userAgent: string;
+  headers: HttpHeaders;
+  trailers: HttpHeaders;
+  cookies: Cookie[];
+  deviceInputs: DeviceInput[];
+  deviceType: DeviceType;
 }

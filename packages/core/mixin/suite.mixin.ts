@@ -4,7 +4,6 @@ import {
 } from '../types/scenario.options';
 import { KvStore } from '../models/kv-store';
 import { Logger } from '../models/logger';
-import { Persona } from '../models/persona';
 import { ScenarioInterface } from '../types/scenario.interface';
 import {
   SuiteDefaults,
@@ -15,6 +14,8 @@ import {
 } from '../types/suite.interface';
 import { EventEmitter } from 'events';
 import TypedEmitter from 'typed-emitter';
+import { PersonaInterface } from '../types/persona.interface';
+import { Persona } from '../models/persona';
 
 export const ScenarioDefinitions = Symbol('ScenarioDefinitions');
 export const BeforeAlls = Symbol('BeforeAlls');
@@ -22,7 +23,7 @@ export const AfterAlls = Symbol('AfterAlls');
 
 export type SuiteOpts = {
   title: string;
-  persona?: Persona;
+  persona?: PersonaInterface;
   type?: ScenarioConstructor;
   baseUrl?: string;
 };
@@ -39,7 +40,7 @@ export function Suite(suiteOpts: SuiteOpts) {
     public readonly events = new EventEmitter() as TypedEmitter<SuiteEvents>;
     public readonly scenarios: ScenarioInterface[] = [];
     public readonly steps: SuiteStep[] = [];
-    public readonly persona: Persona =
+    public readonly persona: PersonaInterface =
       suiteOpts.persona || new Persona({ name: 'Default ' });
     public readonly baseUrl: string | undefined;
 

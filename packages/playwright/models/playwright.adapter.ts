@@ -8,7 +8,7 @@ import {
   Page,
   webkit,
 } from 'playwright';
-import { Persona } from '@qaflag/core';
+import { PersonaInterface } from '@qaflag/core';
 
 // https://playwright.dev/docs/library
 
@@ -19,7 +19,7 @@ export type PlaywrightInstance = {
 };
 
 export class PlaywrightAdapter {
-  protected getBrowserEngine(persona?: Persona): BrowserType {
+  protected getBrowserEngine(persona?: PersonaInterface): BrowserType {
     if (persona?.browser?.engine == 'firefox') return firefox;
     if (persona?.browser?.engine == 'webkit') return webkit;
     return chromium;

@@ -1,10 +1,10 @@
 import { Logger } from '../models/logger';
-import { Persona } from '../models/persona';
 import { HttpVerbsCaseInsensitive } from './http.types';
 import { LogProvider } from './log-provider.interface';
 import { ContextInterface } from './context.interface';
 import { SuiteInterface } from './suite.interface';
 import { RequestInterface } from './request-interface';
+import { PersonaInterface } from './persona.interface';
 
 export type ScenarioUri = `${HttpVerbsCaseInsensitive} ${string}`;
 
@@ -18,7 +18,7 @@ export interface ScenarioInterface extends LogProvider {
   description: string;
   uri: ScenarioUri;
   step: number;
-  persona: Persona;
+  persona: PersonaInterface;
   statusCode: number | null;
   status: ScenarioStatus;
   result: ScenarioResult;

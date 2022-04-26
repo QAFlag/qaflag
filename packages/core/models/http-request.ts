@@ -9,18 +9,21 @@ import {
   HttpRequestInterface,
   HttpRequestOptions,
 } from '../types/http-request.interface';
-import { Persona } from './persona';
 import { ScenarioUri } from '../types/scenario.interface';
 import { parseUri } from '../utils/uri';
 import { getCookieArray } from '../utils/cookies';
 import { Cookie } from 'tough-cookie';
+import { PersonaInterface } from '../types/persona.interface';
 
 export class HttpRequest implements HttpRequestInterface {
   #method: HttpVerbs = 'get';
   #path: string = '/';
-  #persona: Persona | undefined;
+  #persona: PersonaInterface | undefined;
 
-  constructor(public readonly opts: HttpRequestOptions, persona?: Persona) {
+  constructor(
+    public readonly opts: HttpRequestOptions,
+    persona?: PersonaInterface,
+  ) {
     this.uri = opts.uri;
     this.#persona = persona;
   }
@@ -75,7 +78,7 @@ export class HttpRequest implements HttpRequestInterface {
     return this.opts.timeout || 10000;
   }
 
-  public setPersona(persona: Persona) {
+  public setPersona(persona: PersonaInterface) {
     this.#persona = persona;
   }
 

@@ -23,6 +23,7 @@ export * from './types/context.interface';
 export * from './types/scenario.interface';
 export * from './types/suite.interface';
 export * from './types/value.interface';
+export * from './types/persona.interface';
 export * from './utils/array-iterators';
 export * from './utils/axios';
 export * from './utils/helpers';

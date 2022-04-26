@@ -1,4 +1,3 @@
-import { Persona } from '../models/persona';
 import { Cookie } from 'tough-cookie';
 import { InputCookies } from '../utils/cookies';
 import { KeyValue } from './general.types';
@@ -41,7 +40,7 @@ export interface HttpRequestInterface {
   baseUrl: string | undefined;
   method: HttpVerbs;
   path: string;
-  persona: Persona | undefined;
+  persona: PersonaInterface | undefined;
   headers: HttpHeaders;
   cookies: Cookie[];
   bearerToken: string | undefined;

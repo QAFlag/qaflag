@@ -1,6 +1,5 @@
 import { ScenarioInitOpts } from '../types/scenario.options';
 import { Logger } from '../models/logger';
-import { Persona } from '../models/persona';
 import { HttpVerbs } from '../types/http.types';
 import { ContextInterface } from '../types/context.interface';
 import {
@@ -10,6 +9,7 @@ import {
 } from '../types/scenario.interface';
 import { SuiteInterface } from '../types/suite.interface';
 import { RequestInterface } from '../types/request-interface';
+import { PersonaInterface } from '../types/persona.interface';
 
 export type ScenarioTypeOpts = {
   name: string;
@@ -39,9 +39,6 @@ export function ScenarioType(initOpts: ScenarioTypeOpts) {
     public readonly logger = new Logger();
 
     public async startUp(): Promise<void> {
-      await this.persona.authenticate({
-        baseUrl: this.suite.baseUrl,
-      });
       this.request.setPersona(this.persona);
       this.request.pathReplace(this.suite.store.entries());
       this.logger.start();
@@ -82,7 +79,7 @@ export function ScenarioType(initOpts: ScenarioTypeOpts) {
       };
     }
 
-    public get persona(): Persona {
+    public get persona(): PersonaInterface {
       return this.opts.persona || this.suite.persona;
     }
 
