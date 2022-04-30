@@ -21,6 +21,7 @@ export class PlaywrightScenario extends ScenarioType({
   }
 
   public override async tearDown(): Promise<void> {
+    await super.tearDown();
     return this.context?.browser.close();
   }
 }

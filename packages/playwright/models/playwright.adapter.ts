@@ -64,7 +64,7 @@ export class PlaywrightAdapter {
       hasTouch: persona?.hasTouch,
       isMobile: persona?.device == 'phone',
       javaScriptEnabled: persona?.browser?.javaScriptEnabled,
-      offline: !persona?.hasInternetConnection,
+      //offline: !persona?.hasInternetConnection,
       permissions: persona?.browser?.permissions,
       proxy: this.getProxy(request),
       recordVideo: undefined,
