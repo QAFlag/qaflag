@@ -7,6 +7,7 @@ export * from './scenario/scenario-type.mixin';
 export * from './suite/suite.mixin';
 export * from './persona/persona';
 export * from './persona/authenticate.decorator';
+export * from './persona/device';
 export * from './test/test';
 export * from './test/test.interface';
 export * from './models/http-request';

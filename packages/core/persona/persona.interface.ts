@@ -1,9 +1,6 @@
-import { HttpRequest } from '../models/http-request';
-import { HttpResponse } from '../models/http-response';
 import { Cookie } from 'tough-cookie';
 import { KeyValue } from '../types/general.types';
 import { HttpAuth, HttpHeaders, HttpProxy } from '../types/http.types';
-import { HttpRequestOptions } from '../types/http-request.interface';
 import { PersonaAuthenticateOpts } from './persona';
 
 export type DeviceInput = 'touch' | 'mouse' | 'keyboard';
@@ -67,41 +64,29 @@ export type BrowserOptions = {
   permissions?: Permission[];
 };
 
-export type PersonaSetup = {
-  request: HttpRequestOptions;
-  fetch?: (request: HttpRequest) => Promise<HttpResponse>;
-  init: (persona: PersonaInterface, response?: HttpResponse) => Promise<void>;
-};
+export interface PersonaInitInterface {}
 
-export interface PersonaInitInterface {
+export interface PersonaInterface {
+  name: string;
   story?: string;
-  userAgent?: string;
-  browser?: BrowserOptions;
   bearerToken?: string;
   basicAuthentication?: HttpAuth;
   proxy?: HttpProxy;
-  headers?: HttpHeaders;
-  trailers?: HttpHeaders;
-  cookies?: Cookie[] | KeyValue<string>;
-  geolocation?: GeoLocation;
-  isOffline?: boolean;
-  languageLocale?: string;
-  timezone?: string;
-  viewport?: WidthAndHeight;
-  screenSize?: WidthAndHeight;
-  deviceInputs?: DeviceInput[];
-  deviceType?: DeviceType;
-}
-
-export interface PersonaInterface extends PersonaInitInterface {
-  name: string;
-  isMobile: boolean;
-  isOffline: boolean;
-  userAgent: string;
   headers: HttpHeaders;
   trailers: HttpHeaders;
   cookies: Cookie[];
-  deviceInputs: DeviceInput[];
-  deviceType: DeviceType;
+  device: DeviceType;
+  viewport?: WidthAndHeight;
+  screenSize?: WidthAndHeight;
+  browser?: BrowserOptions;
+  userAgent?: string;
+  languageLocale?: string;
+  hasJavaScript?: boolean;
+  hasInternetConnection?: boolean;
+  hasTouch?: boolean;
+  hasKeyboard?: boolean;
+  hasMouse?: boolean;
+  geolocation?: GeoLocation;
+  timezone?: string;
   __authenticate(opts: PersonaAuthenticateOpts): Promise<this>;
 }

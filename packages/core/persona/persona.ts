@@ -1,12 +1,4 @@
-import {
-  BrowserOptions,
-  DeviceInput,
-  DeviceType,
-  GeoLocation,
-  PersonaInitInterface,
-  PersonaInterface,
-  WidthAndHeight,
-} from './persona.interface';
+import { PersonaInitInterface, PersonaInterface } from './persona.interface';
 import { Cookie } from 'tough-cookie';
 import { HttpAuth, HttpHeaders, HttpProxy } from '../types/http.types';
 import { KeyValue } from '../types/general.types';
@@ -19,38 +11,33 @@ export interface PersonaAuthenticateOpts {
 export const Persona = (name: string, opts: PersonaInitInterface = {}) => {
   return class implements PersonaInterface {
     #isAuthenticated: boolean = false;
-    #cookies: Cookie[] | KeyValue<string> = opts.cookies || [];
-    #deviceInputs: DeviceInput[] | undefined = opts.deviceInputs;
-    #userAgent: string | undefined = opts.userAgent;
+    #cookies: Cookie[] | KeyValue<string> = [];
     public name: string = name;
-    public story: string | undefined = opts.story;
-    public browser: BrowserOptions | undefined;
-    public bearerToken: string | undefined = opts.bearerToken;
-    public basicAuthentication: HttpAuth | undefined = opts.basicAuthentication;
-    public proxy: HttpProxy | undefined = opts.proxy;
-    public headers: HttpHeaders = opts.headers || {};
-    public trailers: KeyValue<string> = opts.trailers || {};
-    public geolocation: GeoLocation | undefined = opts.geolocation;
-    public isOffline: boolean = opts.isOffline || false;
-    public languageLocale: string | undefined = opts.languageLocale;
-    public timezone: string | undefined = opts.timezone;
-    public viewport: WidthAndHeight | undefined = opts.viewport;
-    public screenSize: WidthAndHeight | undefined = opts.screenSize;
-    public deviceType: DeviceType = opts.deviceType || 'laptop';
+    public story: string | undefined;
+    public bearerToken: string | undefined;
+    public basicAuthentication: HttpAuth | undefined;
+    public proxy: HttpProxy | undefined;
+    public headers: HttpHeaders = {};
+    public trailers: KeyValue<string> = {};
+    public device: 'laptop';
+    public viewport: undefined;
+    public screenSize: undefined;
+    public browser: undefined;
+    public languageLocale: undefined;
+    public hasJavaScript: true;
+    public hasInternetConnection: true;
+    public hasTouch: false;
+    public hasKeyboard: true;
+    public hasMouse: true;
+    public geolocation: undefined;
+    public timezone: undefined;
 
     public get userAgent(): string {
-      if (this.#userAgent) return this.#userAgent;
-      if (this.headers['user-agent']) return this.headers['user-agent'];
-      return 'QA Flag';
+      return this.headers['user-agent'];
     }
 
-    public get deviceInputs(): DeviceInput[] {
-      if (this.#deviceInputs) return this.#deviceInputs;
-      return this.isMobile ? ['keyboard', 'touch'] : ['keyboard', 'mouse'];
-    }
-
-    public get isMobile() {
-      return ['phone', 'tablet'].includes(this.deviceType);
+    public set userAgent(ua: string) {
+      this.headers['user-agent'] = ua;
     }
 
     public get cookies() {
