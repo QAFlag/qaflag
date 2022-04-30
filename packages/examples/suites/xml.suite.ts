@@ -16,7 +16,7 @@ Mock.on('GET /music', {
 
 export class XmlMusicSuite extends Suite({
   title: 'Test XML Scenario',
-  persona: GuestPersona,
+  persona: new GuestPersona(),
 }) {
   @Scenario({
     uri: 'GET /music',

@@ -28,6 +28,8 @@ export type SuiteOpts = {
   baseUrl?: string;
 };
 
+export class DefaultUser extends Persona('Default') {}
+
 export function Suite(suiteOpts: SuiteOpts) {
   return class SuiteAbstract implements SuiteInterface {
     #befores: string[] = [];
@@ -41,7 +43,7 @@ export function Suite(suiteOpts: SuiteOpts) {
     public readonly scenarios: ScenarioInterface[] = [];
     public readonly steps: SuiteStep[] = [];
     public readonly persona: PersonaInterface =
-      suiteOpts.persona || new Persona({ name: 'Default ' });
+      suiteOpts.persona || new DefaultUser();
     public readonly baseUrl: string | undefined;
 
     public get defaultScenarioOpts() {

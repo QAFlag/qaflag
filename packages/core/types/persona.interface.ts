@@ -73,7 +73,6 @@ export type PersonaSetup = {
 };
 
 export interface PersonaInitInterface {
-  name: string;
   story?: string;
   userAgent?: string;
   browser?: BrowserOptions;
@@ -94,6 +93,7 @@ export interface PersonaInitInterface {
 }
 
 export interface PersonaInterface extends PersonaInitInterface {
+  name: string;
   isMobile: boolean;
   isOffline: boolean;
   userAgent: string;

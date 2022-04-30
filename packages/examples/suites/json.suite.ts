@@ -40,13 +40,13 @@ const GetList = Template({
   uri: 'GET /users',
   step: 1,
   statusCode: 200,
-  persona: StandardUserPersona,
+  persona: new StandardUserPersona(),
   schema: '@getUsers',
 });
 
 export class UsersSuite extends Suite({
   title: 'Test Users Endpoints',
-  persona: GuestPersona,
+  persona: new GuestPersona(),
   type: JsonScenario,
 }) {
   @GetList()
