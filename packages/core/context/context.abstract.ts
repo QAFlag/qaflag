@@ -1,6 +1,6 @@
 import { DebugContent } from '../types/log-provider.interface';
-import { ContextInterface } from '../types/context.interface';
-import { ScenarioInterface } from '../types/scenario.interface';
+import { ContextInterface } from './context.interface';
+import { ScenarioInterface } from '../scenario/scenario.interface';
 
 export abstract class Context implements ContextInterface {
   constructor(public readonly scenario: ScenarioInterface) {}

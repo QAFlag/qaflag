@@ -1,8 +1,8 @@
-import { ClassConstructor } from './general.types';
-import { HttpRequestOptions } from './http-request.interface';
-import { PersonaInterface } from './persona.interface';
+import { ClassConstructor } from '../types/general.types';
+import { HttpRequestOptions } from '../types/http-request.interface';
+import { PersonaInterface } from '../persona/persona.interface';
 import { ScenarioInterface } from './scenario.interface';
-import { SuiteInterface } from './suite.interface';
+import { SuiteInterface } from '../suite/suite.interface';
 
 export interface ScenarioDecoratorOpts extends HttpRequestOptions {
   description?: string;

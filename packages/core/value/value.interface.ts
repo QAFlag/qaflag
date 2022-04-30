@@ -1,11 +1,6 @@
-import {
-  ArrayValue,
-  BooleanValue,
-  NumericValue,
-  StringValue,
-} from '../models/values';
-import { LoggerInterface } from './log-provider.interface';
-import { Must } from './test.interface';
+import { ArrayValue, BooleanValue, NumericValue, StringValue } from './values';
+import { LoggerInterface } from '../types/log-provider.interface';
+import { Must } from '../test/test.interface';
 
 export interface ValueInterface<InputType = any> {
   $: InputType;

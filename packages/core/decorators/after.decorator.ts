@@ -1,4 +1,4 @@
-import { AfterAlls } from '../mixin/suite.mixin';
+import { AfterAlls } from '../suite/suite.mixin';
 
 export function After() {
   return function (

@@ -1,9 +1,9 @@
 import { Logger } from '../models/logger';
-import { LogProvider } from './log-provider.interface';
-import { ScenarioInterface } from './scenario.interface';
+import { LogProvider } from '../types/log-provider.interface';
+import { ScenarioInterface } from '../scenario/scenario.interface';
 import TypedEmitter from 'typed-emitter';
 import { KvStore } from '../models/kv-store';
-import { PersonaInterface } from './persona.interface';
+import { PersonaInterface } from '../persona/persona.interface';
 
 export interface SuiteStep {
   stepNumber: number;

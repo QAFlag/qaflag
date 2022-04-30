@@ -10,8 +10,8 @@ import {
   HttpResponseType,
   HttpVerbs,
 } from './http.types';
-import { PersonaInterface } from './persona.interface';
-import { ScenarioUri } from './scenario.interface';
+import { PersonaInterface } from '../persona/persona.interface';
+import { ScenarioUri } from '../scenario/scenario.interface';
 
 /**
  * Options to instantiate a request

@@ -1,7 +1,7 @@
 import { AxiosStatic } from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { HttpHeaders, HttpVerbs } from '../types/http.types';
-import { ScenarioUri } from '../types/scenario.interface';
+import { ScenarioUri } from '../scenario/scenario.interface';
 import { parseUri } from '../utils/uri';
 
 interface MockReply {

@@ -6,7 +6,7 @@ import {
   PersonaInitInterface,
   PersonaInterface,
   WidthAndHeight,
-} from '../types/persona.interface';
+} from './persona.interface';
 import { Cookie } from 'tough-cookie';
 import { HttpAuth, HttpHeaders, HttpProxy } from '../types/http.types';
 import { KeyValue } from '../types/general.types';

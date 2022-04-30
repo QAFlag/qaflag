@@ -10,7 +10,7 @@ import {
   MustHaveSome,
   MustMatch,
   MustNot,
-} from '@qaflag/core/types/test.interface';
+} from '@qaflag/core';
 import { ClassConstructor } from 'class-transformer';
 import { ValidatorOptions } from 'class-validator';
 

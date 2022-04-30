@@ -1,5 +1,5 @@
 import { test, ValueAbstract } from '@qaflag/core';
-import { Must } from '@qaflag/core/types/test.interface';
+import { Must } from '@qaflag/core';
 
 export interface PagePosition {
   x: number;

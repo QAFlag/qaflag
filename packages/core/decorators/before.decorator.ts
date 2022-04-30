@@ -1,4 +1,4 @@
-import { BeforeAlls } from '../mixin/suite.mixin';
+import { BeforeAlls } from '../suite/suite.mixin';
 
 export function Before() {
   return function (

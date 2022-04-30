@@ -1,21 +1,21 @@
 import {
   ScenarioConstructor,
   ScenarioInitOpts,
-} from '../types/scenario.options';
+} from '../scenario/scenario.options';
 import { KvStore } from '../models/kv-store';
 import { Logger } from '../models/logger';
-import { ScenarioInterface } from '../types/scenario.interface';
+import { ScenarioInterface } from '../scenario/scenario.interface';
 import {
   SuiteDefaults,
   SuiteEvents,
   SuiteInterface,
   SuiteResults,
   SuiteStep,
-} from '../types/suite.interface';
+} from './suite.interface';
 import { EventEmitter } from 'events';
 import TypedEmitter from 'typed-emitter';
-import { PersonaInterface } from '../types/persona.interface';
-import { Persona } from '../models/persona';
+import { PersonaInterface } from '../persona/persona.interface';
+import { Persona } from '../persona/persona';
 
 export const ScenarioDefinitions = Symbol('ScenarioDefinitions');
 export const BeforeAlls = Symbol('BeforeAlls');

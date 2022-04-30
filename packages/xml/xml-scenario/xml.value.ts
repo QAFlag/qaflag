@@ -1,5 +1,5 @@
 import { KeyValue, test, ValueAbstract } from '@qaflag/core';
-import { Must } from '@qaflag/core/types/test.interface';
+import { Must } from '@qaflag/core';
 import * as cheerio from 'cheerio';
 
 export type CheerioElement = cheerio.Cheerio<cheerio.Node>;

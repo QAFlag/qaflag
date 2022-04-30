@@ -1,11 +1,11 @@
-import { Must } from '../types/test.interface';
+import { Must } from '../test/test.interface';
 import { LoggerInterface } from '../types/log-provider.interface';
 import {
   ValueInterface,
   PrimitiveValueInterface,
-} from '../types/value.interface';
+} from '../value/value.interface';
 import { toType } from '../utils/to-type';
-import { test } from './test';
+import { test } from '../test/test';
 import is from '@sindresorhus/is';
 
 export interface ValueOpts {

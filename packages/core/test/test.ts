@@ -1,15 +1,9 @@
-import { ValueInterface } from '../types/value.interface';
+import { ValueInterface } from '../value/value.interface';
 import validator from 'validator';
-import {
-  MustBeAn,
-  MustBe,
-  MustHave,
-  Must,
-  MustMatch,
-} from '../types/test.interface';
+import { MustBeAn, MustBe, MustHave, Must, MustMatch } from './test.interface';
 import is from '@sindresorhus/is';
 import { humanReadableList } from '../utils/helpers';
-import { ArrayValue, NumericValue } from './values';
+import { ArrayValue, NumericValue } from '../value/values';
 
 export type assertion = (data: unknown) => boolean;
 export type mustOrShould = 'must' | 'should';

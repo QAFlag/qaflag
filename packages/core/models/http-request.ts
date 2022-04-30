@@ -9,11 +9,11 @@ import {
   HttpRequestInterface,
   HttpRequestOptions,
 } from '../types/http-request.interface';
-import { ScenarioUri } from '../types/scenario.interface';
+import { ScenarioUri } from '../scenario/scenario.interface';
 import { parseUri } from '../utils/uri';
 import { getCookieArray } from '../utils/cookies';
 import { Cookie } from 'tough-cookie';
-import { PersonaInterface } from '../types/persona.interface';
+import { PersonaInterface } from '../persona/persona.interface';
 
 export class HttpRequest implements HttpRequestInterface {
   #method: HttpVerbs = 'get';

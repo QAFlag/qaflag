@@ -1,10 +1,10 @@
 import { Logger } from '../models/logger';
-import { HttpVerbsCaseInsensitive } from './http.types';
-import { LogProvider } from './log-provider.interface';
-import { ContextInterface } from './context.interface';
-import { SuiteInterface } from './suite.interface';
-import { RequestInterface } from './request-interface';
-import { PersonaInterface } from './persona.interface';
+import { HttpVerbsCaseInsensitive } from '../types/http.types';
+import { LogProvider } from '../types/log-provider.interface';
+import { ContextInterface } from '../context/context.interface';
+import { SuiteInterface } from '../suite/suite.interface';
+import { RequestInterface } from '../types/request-interface';
+import { PersonaInterface } from '../persona/persona.interface';
 
 export type ScenarioUri = `${HttpVerbsCaseInsensitive} ${string}`;
 

@@ -1,9 +1,6 @@
-import {
-  ScenarioDecoratorOpts,
-  ScenarioInitOpts,
-} from '../types/scenario.options';
-import { ScenarioDefinitions } from '../mixin/suite.mixin';
-import { ScenarioInterface } from '../types/scenario.interface';
+import { ScenarioDecoratorOpts, ScenarioInitOpts } from './scenario.options';
+import { ScenarioDefinitions } from '../suite/suite.mixin';
+import { ScenarioInterface } from './scenario.interface';
 
 export function Scenario(opts: ScenarioDecoratorOpts) {
   return function (

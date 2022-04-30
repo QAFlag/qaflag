@@ -1,9 +1,9 @@
 import { HttpRequest } from '../models/http-request';
 import { HttpResponse } from '../models/http-response';
 import { Cookie } from 'tough-cookie';
-import { KeyValue } from './general.types';
-import { HttpRequestOptions } from './http-request.interface';
-import { HttpAuth, HttpHeaders, HttpProxy } from './http.types';
+import { KeyValue } from '../types/general.types';
+import { HttpRequestOptions } from '../types/http-request.interface';
+import { HttpAuth, HttpHeaders, HttpProxy } from '../types/http.types';
 
 export type DeviceInput = 'touch' | 'mouse' | 'keyboard';
 export type DeviceType = 'phone' | 'tablet' | 'desktop' | 'laptop';

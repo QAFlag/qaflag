@@ -1,15 +1,15 @@
-import { ScenarioInitOpts } from '../types/scenario.options';
+import { ScenarioInitOpts } from './scenario.options';
 import { Logger } from '../models/logger';
 import { HttpVerbs } from '../types/http.types';
-import { ContextInterface } from '../types/context.interface';
+import { ContextInterface } from '../context/context.interface';
 import {
   ScenarioInterface,
   ScenarioResult,
   ScenarioStatus,
-} from '../types/scenario.interface';
-import { SuiteInterface } from '../types/suite.interface';
+} from './scenario.interface';
+import { SuiteInterface } from '../suite/suite.interface';
 import { RequestInterface } from '../types/request-interface';
-import { PersonaInterface } from '../types/persona.interface';
+import { PersonaInterface } from '../persona/persona.interface';
 
 export type ScenarioTypeOpts = {
   name: string;

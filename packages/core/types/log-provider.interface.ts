@@ -1,5 +1,5 @@
 import { LogContent, LogMessage, LogMessageType } from '../models/log-message';
-import { ValueInterface } from './value.interface';
+import { ValueInterface } from '../value/value.interface';
 
 export type DebugContent = string | number | boolean | ValueInterface;
 

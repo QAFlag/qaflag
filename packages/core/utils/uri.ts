@@ -1,5 +1,5 @@
 import { HttpVerbs } from '../types/http.types';
-import { ScenarioUri } from '../types/scenario.interface';
+import { ScenarioUri } from '../scenario/scenario.interface';
 
 export const parseUri = (value: ScenarioUri) => {
   const uri = value.split(' ');

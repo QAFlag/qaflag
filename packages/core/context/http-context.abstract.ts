@@ -1,6 +1,6 @@
-import { NumericValue, StringValue } from '../models/values';
-import { ContextInterface } from '../types/context.interface';
-import { ScenarioInterface } from '../types/scenario.interface';
+import { NumericValue, StringValue } from '../value/values';
+import { ContextInterface } from './context.interface';
+import { ScenarioInterface } from '../scenario/scenario.interface';
 import { HttpResponseInterface } from '../types/http-response.interface';
 import { Context } from './context.abstract';
 
