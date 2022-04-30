@@ -39,6 +39,7 @@ export function ScenarioType(initOpts: ScenarioTypeOpts) {
     public readonly logger = new Logger();
 
     public async startUp(): Promise<void> {
+      await this.persona.__authenticate({ baseUrl: this.suite.baseUrl });
       this.request.setPersona(this.persona);
       this.request.pathReplace(this.suite.store.entries());
       this.logger.start();

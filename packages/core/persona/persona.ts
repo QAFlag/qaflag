@@ -10,6 +10,7 @@ import {
 import { Cookie } from 'tough-cookie';
 import { HttpAuth, HttpHeaders, HttpProxy } from '../types/http.types';
 import { KeyValue } from '../types/general.types';
+import { AuthenticateSymbol } from './authenticate.decorator';
 
 export interface PersonaAuthenticateOpts {
   baseUrl?: string;
@@ -17,6 +18,7 @@ export interface PersonaAuthenticateOpts {
 
 export const Persona = (name: string, opts: PersonaInitInterface = {}) => {
   return class implements PersonaInterface {
+    #isAuthenticated: boolean = false;
     #cookies: Cookie[] | KeyValue<string> = opts.cookies || [];
     #deviceInputs: DeviceInput[] | undefined = opts.deviceInputs;
     #userAgent: string | undefined = opts.userAgent;
@@ -61,10 +63,15 @@ export const Persona = (name: string, opts: PersonaInitInterface = {}) => {
       });
     }
 
-    public async authenticate(
+    public async __authenticate(
       opts: PersonaAuthenticateOpts = {},
     ): Promise<this> {
-      // TODO: Fix authenticate back up to fetch details. Make sure we only do it once
+      if (!this[AuthenticateSymbol] || this.#isAuthenticated) return this;
+      const authenticationMethods = this[AuthenticateSymbol] as string[];
+      await Promise.all(
+        authenticationMethods.map(method => this[method](opts)),
+      );
+      this.#isAuthenticated = true;
       return this;
     }
   };
