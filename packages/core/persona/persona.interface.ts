@@ -64,18 +64,14 @@ export type BrowserOptions = {
   permissions?: Permission[];
 };
 
-export interface PersonaInitInterface {}
-
-export interface PersonaInterface {
-  name: string;
-  story?: string;
+export interface PersonaInitInterface {
   bearerToken?: string;
   basicAuthentication?: HttpAuth;
   proxy?: HttpProxy;
-  headers: HttpHeaders;
-  trailers: HttpHeaders;
-  cookies: Cookie[];
-  device: DeviceType;
+  headers?: HttpHeaders;
+  trailers?: HttpHeaders;
+  cookies?: Cookie[];
+  device?: DeviceType;
   viewport?: WidthAndHeight;
   screenSize?: WidthAndHeight;
   browser?: BrowserOptions;
@@ -88,5 +84,13 @@ export interface PersonaInterface {
   hasMouse?: boolean;
   geolocation?: GeoLocation;
   timezone?: string;
+}
+
+export interface PersonaInterface extends PersonaInitInterface {
+  name: string;
+  headers: HttpHeaders;
+  trailers: HttpHeaders;
+  cookies: Cookie[];
+  device: DeviceType;
   __startUp(opts: PersonaAuthenticateOpts): Promise<void>;
 }

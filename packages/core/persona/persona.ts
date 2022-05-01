@@ -13,7 +13,6 @@ export const Persona = (name: string, opts: PersonaInitInterface = {}) => {
     #hasStarted: boolean = false;
     #cookies: Cookie[] | KeyValue<string> = [];
     public name: string = name;
-    public story: string | undefined;
     public bearerToken: string | undefined;
     public basicAuthentication: HttpAuth | undefined;
     public proxy: HttpProxy | undefined;
