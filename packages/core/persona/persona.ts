@@ -2,7 +2,7 @@ import { PersonaInitInterface, PersonaInterface } from './persona.interface';
 import { Cookie } from 'tough-cookie';
 import { HttpAuth, HttpHeaders, HttpProxy } from '../types/http.types';
 import { KeyValue } from '../types/general.types';
-import { AuthenticateSymbol } from './authenticate.decorator';
+import { BeforeSymbol } from '../decorators/before.decorator';
 
 export interface PersonaAuthenticateOpts {
   baseUrl?: string;
@@ -10,7 +10,7 @@ export interface PersonaAuthenticateOpts {
 
 export const Persona = (name: string, opts: PersonaInitInterface = {}) => {
   return class implements PersonaInterface {
-    #isAuthenticated: boolean = false;
+    #hasStarted: boolean = false;
     #cookies: Cookie[] | KeyValue<string> = [];
     public name: string = name;
     public story: string | undefined;
@@ -50,16 +50,11 @@ export const Persona = (name: string, opts: PersonaInitInterface = {}) => {
       });
     }
 
-    public async __authenticate(
-      opts: PersonaAuthenticateOpts = {},
-    ): Promise<this> {
-      if (!this[AuthenticateSymbol] || this.#isAuthenticated) return this;
-      const authenticationMethods = this[AuthenticateSymbol] as string[];
-      await Promise.all(
-        authenticationMethods.map(method => this[method](opts)),
-      );
-      this.#isAuthenticated = true;
-      return this;
+    public async __startUp(opts: PersonaAuthenticateOpts = {}): Promise<void> {
+      if (!this[BeforeSymbol] || this.#hasStarted) return;
+      const befores = Object.values<Function>(this[BeforeSymbol] || {});
+      await Promise.all(befores.map(async before => before(this, opts)));
+      this.#hasStarted = true;
     }
   };
 };

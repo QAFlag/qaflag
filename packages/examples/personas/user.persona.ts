@@ -1,10 +1,9 @@
 import {
-  Authenticate,
-  HttpResponse,
   UsingLaptop,
   Persona,
   Viewport,
   WithTouchScreen,
+  Before,
 } from '@qaflag/core';
 
 export class StandardUserPersona extends Persona('John Doe', {
@@ -12,8 +11,8 @@ export class StandardUserPersona extends Persona('John Doe', {
   ...WithTouchScreen,
   ...Viewport(1280, 720),
 }) {
-  @Authenticate({
-    uri: 'POST /auth',
-  })
-  async login(response: HttpResponse) {}
+  @Before()
+  async login() {
+    this.bearerToken = 'Foo';
+  }
 }

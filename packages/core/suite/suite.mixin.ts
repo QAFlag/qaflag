@@ -16,10 +16,10 @@ import { EventEmitter } from 'events';
 import TypedEmitter from 'typed-emitter';
 import { PersonaInterface } from '../persona/persona.interface';
 import { Persona } from '../persona/persona';
+import { BeforeSymbol } from '../decorators/before.decorator';
+import { AfterSymbol } from '../decorators/after.decorator';
 
 export const ScenarioDefinitions = Symbol('ScenarioDefinitions');
-export const BeforeAlls = Symbol('BeforeAlls');
-export const AfterAlls = Symbol('AfterAlls');
 
 export type SuiteOpts = {
   title: string;
@@ -32,9 +32,6 @@ export class DefaultUser extends Persona('Default') {}
 
 export function Suite(suiteOpts: SuiteOpts) {
   return class SuiteAbstract implements SuiteInterface {
-    #befores: string[] = [];
-    #afters: string[] = [];
-
     public readonly title = suiteOpts.title;
     public readonly store = new KvStore();
     public readonly logger = new Logger();
@@ -52,18 +49,16 @@ export function Suite(suiteOpts: SuiteOpts) {
       };
     }
 
+    public get befores() {
+      return Object.entries<Function>(this[BeforeSymbol] || {});
+    }
+
+    public get afters() {
+      return Object.entries<Function>(this[AfterSymbol] || {});
+    }
+
     constructor(public readonly defaultOpts: SuiteDefaults = {}) {
       this.baseUrl = suiteOpts.baseUrl || defaultOpts.baseUrl;
-      if (this[BeforeAlls]) {
-        Object.keys(this[BeforeAlls]).forEach(methodName =>
-          this.#befores.push(methodName),
-        );
-      }
-      if (this[AfterAlls]) {
-        Object.keys(this[AfterAlls]).forEach(methodName =>
-          this.#afters.push(methodName),
-        );
-      }
       // Add scenarios to this instance
       const scenarioMethods: { [methodName: string]: ScenarioInitOpts } =
         this[ScenarioDefinitions];
@@ -92,7 +87,11 @@ export function Suite(suiteOpts: SuiteOpts) {
     public async execute() {
       this.logger.start();
       this.events.emit('beforeAll');
-      await Promise.all(this.#befores.map(methodName => this[methodName]()));
+      await Promise.all(
+        this.befores.map(([methodName, before]) =>
+          before(this, this.defaultScenarioOpts),
+        ),
+      );
       for (const step of this.steps) {
         await Promise.all(
           step.scenarios.map(async scenario => {
@@ -108,7 +107,11 @@ export function Suite(suiteOpts: SuiteOpts) {
           }),
         );
       }
-      await Promise.all(this.#afters.map(methodName => this[methodName]()));
+      await Promise.all(
+        this.afters.map(([methodName, after]) =>
+          after(this, this.defaultScenarioOpts),
+        ),
+      );
       this.logger.end();
       this.events.emit('completed');
       this.events.emit(this.logger.failed ? 'failed' : 'passed');

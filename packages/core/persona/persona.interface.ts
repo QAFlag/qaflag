@@ -88,5 +88,5 @@ export interface PersonaInterface {
   hasMouse?: boolean;
   geolocation?: GeoLocation;
   timezone?: string;
-  __authenticate(opts: PersonaAuthenticateOpts): Promise<this>;
+  __startUp(opts: PersonaAuthenticateOpts): Promise<void>;
 }
