@@ -3,8 +3,8 @@ import { JsonContext, JsonScenario } from '@qaflag/json';
 import { readFileSync } from 'fs';
 import path = require('path');
 import { UserDto } from '../schemas/user.dto';
-import { GuestPersona } from '../personas/guest.persona';
-import { StandardUserPersona } from '../personas/user.persona';
+import { GuestUser } from '../personas/guest.persona';
+import { StandardUser } from '../personas/user.persona';
 
 Mock.on('GET http://localhost/users', {
   statusCode: 200,
@@ -40,13 +40,13 @@ const GetList = Template({
   uri: 'GET /users',
   step: 1,
   statusCode: 200,
-  persona: new StandardUserPersona(),
+  persona: new StandardUser(),
   schema: '@getUsers',
 });
 
 export class UsersSuite extends Suite({
   title: 'Test Users Endpoints',
-  persona: new GuestPersona(),
+  persona: new GuestUser(),
   type: JsonScenario,
 }) {
   @GetList()

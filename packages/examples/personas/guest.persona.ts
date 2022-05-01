@@ -1,3 +1,3 @@
 import { Persona } from '@qaflag/core';
 
-export class GuestPersona extends Persona('Guest User') {}
+export class GuestUser extends Persona('Guest User') {}
