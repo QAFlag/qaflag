@@ -20,8 +20,8 @@ export type PlaywrightInstance = {
 
 export class PlaywrightAdapter {
   protected getBrowserEngine(persona?: PersonaInterface): BrowserType {
-    if (persona?.browser?.engine == 'firefox') return firefox;
-    if (persona?.browser?.engine == 'webkit') return webkit;
+    if (persona?.browser?.product == 'firefox') return firefox;
+    if (persona?.browser?.product == 'safari') return webkit;
     return chromium;
   }
 
@@ -40,13 +40,13 @@ export class PlaywrightAdapter {
     const browserEngine = this.getBrowserEngine(persona);
     const browser = await browserEngine.launch({
       headless: false,
-      channel: persona?.browser?.channel,
-      args: persona?.browser?.args,
-      chromiumSandbox: persona?.browser?.chromiumSandbox,
-      devtools: persona?.browser?.devtools,
+      channel: persona?.browser?.product,
+      args: undefined,
+      chromiumSandbox: undefined,
+      devtools: undefined,
       downloadsPath: undefined,
       executablePath: persona?.browser?.executablePath,
-      firefoxUserPrefs: persona?.browser?.userPrefs,
+      firefoxUserPrefs: persona?.browser?.userPreferences,
       proxy: this.getProxy(request),
       timeout: 30000,
       slowMo: undefined,
@@ -54,29 +54,31 @@ export class PlaywrightAdapter {
     const context = await browser.newContext({
       geolocation: persona?.geolocation,
       httpCredentials: persona?.basicAuthentication,
-      locale: persona?.languageLocale,
+      locale: persona?.language,
       acceptDownloads: false,
       bypassCSP: false,
       ignoreHTTPSErrors: false,
-      colorScheme: persona?.browser?.colorScheme,
+      colorScheme: persona?.colorScheme,
       deviceScaleFactor: persona?.browser?.deviceScaleFactor,
-      forcedColors: persona?.browser?.forcedColors,
-      hasTouch: persona?.hasTouch,
-      isMobile: persona?.device == 'phone',
+      forcedColors: undefined,
+      hasTouch: persona?.deviceInputs.includes('touch'),
+      isMobile: persona?.deviceType == 'phone',
       javaScriptEnabled: persona?.browser?.javaScriptEnabled,
-      //offline: !persona?.hasInternetConnection,
+      offline: persona?.connectionType == 'offline',
       permissions: persona?.browser?.permissions,
       proxy: this.getProxy(request),
       recordVideo: undefined,
-      reducedMotion: persona?.browser?.reducedMotion,
+      reducedMotion: persona?.disabilities.includes('motion-disorder')
+        ? 'reduce'
+        : 'no-preference',
       screen: persona?.screenSize,
       storageState: {
         cookies: [],
-        origins: persona?.browser?.storage || [],
+        origins: [],
       },
       timezoneId: persona?.timezone,
       //userAgent: request.userAgent, // this line was causing problems
-      viewport: persona?.viewport,
+      viewport: persona?.viewportSize,
     });
     context.addCookies(request.getCookies());
     const page = await context.newPage();

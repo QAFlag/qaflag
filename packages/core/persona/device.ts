@@ -1,27 +1,60 @@
-import { PersonaInterface } from './persona.interface';
+import {
+  BrowserSoftware,
+  OperatingSystemType,
+  PersonaInitOptions,
+} from './persona.interface';
 
-export const UsingLaptop: Partial<PersonaInterface> = {
-  device: 'laptop',
+export const Laptop = (
+  os: OperatingSystemType = 'windows',
+): PersonaInitOptions => ({
+  deviceType: 'laptop',
   screenSize: { width: 1920, height: 1080 },
-  hasMouse: true,
-  hasKeyboard: true,
-};
-
-export const SmartPhone: Partial<PersonaInterface> = {
-  device: 'phone',
-  screenSize: { width: 428, height: 926 },
-  hasTouch: true,
-  hasKeyboard: true,
-};
-
-export const WithTouchScreen = {
-  hasTouch: true,
-};
-
-export const Viewport = (width: number, height: number) => ({
-  viewport: { width, height },
+  deviceInputs: ['mouse', 'keyboard'],
+  deviceOutputs: ['screen', 'printer', 'voice'],
+  os: {
+    type: os,
+  },
 });
 
-export const ScreenSize = (width: number, height: number) => ({
-  viewport: { width, height },
+export const SmartPhone = (osType?: 'android' | 'ios'): PersonaInitOptions => ({
+  deviceType: 'phone',
+  screenSize: { width: 926, height: 428 },
+  deviceInputs: ['touch', 'keyboard'],
+  deviceOutputs: ['screen', 'voice'],
+  os: { type: osType },
+});
+
+export const TouchScreen = (
+  width: number,
+  height: number,
+): PersonaInitOptions => ({
+  deviceInputs: ['touch'],
+  ...Screen(width, height),
+});
+
+export const Screen = (width: number, height: number): PersonaInitOptions => ({
+  deviceOutputs: ['screen'],
+  screenSize: { width, height },
+});
+
+export const WebBrowser = (product: BrowserSoftware): PersonaInitOptions => ({
+  browser: {
+    product,
+  },
+});
+
+export const OperatingSystem = (
+  type: OperatingSystemType,
+): PersonaInitOptions => ({
+  os: {
+    type,
+  },
+});
+
+export const Portrait = (): PersonaInitOptions => ({
+  isPortraitMode: true,
+});
+
+export const Landscape = (): PersonaInitOptions => ({
+  isPortraitMode: false,
 });

@@ -20,10 +20,10 @@ export abstract class HttpContext extends Context implements ContextInterface {
   }
 
   public header(name: string) {
-    const header = Object.entries(this.response.headers).find(
-      ([key]) => key.toLocaleLowerCase() == name.toLocaleLowerCase(),
+    const header = this.response.headers.find(
+      ({ key }) => key.toLocaleLowerCase() == name.toLocaleLowerCase(),
     );
-    return new StringValue(header ? header[1] : '', {
+    return new StringValue(header ? header.value : '', {
       name: `HTTP Header: ${name}`,
       logger: this.logger,
     });

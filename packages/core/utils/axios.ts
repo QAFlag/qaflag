@@ -22,7 +22,13 @@ export const fetchWithAxios = async (
     baseURL: req.baseUrl,
     //transformRequest: [(data, headers) => data],
     //transformResponse: [data => data],
-    headers: req.headers,
+    headers: (() => {
+      const out = {};
+      req.headers.forEach(header => {
+        out[header.key] = header.value;
+      });
+      return out;
+    })(),
     params: req.queryString,
     data: req.data,
     timeout: req.timeout,

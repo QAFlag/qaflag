@@ -34,7 +34,11 @@ export class HttpResponse<ResponseBodyType = any, RequestType = any>
   }
 
   public get headers(): HttpHeaders {
-    return this.response.headers || {};
+    if (!this.response.headers) return [];
+    return Object.entries(this.response.headers).map(([key, value]) => ({
+      key,
+      value: Array.isArray(value) ? value.join(' | ') : value,
+    }));
   }
 
   public get trailers(): KeyValue {

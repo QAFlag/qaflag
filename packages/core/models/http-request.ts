@@ -98,7 +98,6 @@ export class HttpRequest implements HttpRequestInterface {
     return (
       this.opts.userAgent ||
       (this.opts.headers && this.opts.headers['user-agent']) ||
-      this.persona?.userAgent ||
       'QA Flag'
     );
   }
@@ -111,11 +110,11 @@ export class HttpRequest implements HttpRequestInterface {
   }
 
   public get headers() {
-    const headers = {
-      ...this.persona?.headers,
-      ...this.opts.headers,
-      'user-agent': this.userAgent,
-    };
+    const headers = [
+      ...(this.persona?.headers || []),
+      ...(this.opts.headers || []),
+      { key: 'user-agent', value: this.userAgent },
+    ];
     return headers;
   }
 

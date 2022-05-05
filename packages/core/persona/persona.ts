@@ -1,52 +1,77 @@
-import { PersonaInitInterface, PersonaInterface } from './persona.interface';
+import {
+  PersonaInitOptions,
+  PersonaInterface,
+  WidthAndHeight,
+} from './persona.interface';
 import { Cookie } from 'tough-cookie';
-import { HttpAuth, HttpHeaders, HttpProxy } from '../types/http.types';
-import { KeyValue } from '../types/general.types';
 import { BeforeSymbol } from '../decorators/before.decorator';
+import { shallowMerge } from '../utils/helpers';
 
 export interface PersonaAuthenticateOpts {
   baseUrl?: string;
 }
 
-export const Persona = (name: string, opts: PersonaInitInterface = {}) => {
+export const Persona = (
+  name: string,
+  ...aboutThisUser: PersonaInitOptions[]
+) => {
+  const qualities = shallowMerge<PersonaInitOptions>({}, ...aboutThisUser);
+
   return class implements PersonaInterface {
     #hasStarted: boolean = false;
-    #cookies: Cookie[] | KeyValue<string> = [];
-    public name: string = name;
-    public bearerToken: string | undefined;
-    public basicAuthentication: HttpAuth | undefined;
-    public proxy: HttpProxy | undefined;
-    public headers: HttpHeaders = {};
-    public trailers: KeyValue<string> = {};
-    public device: 'laptop';
-    public viewport: undefined;
-    public screenSize: undefined;
-    public browser: undefined;
-    public languageLocale: undefined;
-    public hasJavaScript: true;
-    public hasInternetConnection: true;
-    public hasTouch: false;
-    public hasKeyboard: true;
-    public hasMouse: true;
-    public geolocation: undefined;
-    public timezone: undefined;
+    #viewportSize = qualities.viewportSize;
 
-    public get userAgent(): string {
-      return this.headers['user-agent'];
-    }
-
-    public set userAgent(ua: string) {
-      this.headers['user-agent'] = ua;
-    }
+    public readonly name = name;
+    public gender = qualities.gender;
+    public age = qualities.age;
+    public occupation = qualities.occupation;
+    public geolocation = qualities.geolocation;
+    public timezone = qualities.timezone;
+    public language = qualities.language;
+    public disabilities = qualities.disabilities || [];
+    public bearerToken = qualities.bearerToken;
+    public basicAuthentication = qualities.basicAuthentication;
+    public proxy = qualities.proxy;
+    public headers = qualities.headers || [];
+    public trailers = qualities.trailers || [];
+    public deviceType = qualities.deviceType || 'laptop';
+    public deviceInputs = qualities.deviceInputs || ['keyboard', 'mouse'];
+    public deviceOutputs = qualities.deviceOutputs || ['screen'];
+    public isPortraitMode: boolean = qualities.isPortraitMode || false;
+    public connectionType = qualities.connectionType || 'wifi';
+    public colorScheme = qualities.colorScheme || 'light';
+    public browser = {
+      product: qualities.browser?.product || 'chrome',
+      userAgent: qualities.browser?.userAgent || undefined,
+      executablePath: qualities.browser?.executablePath || undefined,
+      deviceScaleFactor: qualities.browser?.deviceScaleFactor || 1,
+      javaScriptEnabled: qualities.browser?.javaScriptEnabled || true,
+      permissions: qualities.browser?.permissions || undefined,
+      localStorage: qualities.browser?.localStorage || undefined,
+      userPreferences: qualities.browser?.userPreferences || undefined,
+    };
+    public os = qualities.os || {};
+    public screenSize = qualities.screenSize || { width: 1280, height: 720 };
 
     public get cookies() {
-      if (Array.isArray(this.#cookies)) return this.#cookies;
-      return Object.entries(this.#cookies).map(cookie => {
+      if (!qualities.cookies) return [];
+      if (Array.isArray(qualities.cookies)) {
+        return qualities.cookies;
+      }
+      return Object.entries(qualities.cookies).map(cookie => {
         return new Cookie({
           key: cookie[0],
-          value: cookie[1],
+          value: String(cookie[1]),
         });
       });
+    }
+
+    public get viewportSize() {
+      return this.#viewportSize || this.screenSize;
+    }
+
+    public set viewportSize(value: WidthAndHeight) {
+      this.#viewportSize = value;
     }
 
     public async __startUp(opts: PersonaAuthenticateOpts = {}): Promise<void> {

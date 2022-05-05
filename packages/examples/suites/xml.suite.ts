@@ -2,7 +2,7 @@ import { Mock, Scenario, Suite } from '@qaflag/core';
 import { XmlContext, XmlScenario } from '@qaflag/xml';
 import { readFileSync } from 'fs';
 import path = require('path');
-import { GuestPersona } from '../personas/guest.persona';
+import { GuestUser } from '../personas/guest.persona';
 
 Mock.on('GET /music', {
   statusCode: 200,
@@ -16,7 +16,7 @@ Mock.on('GET /music', {
 
 export class XmlMusicSuite extends Suite({
   title: 'Test XML Scenario',
-  persona: new GuestPersona(),
+  persona: new GuestUser(),
 }) {
   @Scenario({
     uri: 'GET /music',

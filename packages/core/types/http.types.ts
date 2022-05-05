@@ -81,8 +81,7 @@ export type HttpEncoding =
 
 export type HttpStatus = { code: number; text: string };
 
-export type HttpHeaderValue = string;
-
-export type HttpHeaders = {
-  [key: string]: HttpHeaderValue;
-};
+export type HttpHeaders = Array<{
+  key: string;
+  value: string;
+}>;

@@ -9,5 +9,8 @@ export class RssCnnSuite extends Suite({
     uri: 'GET http://rss.cnn.com/rss/cnn_topstories.rss',
     statusCode: 200,
   })
-  async getFeed(context: RssContext) {}
+  async getFeed(context: RssContext) {
+    const items = context.find('items');
+    items.array.length.must.be.greaterThan(0);
+  }
 }
