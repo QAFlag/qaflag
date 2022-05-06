@@ -5,11 +5,13 @@ import {
   Persona,
   Laptop,
   WebBrowser,
+  Windows,
+  Using,
 } from '@qaflag/core';
 
 export class StandardUser extends Persona(
   'John Doe',
-  Laptop('windows'),
+  Using(Windows, Laptop),
   TouchScreen(1280, 720),
   WebBrowser('chrome'),
 ) {

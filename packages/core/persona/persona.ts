@@ -1,8 +1,4 @@
-import {
-  PersonaInitOptions,
-  PersonaInterface,
-  WidthAndHeight,
-} from './persona.interface';
+import { PersonaInitOptions, PersonaInterface } from './persona.interface';
 import { Cookie } from 'tough-cookie';
 import { BeforeSymbol } from '../decorators/before.decorator';
 import { shallowMerge } from '../utils/helpers';
@@ -49,7 +45,7 @@ export const Persona = (
       userPreferences: qualities.browser?.userPreferences || undefined,
     };
     public os = qualities.os || {};
-    public screenSize = qualities.screenSize || { width: 1280, height: 720 };
+    public screenSize = qualities.screenSize || [1280, 720];
 
     public get cookies() {
       if (!qualities.cookies) return [];
@@ -68,7 +64,7 @@ export const Persona = (
       return this.#viewportSize || this.screenSize;
     }
 
-    public set viewportSize(value: WidthAndHeight) {
+    public set viewportSize(value: [number, number]) {
       this.#viewportSize = value;
     }
 

@@ -1,8 +1,15 @@
-import { TouchScreen, Persona, Laptop, WebBrowser } from '@qaflag/core';
+import {
+  TouchScreen,
+  Persona,
+  WebBrowser,
+  Laptop,
+  Windows,
+  Using,
+} from '@qaflag/core';
 
 export class GuestUser extends Persona(
   'Guest User',
-  Laptop('mac'),
+  Using(Windows, Laptop),
   TouchScreen(1280, 720),
   WebBrowser('safari'),
 ) {}

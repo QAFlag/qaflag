@@ -45,7 +45,7 @@ export type GeoLocation = {
 };
 
 export type ColorScheme = 'light' | 'dark' | undefined;
-export type WidthAndHeight = { width: number; height: number };
+export type XY = [number, number];
 
 export type StorageOrigins = {
   origin: string;
@@ -57,7 +57,7 @@ export type StorageOrigins = {
 
 export type BrowserSoftware = 'chrome' | 'firefox' | 'safari' | 'msedge';
 
-export interface WebBrowser {
+export interface PersonaWebBrowser {
   product?: BrowserSoftware | undefined;
   userAgent?: string | undefined;
   executablePath?: string | undefined;
@@ -78,7 +78,7 @@ export type OperatingSystemType =
   | 'ios'
   | 'chromeos';
 
-export interface OperatingSystem {
+export interface PersonaOperatingSystem {
   type?: OperatingSystemType | undefined;
 }
 
@@ -95,10 +95,10 @@ export interface PersonaQualities {
   deviceType: DeviceType;
   deviceInputs: DeviceInput[];
   deviceOutputs: DeviceOutput[];
-  browser: WebBrowser;
-  os: OperatingSystem;
-  screenSize: WidthAndHeight;
-  viewportSize: WidthAndHeight;
+  browser: PersonaWebBrowser;
+  os: PersonaOperatingSystem;
+  screenSize: XY;
+  viewportSize: XY;
   isPortraitMode: boolean;
   // Connection
   connectionType: 'offline' | '2g' | '3g' | '4g' | '5g' | 'wifi' | 'wired';

@@ -71,14 +71,18 @@ export class PlaywrightAdapter {
       reducedMotion: persona?.disabilities.includes('motion-disorder')
         ? 'reduce'
         : 'no-preference',
-      screen: persona?.screenSize,
+      screen: persona.screenSize
+        ? { width: persona.screenSize[0], height: persona.screenSize[1] }
+        : undefined,
       storageState: {
         cookies: [],
         origins: [],
       },
       timezoneId: persona?.timezone,
       //userAgent: request.userAgent, // this line was causing problems
-      viewport: persona?.viewportSize,
+      viewport: persona.viewportSize
+        ? { width: persona.viewportSize[0], height: persona.viewportSize[1] }
+        : undefined,
     });
     context.addCookies(request.getCookies());
     const page = await context.newPage();
