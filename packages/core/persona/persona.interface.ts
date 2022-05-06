@@ -57,7 +57,7 @@ export type StorageOrigins = {
 
 export type BrowserSoftware = 'chrome' | 'firefox' | 'safari' | 'msedge';
 
-interface WebBrowser {
+export interface WebBrowser {
   product?: BrowserSoftware | undefined;
   userAgent?: string | undefined;
   executablePath?: string | undefined;
@@ -78,7 +78,7 @@ export type OperatingSystemType =
   | 'ios'
   | 'chromeos';
 
-interface OperatingSystem {
+export interface OperatingSystem {
   type?: OperatingSystemType | undefined;
 }
 
