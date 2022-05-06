@@ -14,6 +14,7 @@ import { parseUri } from '../utils/uri';
 import { getCookieArray } from '../utils/cookies';
 import { Cookie } from 'tough-cookie';
 import { PersonaInterface } from '../persona/persona.interface';
+import { DefaultUser } from '../persona/persona';
 
 export class HttpRequest implements HttpRequestInterface {
   #method: HttpVerbs = 'get';
@@ -26,10 +27,6 @@ export class HttpRequest implements HttpRequestInterface {
   ) {
     this.uri = opts.uri;
     this.#persona = persona;
-  }
-
-  public get persona() {
-    return this.#persona;
   }
 
   public get responseType() {
@@ -63,7 +60,12 @@ export class HttpRequest implements HttpRequestInterface {
   }
 
   public get path(): string {
-    return this.#path;
+    if (!this.opts.pathArgs) return this.#path;
+    let path = this.#path;
+    Object.entries(this.opts.pathArgs).forEach(([key, value]) => {
+      path = path.replace(`{${key}}`, String(value));
+    });
+    return path;
   }
 
   public set path(value: string) {
@@ -78,16 +80,20 @@ export class HttpRequest implements HttpRequestInterface {
     return this.opts.timeout || 10000;
   }
 
-  public setPersona(persona: PersonaInterface) {
+  public set persona(persona: PersonaInterface) {
     this.#persona = persona;
   }
 
-  public pathReplace(variables: [string, any][]): void {
-    let path = this.path;
-    variables.forEach(([key, value]) => {
-      path = path.replace(`{${key}}`, String(value));
-    });
-    this.path = path;
+  public get persona() {
+    return this.#persona || new DefaultUser();
+  }
+
+  public get pathArgs(): [string, any][] {
+    return this.opts.pathArgs || [];
+  }
+
+  public set pathArgs(value: [string, any][]) {
+    this.opts.pathArgs = value;
   }
 
   public get proxy() {

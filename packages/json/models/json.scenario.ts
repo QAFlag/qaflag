@@ -23,7 +23,7 @@ export class JsonScenario extends ScenarioType({
     return this.#context;
   }
 
-  public async execute() {
+  public async __execute() {
     const resp = await this.#adapter.fetch(this.request);
     this.#context = new JsonContext(this, resp);
     this.#context.statusCode.must.be.equalTo(this.statusCode || 200);

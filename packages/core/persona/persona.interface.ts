@@ -1,7 +1,7 @@
+import { SuiteInterface } from '../suite/suite.interface';
 import { Cookie } from 'tough-cookie';
 import { KeyValue } from '../types/general.types';
 import { HttpAuth, HttpHeaders, HttpProxy } from '../types/http.types';
-import { PersonaAuthenticateOpts } from './persona';
 
 export type DeviceType =
   | 'phone'
@@ -115,6 +115,6 @@ export interface PersonaQualities {
 export type PersonaInitOptions = Partial<PersonaQualities>;
 
 export interface PersonaInterface extends PersonaQualities {
-  __startUp(opts: PersonaAuthenticateOpts): Promise<void>;
+  __startUp(suite: SuiteInterface): Promise<void>;
   name: string;
 }

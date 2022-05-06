@@ -15,7 +15,7 @@ export class XmlScenario extends ScenarioType({
     return this.#context;
   }
 
-  public async execute() {
+  public async __execute() {
     const response = await this.#adapter.fetch(this.request);
     this.#context = new XmlContext(this, response);
     this.#context.statusCode.must.equal(this.statusCode || 200);

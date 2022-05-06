@@ -29,7 +29,7 @@ export const run = async (
       limit(async () => {
         const suite = loadSuite(selection, project);
         suite.events.on('completed', () => outputSuiteToConsole(suite));
-        await suite.execute();
+        await suite.__execute();
         return suite;
       }),
     ),

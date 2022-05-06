@@ -15,7 +15,7 @@ import {
 import { EventEmitter } from 'events';
 import TypedEmitter from 'typed-emitter';
 import { PersonaInterface } from '../persona/persona.interface';
-import { Persona } from '../persona/persona';
+import { DefaultUser } from '../persona/persona';
 import { BeforeSymbol } from '../decorators/before.decorator';
 import { AfterSymbol } from '../decorators/after.decorator';
 
@@ -27,8 +27,6 @@ export type SuiteOpts = {
   type?: ScenarioConstructor;
   baseUrl?: string;
 };
-
-export class DefaultUser extends Persona('Default') {}
 
 export function Suite(suiteOpts: SuiteOpts) {
   return class SuiteAbstract implements SuiteInterface {
@@ -84,7 +82,7 @@ export function Suite(suiteOpts: SuiteOpts) {
       }
     }
 
-    public async execute() {
+    public async __execute() {
       this.logger.start();
       this.events.emit('beforeAll');
       await Promise.all(
@@ -96,10 +94,10 @@ export function Suite(suiteOpts: SuiteOpts) {
         await Promise.all(
           step.scenarios.map(async scenario => {
             this.events.emit('beforeEach', scenario);
-            await scenario.startUp();
-            await scenario.execute();
-            await scenario.next(scenario);
-            await scenario.tearDown();
+            await scenario.__startUp();
+            await scenario.__execute();
+            await scenario.__next(scenario);
+            await scenario.__tearDown();
             this.events.emit('afterEach', scenario);
             this.logger.log(scenario.status == 'pass' ? 'pass' : 'fail', {
               text: scenario.title,

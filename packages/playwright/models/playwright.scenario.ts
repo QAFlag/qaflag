@@ -14,14 +14,14 @@ export class PlaywrightScenario extends ScenarioType({
     return this.#context;
   }
 
-  public async execute() {
+  public async __execute() {
     const adapter = new PlaywrightAdapter();
     const playwright = await adapter.fetch(this.request);
     this.#context = new PlaywrightContext(this, playwright);
   }
 
-  public override async tearDown(): Promise<void> {
-    await super.tearDown();
+  public override async __tearDown(): Promise<void> {
+    await super.__tearDown();
     return this.context?.browser.close();
   }
 }

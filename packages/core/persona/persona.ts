@@ -6,10 +6,8 @@ import {
 import { Cookie } from 'tough-cookie';
 import { BeforeSymbol } from '../decorators/before.decorator';
 import { shallowMerge } from '../utils/helpers';
-
-export interface PersonaAuthenticateOpts {
-  baseUrl?: string;
-}
+import { SuiteInterface } from '../suite/suite.interface';
+import { HttpRequestOptions } from '../types/http-request.interface';
 
 export const Persona = (
   name: string,
@@ -74,11 +72,14 @@ export const Persona = (
       this.#viewportSize = value;
     }
 
-    public async __startUp(opts: PersonaAuthenticateOpts = {}): Promise<void> {
+    public async __startUp(suite: SuiteInterface): Promise<void> {
       if (!this[BeforeSymbol] || this.#hasStarted) return;
+      const opts: Partial<HttpRequestOptions> = { baseUrl: suite.baseUrl };
       const befores = Object.values<Function>(this[BeforeSymbol] || {});
       await Promise.all(befores.map(async before => before(this, opts)));
       this.#hasStarted = true;
     }
   };
 };
+
+export class DefaultUser extends Persona('Default') {}

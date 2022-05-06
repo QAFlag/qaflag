@@ -31,10 +31,10 @@ export interface HttpRequestOptions {
   responseEncoding?: HttpEncoding;
   timeout?: number;
   maxRedirects?: number;
+  pathArgs?: [string, any][];
 }
 
 export interface HttpRequestInterface {
-  pathReplace(variables: [string, any][]): void;
   uri: ScenarioUri;
   url: URL;
   baseUrl: string | undefined;
@@ -52,5 +52,5 @@ export interface HttpRequestInterface {
   queryString: KeyValue<string>;
   timeout: number;
   maxRedirects: number;
-  setPersona(persona: PersonaInterface): void;
+  pathArgs: [string, any][];
 }

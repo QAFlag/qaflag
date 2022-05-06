@@ -40,7 +40,7 @@ export interface SuiteInterface extends LogProvider {
   set<T>(key: string, value: T): T;
   get(key: string): any;
   push(key: string, value: any): any;
-  execute(): Promise<void>;
+  __execute(): Promise<void>;
 }
 
 export type SuiteStatus = 'not started' | 'in progress' | 'pass' | 'fail';

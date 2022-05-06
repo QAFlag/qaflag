@@ -24,28 +24,28 @@ export function ScenarioType(initOpts: ScenarioTypeOpts) {
       this.key = opts.key;
       this.description = opts.description || '';
       this.step = opts.step || 1;
-      this.next = opts.next;
+      this.__next = opts.next;
     }
 
     public abstract context: ContextInterface | null;
     public abstract request: RequestInterface;
-    public abstract execute(): Promise<void>;
+    public abstract __execute(): Promise<void>;
 
     public type: string = initOpts.name;
     public key: string | Symbol;
     public description: string;
     public step: number;
-    public next: (...args: any[]) => Promise<void>;
+    public __next: (...args: any[]) => Promise<void>;
     public readonly logger = new Logger();
 
-    public async startUp(): Promise<void> {
-      await this.persona.__startUp({ baseUrl: this.suite.baseUrl });
-      this.request.setPersona(this.persona);
-      this.request.pathReplace(this.suite.store.entries());
+    public async __startUp(): Promise<void> {
+      this.request.persona = this.persona;
+      this.request.pathArgs = this.suite.store.entries();
+      await this.persona.__startUp(this.suite);
       this.logger.start();
     }
 
-    public async tearDown(): Promise<void> {
+    public async __tearDown(): Promise<void> {
       this.logger.end();
     }
 
