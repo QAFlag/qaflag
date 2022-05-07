@@ -27,7 +27,7 @@
     "cli-table3": "^0.6.1",
     "commander": "^9.1.0",
     "fs-extra": "^10.0.1",
-    "minikin": "^1.0.36",
+    "minikin": "^1.0.37",
     "open": "7.4.2",
     "p-limit": "3.1.0",
     "picomatch": "^2.3.1",
