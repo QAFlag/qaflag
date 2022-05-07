@@ -1,5 +1,13 @@
 ![QA Flag](/assets/qaflag.png)
 
+# Want to use QA Flag?
+
+For doumentation on installing and writing tests with QA Flag, see our web site:
+
+[qaflag.com](https://www.qaflag.com/)
+
+# Want to contribute to the QA Flag project?
+
 This project is in the early stages. It will be a mono-repo, so we are using lerna.
 
 Install with
@@ -20,9 +28,7 @@ Test with
 npm run start
 ```
 
-# Defining a Suite
-
-## Example
+# Brief Example of a Test Suite
 
 ```typescript
 import { Scenario, Suite } from '@qaflag/core';
@@ -30,9 +36,10 @@ import { JsonContext, JsonScenario } from '@qaflag/json';
 
 export class UsersSuite extends Suite(JsonScenario, {
   title: 'Test Users Endpoints',
+  baseUrl: 'https://jsonplaceholder.typicode.com',
 }) {
   @Scenario({
-    uri: 'GET https://jsonplaceholder.typicode.com/users',
+    uri: 'GET /users',
     step: 1,
     statusCode: 200,
     schema: '@getUsers',
@@ -46,7 +53,7 @@ export class UsersSuite extends Suite(JsonScenario, {
 
   @Scenario({
     description: 'Get one user',
-    uri: 'GET https://jsonplaceholder.typicode.com/users/{userId}',
+    uri: 'GET /users/{userId}',
     step: 2,
   })
   async getOneUser(context: JsonContext) {
@@ -55,3 +62,5 @@ export class UsersSuite extends Suite(JsonScenario, {
   }
 }
 ```
+
+For more details please go to: [qaflag.com](https://www.qaflag.com/)
