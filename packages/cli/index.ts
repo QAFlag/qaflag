@@ -10,6 +10,7 @@ import { run } from './actions/run';
 import { startServer } from './webserver/server';
 import * as open from 'open';
 import { build } from './actions/build';
+import { generate } from './actions/generate/generate';
 
 // Initialize Project
 const project = new Project({
@@ -65,6 +66,15 @@ program
   .description('Trailspile test suites from TypeScript to Javascript')
   .action(async (str, options) => {
     await build(project);
+  });
+
+program
+  .command('generate')
+  .alias('g')
+  .argument('<schematic>', 'Thing you want to generate')
+  .argument('<name>', 'What you want to call it')
+  .action(async (schematic, name, options) => {
+    await generate(project, schematic, name, options);
   });
 
 program.parse();

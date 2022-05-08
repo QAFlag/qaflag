@@ -23,6 +23,7 @@
   "license": "MIT",
   "dependencies": {
     "@qaflag/core": "^0.0.27",
+    "camelcase": "^6.3.0",
     "chalk": "4.1.2",
     "cli-table3": "^0.6.1",
     "commander": "^9.1.0",
