@@ -38,7 +38,7 @@ export class HttpRequest implements HttpRequestInterface {
   }
 
   public get url(): URL {
-    return new URL(this.#path, this.baseUrl);
+    return new URL(this.path, this.baseUrl);
   }
 
   public get uri(): ScenarioUri {
@@ -62,7 +62,7 @@ export class HttpRequest implements HttpRequestInterface {
   public get path(): string {
     if (!this.opts.pathArgs) return this.#path;
     let path = this.#path;
-    Object.entries(this.opts.pathArgs).forEach(([key, value]) => {
+    this.opts.pathArgs.forEach(([key, value]) => {
       path = path.replace(`{${key}}`, String(value));
     });
     return path;

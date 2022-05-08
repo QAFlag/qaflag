@@ -1,5 +1,11 @@
-![QA Flag](/assets/qaflag.png)
+![QA Flag](https://www.qaflag.com/img/qaflag.png)
 
 Test XML, SOAP, RSS, and ATOM responses
 
-More details: [https://github.com/QAFlag/qaflag]
+Install with:
+
+```
+npm i -g @qaflag/xml
+```
+
+See [https://www.qaflag.com] for more details

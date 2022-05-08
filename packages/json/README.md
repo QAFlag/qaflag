@@ -1,5 +1,11 @@
-![QA Flag](/assets/qaflag.png)
+![QA Flag](https://www.qaflag.com/img/qaflag.png)
 
-Test JSON responses
+Test JSON and REST APIs
 
-More details: [https://github.com/QAFlag/qaflag]
+Install with:
+
+```
+npm i -g @qaflag/json
+```
+
+See [https://www.qaflag.com] for more details

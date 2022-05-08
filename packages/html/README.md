@@ -1,5 +1,11 @@
-![QA Flag](/assets/qaflag.png)
+![QA Flag](https://www.qaflag.com/img/qaflag.png)
 
 Test HTML scenarios, without a full browser by using Cheerio
 
-More details: [https://github.com/QAFlag/qaflag]
+Install with:
+
+```
+npm i -g @qaflag/html
+```
+
+See [https://www.qaflag.com] for more details
