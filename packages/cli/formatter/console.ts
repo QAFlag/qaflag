@@ -1,11 +1,14 @@
 import { SuiteInterface } from '@qaflag/core';
 import chalk = require('chalk');
 import { LightTheme } from '../themes/light';
+import { DarkTheme } from '../themes/dark';
 import { pill, printLineBreak, printLines } from '../utils/print';
 
-const theme = LightTheme;
-
-export const outputSuiteToConsole = (suite: SuiteInterface) => {
+export const outputSuiteToConsole = (
+  suite: SuiteInterface,
+  useDarkTheme: boolean,
+) => {
+  const theme = useDarkTheme ? DarkTheme : LightTheme;
   printLineBreak(2);
   printLines(
     ['', [chalk.bold(suite.title), `${suite.logger.duration}ms`], ''],
@@ -75,11 +78,14 @@ export const outputSuiteToConsole = (suite: SuiteInterface) => {
       printLines(
         [
           '',
-          `  Persona: ${scenario.persona.name} | ${scenario.type}`,
-          `  ${scenario.request.method.toUpperCase()} ${scenario.request.url}` +
-            chalk.hex(theme.scenario.content.subtextcolor)(
-              `  ${scenario.logger.duration}ms`,
-            ),
+          chalk.hex(theme.scenario.content.subtextcolor)(
+            `  Persona: ${scenario.persona.name} | ${scenario.type}`,
+          ),
+          chalk.hex(theme.scenario.content.subtextcolor)(
+            `  ${scenario.request.method.toUpperCase()} ${
+              scenario.request.url
+            }  ${scenario.logger.duration}ms`,
+          ),
           ...scenario.logger.messages.map(message => {
             if (message.type == 'pass') {
               return (
@@ -102,9 +108,24 @@ export const outputSuiteToConsole = (suite: SuiteInterface) => {
             } else if (message.type == 'optionalFail') {
               return (
                 chalk.hex(theme.scenario.content.optionalFail.markerColor)(
-                  theme.scenario.content.optionalFail.marker,
+                  theme.scenario.content.optionalFail.marker || ' ',
                 ) +
                 chalk.hex(theme.scenario.content.optionalFail.textColor)(
+                  ` ${message.text}`,
+                )
+              );
+            } else if (message.type == 'action') {
+              return (
+                chalk.hex(theme.scenario.content.action.markerColor)(
+                  theme.scenario.content.action.marker,
+                ) +
+                ' ' +
+                pill(
+                  `${message.name || ''}`,
+                  theme.scenario.content.action.pillBackgroundColor,
+                  theme.scenario.content.action.pillTextColor,
+                ) +
+                chalk.hex(theme.scenario.content.action.textColor)(
                   ` ${message.text}`,
                 )
               );

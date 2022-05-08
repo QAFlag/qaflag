@@ -10,7 +10,7 @@ export interface LogProvider {
 export interface LoggerInterface {
   log(type: LogMessageType, content: LogContent | string): LogMessage;
   debug(message: DebugContent | DebugContent[]): void;
-  action(action: LogContent): void;
+  action(name: string, target?: ValueInterface, text?: string): void;
   pass(content: LogContent | string): void;
   fail(content: LogContent | string, isOptional?: boolean): void;
 }

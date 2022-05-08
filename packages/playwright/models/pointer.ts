@@ -63,34 +63,23 @@ export interface DragOpts {
 export class Mouse implements PointerInterface {
   constructor(protected locator: PlaywrightValue) {}
 
-  public async tap(opts?: TouchOpts) {
-    this.locator.logger.log('action', `TAP`);
-    return this.locator.$.tap(opts);
-  }
-
-  public async doubleTap(opts?: DoubleTapOpts) {
-    const page = this.locator.$.page();
-    await this.locator.$.tap(opts);
-    await page.waitForTimeout(opts?.delayBetweenMs || 300);
-    await this.locator.$.tap(opts);
-  }
-
   public async click(opts?: ClickOpts) {
-    this.locator.logger.log('action', `CLICK`);
+    this.locator.logger.action('CLICK', this.locator);
     return this.locator.$.click(opts);
   }
 
   public async hover(opts?: HoverOpts) {
-    this.locator.logger.log('action', `HOVER`);
+    this.locator.logger.action('HOVER', this.locator);
     return this.locator.$.hover(opts);
   }
 
   public async doubleClick(opts?: ClickOpts) {
-    this.locator.logger.log('action', `DOUBLECLICK`);
+    this.locator.logger.action('DCLICK', this.locator);
     return this.locator.$.dblclick(opts);
   }
 
   public async longPress(opts?: LongPressOpts) {
+    this.locator.logger.action('LONGPRESS', this.locator);
     const page = this.locator.$.page();
     const boundingBox = await this.locator.$.boundingBox();
     if (!boundingBox) return;
@@ -104,22 +93,24 @@ export class Mouse implements PointerInterface {
   }
 
   public async dragTo(destination: PlaywrightValue, opts?: DragOpts) {
-    this.locator.logger.log('action', `DRAG`);
+    this.locator.logger.action('DRAG', this.locator, destination.name);
     return this.locator.$.dragTo(destination.$, opts);
   }
 
   public async selectText(opts?: PointerOpts) {
+    this.locator.logger.action('SELECT', this.locator);
     return this.locator.$.selectText(opts);
   }
 }
 
 export class Touch extends Mouse implements PointerInterface {
   public async click(opts?: TouchOpts) {
-    this.locator.logger.log('action', `TAP`);
+    this.locator.logger.action('TAP', this.locator);
     return this.locator.$.tap(opts);
   }
 
   public async doubleClick(opts?: DoubleTapOpts) {
+    this.locator.logger.action('DTAP', this.locator);
     const page = this.locator.$.page();
     await this.locator.$.tap(opts);
     await page.waitForTimeout(opts?.delayBetweenMs || 300);

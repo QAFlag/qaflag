@@ -36,12 +36,16 @@ export class Form implements FormInterface {
   constructor(private locator: PlaywrightValue) {}
 
   public async check(isChecked: boolean = true, opts?: FormPointerOpts) {
-    this.locator.logger.log('action', `CHECK`);
+    this.locator.logger.action(
+      `TOGGLE`,
+      this.locator,
+      isChecked ? 'Check' : 'Unechek',
+    );
     return this.locator.$.setChecked(isChecked, opts);
   }
 
   public async input(value: string, opts?: FormOpts) {
-    this.locator.logger.log('action', `FILL: ${value}`);
+    this.locator.logger.action('FILL', this.locator, value);
     return this.locator.$.fill(value, opts);
   }
 

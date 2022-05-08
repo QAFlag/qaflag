@@ -28,7 +28,9 @@ export const run = async (
     selections.map(selection =>
       limit(async () => {
         const suite = loadSuite(selection, project);
-        suite.events.on('completed', () => outputSuiteToConsole(suite));
+        suite.events.on('completed', () =>
+          outputSuiteToConsole(suite, project.settings.theme == 'dark'),
+        );
         await suite.__execute();
         return suite;
       }),

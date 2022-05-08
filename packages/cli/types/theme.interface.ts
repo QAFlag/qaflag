@@ -28,6 +28,13 @@ export interface Theme {
       bgColor: string;
       textColor: string;
       subtextcolor: string;
+      action: {
+        marker: string;
+        markerColor: string;
+        pillBackgroundColor: string;
+        pillTextColor: string;
+        textColor: string;
+      };
       pass: {
         marker: string;
         markerColor: string;

@@ -18,6 +18,6 @@ export class GoogleSearch extends Suite({
     await context.waitForNavigation();
     await context.exists("'Jason Byrne jasonbyrne - GitHub' >> visible=true");
     const value = await textbox.value();
-    value.must.equal(searchTerm + ' foo');
+    value.must.equal(searchTerm);
   }
 }

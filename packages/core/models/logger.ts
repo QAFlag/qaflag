@@ -1,3 +1,4 @@
+import { ValueInterface } from '../value/value.interface';
 import { DebugContent, LoggerInterface } from '../types/log-provider.interface';
 import { LogContent, LogMessage, LogMessageType } from './log-message';
 
@@ -93,9 +94,12 @@ export class Logger implements LoggerInterface {
     });
   }
 
-  public action(content: LogContent | LogContent[]) {
-    const messages = Array.isArray(content) ? content : [content];
-    messages.forEach(action => this.log('action', action));
+  public action(name: string, target?: ValueInterface, text?: string) {
+    this.log('action', {
+      name,
+      target: target?.name,
+      text: text || '',
+    });
   }
 
   public pass(content: LogContent | string | LogContent[]) {

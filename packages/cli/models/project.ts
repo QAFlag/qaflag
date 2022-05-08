@@ -45,6 +45,7 @@ export default class Project {
         process.env.QAFLAG_DEFAULT_DOMAIN ||
         initial.defaultDomain ||
         'http://localhost:3000',
+      theme: initial.theme || 'dark',
       input: {
         path: initial.input?.path || './src',
         pattern: initial.input?.pattern || '**/*.suite.ts',

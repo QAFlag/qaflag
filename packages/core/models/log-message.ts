@@ -9,6 +9,7 @@ export type LogMessageType = typeof LogMessageTypeEnum[number];
 
 export interface LogContent {
   name?: string;
+  target?: string;
   text: string;
 }
 
@@ -20,6 +21,11 @@ export class LogMessage {
   }
 
   public get text() {
+    if (this.content.target) {
+      return this.content.text
+        ? `"${this.content.text}" on ${this.content.target}`
+        : this.content.target;
+    }
     return this.content.text;
   }
 

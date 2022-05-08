@@ -1,5 +1,6 @@
 {
   "defaultDomain": "http://localhost",
+  "theme": "dark",
   "input": {
     "path": "packages/examples",
     "pattern": "**/*.suite.ts"
