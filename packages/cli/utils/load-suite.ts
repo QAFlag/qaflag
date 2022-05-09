@@ -9,7 +9,7 @@ export const loadSuite = (
   const file = require(selectedSuite.fullPath);
   const suiteConstructor: SuiteConstructor = file[selectedSuite.className];
   const suite = new suiteConstructor({
-    baseUrl: project.settings.defaultDomain,
+    baseUrl: project.settings.baseUrl,
   });
   return suite;
 };

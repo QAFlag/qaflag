@@ -21,10 +21,21 @@ const project = new Project({
 const program = new Command()
   .name('qaflag')
   .description('QA Flag test automation CLI')
-  .version(cli.version);
+  .version(cli.version, '-v, --version', 'Output the current version.')
+  .usage('<command> [options]')
+  .helpOption('-h, --help', 'Output usage information.')
+  .showSuggestionAfterError()
+  .addHelpText(
+    'after',
+    `
+
+For more documentation: https://www.qaflag.com
+`,
+  );
 
 program
-  .command('server')
+  .command('serve')
+  .alias('s')
   .description('Run the QA Flag web interface.')
   .action(async (str, options) => {
     const server = await startServer(project);
@@ -33,6 +44,7 @@ program
 
 program
   .command('list')
+  .alias('l')
   .description('List available suites')
   .action((str, options) => {
     list(project);
@@ -40,6 +52,7 @@ program
 
 program
   .command('plan')
+  .alias('p')
   .description('Get test plan for a suite')
   .action(async (str, options) => {
     await plan(project);
@@ -47,6 +60,7 @@ program
 
 program
   .command('run')
+  .alias('r')
   .description('Run a test suite')
   .option('--all', 'Run every suite')
   .option('--build', 'Build tests before running')
@@ -56,6 +70,7 @@ program
 
 program
   .command('init')
+  .alias('i')
   .description('Get test plan for a suite')
   .action(async (str, options) => {
     await init(project);
@@ -63,6 +78,7 @@ program
 
 program
   .command('build')
+  .alias('b')
   .description('Trailspile test suites from TypeScript to Javascript')
   .action(async (str, options) => {
     await build(project);
@@ -73,8 +89,8 @@ program
   .alias('g')
   .argument('<schematic>', 'Thing you want to generate')
   .argument('<name>', 'What you want to call it')
-  .action(async (schematic, name, options) => {
-    await generate(project, schematic, name, options);
-  });
+  .action(async (schematic, name, options) =>
+    generate(project, schematic, name, options),
+  );
 
 program.parse();

@@ -41,9 +41,9 @@ export default class Project {
       return defaultPkg;
     })();
     this.settings = {
-      defaultDomain:
-        process.env.QAFLAG_DEFAULT_DOMAIN ||
-        initial.defaultDomain ||
+      baseUrl:
+        process.env.QAFLAG_BASE_URL ||
+        initial.baseUrl ||
         'http://localhost:3000',
       theme: initial.theme || 'dark',
       input: {

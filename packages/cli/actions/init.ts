@@ -15,8 +15,8 @@ export const init = async (project: Project) => {
   const responses = await prompts([
     {
       type: 'text',
-      name: 'defaultDomain',
-      message: `Default Domain to use for relative paths`,
+      name: 'baseUrl',
+      message: `Base URL to use for relative paths`,
       initial: 'http://localhost:3000',
     },
     {
@@ -40,7 +40,7 @@ export const init = async (project: Project) => {
     },
   ]);
   await addPackages(['@qaflag/core', ...responses.types]);
-  project.settings.defaultDomain = responses.defaultDomain;
+  project.settings.baseUrl = responses.baseUrl;
   project.settings.input.path = responses.src;
   project.write();
   printLineBreak();

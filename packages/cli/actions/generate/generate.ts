@@ -8,18 +8,21 @@ import { writeFile } from 'fs-extra';
 import { whichInstalled } from '../../utils/is-installed';
 import { titleize } from '../../utils/string';
 
+const getFilePath = (project: Project, name: string, suffix: string) => {
+  return resolve(cwd(), project.settings.input.path, `${name}.${suffix}.ts`);
+};
+
+const getClassNameFromPath = (path: string) =>
+  camelcase(path.split(sep).pop() || '', {
+    pascalCase: true,
+  });
+
 const generateSuite = (project: Project, name: string) => {
   const type = whichInstalled(['json', 'playwrite', 'html', 'xml']) || 'json';
   const typeName = titleize(type);
-  const filePath = resolve(
-    cwd(),
-    project.settings.input.path,
-    `${name}.suite.ts`,
-  );
-  const className = camelcase(name.split(sep).pop() || '', {
-    pascalCase: true,
-  });
-  const title = titleize(className);
+  const filePath = getFilePath(project, name, 'suite');
+  const className = getClassNameFromPath(filePath);
+  const title = titleize(className).replace("'", '');
   printLines([`Generating suite ${filePath}`]);
   writeFile(
     filePath,
@@ -28,7 +31,7 @@ import { Scenario, Suite } from '@qaflag/core';
 import { ${typeName}Context, ${typeName}Scenario } from '@qaflag/${type}';
 
 export class ${className}Suite extends Suite({
-  title: '${title.replace("'", '')}',
+  title: '${title}',
   type: ${typeName}Scenario,
 }) {
   @Scenario({
@@ -44,15 +47,9 @@ export class ${className}Suite extends Suite({
 };
 
 const generatePersona = (project: Project, name: string) => {
-  const filePath = resolve(
-    cwd(),
-    project.settings.input.path,
-    `${name}.persona.ts`,
-  );
-  const className = camelcase(name.split(sep).pop() || '', {
-    pascalCase: true,
-  });
-  const title = titleize(className);
+  const filePath = getFilePath(project, name, 'persona');
+  const className = getClassNameFromPath(filePath);
+  const title = titleize(className).replace("'", '');
   printLines([`Generate persona ${filePath}`]);
   writeFile(
     filePath,
@@ -66,7 +63,7 @@ import {
 } from '@qaflag/core';
 
 export class ${className}Persona extends Persona(
-  '${title.replace("'", '')}',
+  '${title}',
   Using(Windows, Laptop),
   WebBrowser('chrome'),
 ) {}
@@ -93,7 +90,7 @@ export const generate = async (
         Object.keys(generators),
       )}`,
     ]);
-    throw `No generator for ${schematic}.`;
+    return;
   }
   await generators[schematic](project, name);
 };

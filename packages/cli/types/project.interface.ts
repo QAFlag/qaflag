@@ -1,5 +1,5 @@
 export interface ProjectInterface {
-  defaultDomain: string;
+  baseUrl: string;
   theme: string;
   input: {
     path: string;
