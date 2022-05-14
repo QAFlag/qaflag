@@ -91,19 +91,27 @@ export function Suite(suiteOpts: SuiteOpts) {
         ),
       );
       for (const step of this.steps) {
+        let fatalError = false;
         await Promise.all(
           step.scenarios.map(async scenario => {
-            this.events.emit('beforeEach', scenario);
-            await scenario.__startUp();
-            await scenario.__execute();
-            await scenario.__next(scenario);
-            await scenario.__tearDown();
-            this.events.emit('afterEach', scenario);
-            this.logger.log(scenario.status == 'pass' ? 'pass' : 'fail', {
-              text: scenario.title,
-            });
+            try {
+              this.events.emit('beforeEach', scenario);
+              await scenario.__startUp();
+              await scenario.__execute();
+              await scenario.__next(scenario);
+              await scenario.__tearDown();
+              this.events.emit('afterEach', scenario);
+              this.logger.log(scenario.status == 'pass' ? 'pass' : 'fail', {
+                text: scenario.title,
+              });
+            } catch (ex) {
+              scenario.logger.fail(ex);
+              this.logger.fail(scenario.title);
+              fatalError = true;
+            }
           }),
         );
+        if (fatalError) break;
       }
       await Promise.all(
         this.afters.map(([methodName, after]) =>
