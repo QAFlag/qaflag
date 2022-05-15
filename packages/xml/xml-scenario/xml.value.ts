@@ -137,7 +137,7 @@ export class XmlValue extends ValueAbstract<CheerioElement> {
 
   public children(selector?: string) {
     return this.createElement(this.$.children(selector), {
-      name: `Siblings of ${this.name}`,
+      name: `Children of ${this.name}`,
     });
   }
 

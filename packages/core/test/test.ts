@@ -237,7 +237,10 @@ export class Test<InputType = unknown>
           ? thisValue.some(x => thatValue.includes(x))
           : thisValue.includes(thatValue);
       }
-      return false;
+      // Convert to string
+      return Array.isArray(thatValue)
+        ? thatValue.some(x => validator.contains(String(thisValue), x))
+        : validator.contains(String(thisValue), thatValue);
     });
   }
 

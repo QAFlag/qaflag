@@ -10,7 +10,7 @@ export class RssCnnSuite extends Suite({
     statusCode: 200,
   })
   async getFeed(context: RssContext) {
-    const items = context.find('items');
-    items.array.length.must.be.greaterThan(0);
+    context.channelTitle.must.contain('CNN');
+    context.items.length.must.be.greaterThan(10);
   }
 }

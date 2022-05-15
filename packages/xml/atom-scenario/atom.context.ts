@@ -15,4 +15,20 @@ export class AtomContext extends XmlContext<AtomScenario> {
     this.header('content-type').must.startWith(validMimeTypes);
     isValidAtomFeed(this).as('Is valid Atom Feed?').must.be.true();
   }
+
+  public get feed() {
+    return this.find('feed');
+  }
+
+  public get feedId() {
+    return this.find('feed id');
+  }
+
+  public get feedTitle() {
+    return this.find('feed title');
+  }
+
+  public get entries() {
+    return this.find('feed entry').array.as('Entries');
+  }
 }

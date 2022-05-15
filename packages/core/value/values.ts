@@ -74,6 +74,22 @@ export abstract class ValueAbstract<InputType>
     return this.input === null;
   }
 
+  protected isString(): boolean {
+    return typeof this.input === 'string';
+  }
+
+  protected isNumber(): boolean {
+    return typeof this.input === 'number';
+  }
+
+  protected isBoolean(): boolean {
+    return typeof this.input === 'boolean';
+  }
+
+  protected isPrimitive(): boolean {
+    return ['string', 'number', 'boolean'].includes(typeof this.input);
+  }
+
   protected toString(): string {
     return typeof this.input == 'string'
       ? this.input
@@ -122,6 +138,10 @@ export abstract class ValueAbstract<InputType>
       name: this.name,
       ...opts,
     });
+  }
+
+  public valueOf() {
+    return this.isPrimitive() ? this.input : this.toString();
   }
 }
 
@@ -174,6 +194,10 @@ export abstract class PrimitiveValueAbstract<InputType>
     } catch {
       throw `Could not convert ${this.name} (${this.input}) to date.`;
     }
+  }
+
+  public valueOf() {
+    return this.input;
   }
 }
 
