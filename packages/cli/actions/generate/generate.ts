@@ -18,10 +18,10 @@ const getClassNameFromPath = (path: string) =>
   });
 
 const generateSuite = (project: Project, name: string) => {
-  const type = whichInstalled(['json', 'playwrite', 'html', 'xml']) || 'json';
+  const type = whichInstalled(['json', 'playwright', 'html', 'xml']) || 'json';
   const typeName = titleize(type);
   const filePath = getFilePath(project, name, 'suite');
-  const className = getClassNameFromPath(filePath);
+  const className = getClassNameFromPath(name);
   const title = titleize(className).replace("'", '');
   printLines([`Generating suite ${filePath}`]);
   writeFile(

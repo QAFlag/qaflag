@@ -1,9 +1,4 @@
-import {
-  ArrayValue,
-  BooleanValue,
-  NumericValue,
-  StringValue,
-} from '../value/values';
+import { NumericValue, StringValue } from '../value/values';
 import { ContextInterface } from './context.interface';
 import { ScenarioInterface } from '../scenario/scenario.interface';
 import { HttpResponseInterface } from '../types/http-response.interface';
@@ -15,34 +10,6 @@ export abstract class HttpContext extends Context implements ContextInterface {
     protected readonly response: HttpResponseInterface,
   ) {
     super(scenario);
-  }
-
-  protected stringValue(input: string, name: string) {
-    return new StringValue(input, {
-      name,
-      logger: this.logger,
-    });
-  }
-
-  protected numericValue(input: number, name: string) {
-    return new NumericValue(input, {
-      name,
-      logger: this.logger,
-    });
-  }
-
-  protected booleanValue(input: boolean, name: string) {
-    return new BooleanValue(input, {
-      name,
-      logger: this.logger,
-    });
-  }
-
-  protected arrayValue<T>(input: T[], name: string) {
-    return new ArrayValue(input, {
-      name,
-      logger: this.logger,
-    });
   }
 
   public get statusCode(): NumericValue {

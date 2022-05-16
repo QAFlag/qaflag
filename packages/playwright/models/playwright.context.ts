@@ -65,6 +65,11 @@ export class PlaywrightContext extends Context implements ContextInterface {
     return locator;
   }
 
+  public async title() {
+    const title = await this.page.title();
+    return this.stringValue(title, 'Page Title');
+  }
+
   public screenshot(opts: PageScreenshotOptions) {
     return this.page.screenshot(opts);
   }

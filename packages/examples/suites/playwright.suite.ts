@@ -13,6 +13,7 @@ export class GoogleSearch extends Suite({
     const searchTerm = 'Jason Byrne Github';
     const button = await context.exists("text='Google Search' >> visible=true");
     const textbox = await context.exists("[aria-label='Search']");
+    await button.must.be.visible();
     await textbox.keyboard.input(searchTerm);
     await button.mouse.click();
     await context.waitForNavigation();

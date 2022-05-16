@@ -1,6 +1,7 @@
+import { Locator } from 'playwright';
 import { PlaywrightValue } from './playwright.value';
 
-export type AwaitedAssertion = (data: unknown) => Promise<boolean>;
+export type AwaitedAssertion = (data: Locator) => Promise<boolean>;
 export type mustOrShould = 'must' | 'should';
 
 export class PlaywrightAssertion {
@@ -72,9 +73,7 @@ export class PlaywrightAssertion {
   }
 
   protected async execute(assertion: AwaitedAssertion) {
-    const result = await (() => {
-      return assertion(this.input.$);
-    })();
+    const result = await assertion(this.input.$);
     const pass = this.isNot ? !result : result;
     this.input.logger.log(
       pass ? 'pass' : this.mustOrShould == 'should' ? 'optionalFail' : 'fail',
@@ -87,7 +86,7 @@ export class PlaywrightAssertion {
 
   public async visible() {
     this.message.push('visible');
-    return this.execute(() => this.input.$.isVisible());
+    return this.execute(input => input.isVisible());
   }
 
   public async hidden() {
