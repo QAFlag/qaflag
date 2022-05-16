@@ -1,5 +1,5 @@
 {
-  "defaultDomain": "http://localhost",
+  "baseUrl": "http://localhost",
   "theme": "dark",
   "input": {
     "path": "packages/examples",
