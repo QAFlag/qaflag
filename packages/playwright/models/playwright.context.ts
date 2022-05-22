@@ -65,6 +65,11 @@ export class PlaywrightContext extends Context implements ContextInterface {
     return locator;
   }
 
+  public async count(selector: string, opts?: FindOpts) {
+    const locator = this.find(selector, opts);
+    return locator.count();
+  }
+
   public async title() {
     const title = await this.page.title();
     return this.stringValue(title, 'Page Title');

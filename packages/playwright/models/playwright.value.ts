@@ -79,6 +79,12 @@ export class PlaywrightValue
     });
   }
 
+  public async exists(selector: string, opts?: FindOpts) {
+    const locator = this.find(selector, opts);
+    await locator.must.exist();
+    return locator;
+  }
+
   public async text(opts?: TimeoutOpts) {
     return this.createString(await this.input.first().innerText(opts), {
       name: `Inner Text of ${this.name}`,
