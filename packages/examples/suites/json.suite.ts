@@ -1,40 +1,11 @@
-import { Mock, Scenario, Suite, Template } from '@qaflag/core';
+import { Scenario, Suite, Template } from '@qaflag/core';
 import { JsonContext, JsonScenario } from '@qaflag/json';
-import { readFileSync } from 'fs';
-import path = require('path');
 import { UserDto } from '../schemas/user.dto';
 import { GuestUser } from '../personas/guest.persona';
 import { StandardUser } from '../personas/user.persona';
+import initMocks from '../mocks/json';
 
-Mock.on('GET http://localhost/users', {
-  statusCode: 200,
-  data: async () => {
-    return readFileSync(
-      path.resolve(__dirname, '../../fixtures/users.json'),
-      'utf8',
-    );
-  },
-});
-
-Mock.on('GET http://localhost/users/1', {
-  statusCode: 200,
-  data: async () => {
-    return readFileSync(
-      path.resolve(__dirname, '../../fixtures/user-1.json'),
-      'utf8',
-    );
-  },
-});
-
-Mock.on('GET http://localhost/users/10', {
-  statusCode: 200,
-  data: async () => {
-    return readFileSync(
-      path.resolve(__dirname, '../../fixtures/user-10.json'),
-      'utf8',
-    );
-  },
-});
+initMocks();
 
 const GetList = Template({
   uri: 'GET /users',
