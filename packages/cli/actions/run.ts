@@ -12,8 +12,8 @@ import { build } from './build';
 
 export const run = async (
   project: Project,
-  command: Command,
   options: { [key: string]: string | boolean },
+  command: Command,
 ) => {
   if (options.build) await build(project);
   const suites = findSuites(project);

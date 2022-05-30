@@ -1,4 +1,5 @@
 import {
+  NumericValue,
   UiElementInterface,
   ValueAbstract,
   ValueInterface,
@@ -115,9 +116,12 @@ export class PlaywrightValue
     );
   }
 
-  public async count() {
-    return this.createNumber(await this.input.count(), {
-      name: `Count of ${this.name}`,
+  public async count(): Promise<NumericValue>;
+  public async count(selector: string): Promise<NumericValue>;
+  public async count(selector?: string) {
+    const element = selector ? this.find(selector) : this;
+    return this.createNumber(await element.$.count(), {
+      name: `Count of ${element.name}`,
     });
   }
 

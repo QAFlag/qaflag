@@ -64,8 +64,9 @@ program
   .description('Run a test suite')
   .option('--all', 'Run every suite')
   .option('--build', 'Build tests before running')
-  .action(async (str, options) => {
-    await run(project, options, str);
+  .argument('[suite]', 'Specific suite you want to run')
+  .action(async (suite, options, command: Command) => {
+    await run(project, options, command);
   });
 
 program
