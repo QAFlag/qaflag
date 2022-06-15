@@ -3,8 +3,8 @@ import {
   DeviceInput,
   DeviceOutput,
   DeviceType,
-  PersonaOperatingSystem,
   PersonaInitOptions,
+  OperatingSystemType,
 } from './persona.interface';
 
 const defaultScreenSize: { [key in DeviceType]: [number, number] } = {
@@ -51,56 +51,49 @@ export const Phone: DeviceParams = {
   isPortraitMode: true,
 };
 
-export const Laptop: DeviceParams = {
+export const Laptop = (): DeviceParams => ({
   deviceType: 'laptop',
   screenSize: defaultScreenSize['laptop'],
   deviceInputs: defaultInputs['laptop'],
   deviceOutputs: defaultOutputs['laptop'],
-};
+});
 
-export const Desktop: DeviceParams = {
+export const Desktop = (): DeviceParams => ({
   deviceType: 'desktop',
   screenSize: defaultScreenSize['desktop'],
   deviceInputs: defaultInputs['desktop'],
   deviceOutputs: defaultOutputs['desktop'],
-};
+});
 
-export const Tablet: DeviceParams = {
+export const Tablet = (): DeviceParams => ({
   deviceType: 'tablet',
   screenSize: defaultScreenSize['tablet'],
   deviceInputs: defaultInputs['tablet'],
   deviceOutputs: defaultOutputs['tablet'],
-};
+});
 
-export const Tv: DeviceParams = {
+export const Tv = (): DeviceParams => ({
   deviceType: 'tv',
   screenSize: defaultScreenSize['tv'],
   deviceInputs: defaultInputs['tv'],
   deviceOutputs: defaultOutputs['tv'],
-};
+});
 
-export const Speaker: DeviceParams = {
+export const Speaker = (): DeviceParams => ({
   deviceType: 'speaker',
   screenSize: defaultScreenSize['speaker'],
   deviceInputs: defaultInputs['speaker'],
   deviceOutputs: defaultOutputs['speaker'],
-};
+});
 
-export const Windows: PersonaOperatingSystem = {
-  type: 'windows',
-};
+export const Windows = () => OS('windows');
+export const Mac = () => OS('mac');
+export const iOS = () => OS('ios');
+export const Android = () => OS('android');
 
-export const Mac: PersonaOperatingSystem = {
-  type: 'mac',
-};
-
-export const iOS: PersonaOperatingSystem = {
-  type: 'ios',
-};
-
-export const Android: PersonaOperatingSystem = {
-  type: 'android',
-};
+export const OS = (type: OperatingSystemType): PersonaInitOptions => ({
+  os: { type },
+});
 
 export const Landscape: PersonaInitOptions = {
   isPortraitMode: false,
@@ -109,14 +102,6 @@ export const Landscape: PersonaInitOptions = {
 export const Portrait: PersonaInitOptions = {
   isPortraitMode: true,
 };
-
-export const Using = (
-  os: PersonaOperatingSystem,
-  device: DeviceParams,
-): PersonaInitOptions => ({
-  ...device,
-  os,
-});
 
 export const TouchScreen = (
   width: number,
@@ -137,7 +122,12 @@ export const Screen = (
   isPortraitMode: mode == 'portrait',
 });
 
-export const WebBrowser = (product: BrowserSoftware): PersonaInitOptions => ({
+export const Chrome = () => Browser('chrome');
+export const Firefox = () => Browser('firefox');
+export const Edge = () => Browser('msedge');
+export const Safari = () => Browser('safari');
+
+export const Browser = (product: BrowserSoftware): PersonaInitOptions => ({
   browser: {
     product,
   },

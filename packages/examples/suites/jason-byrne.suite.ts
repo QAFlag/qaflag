@@ -15,7 +15,7 @@ export class JasonByrneSuite extends Suite({
     (await links.count()).must.equal(5);
     await links.find("'Experience'").mouse.click();
     await context.waitForNavigation();
-    await context.exists("'Job History' >> visible=true");
+    await context.visible("'Job History'");
     await links.find("'Projects'").mouse.click();
     await context.waitForNavigation();
     const count = await context.count("'QA Automation'");

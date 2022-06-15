@@ -3,7 +3,7 @@ import { readFileSync } from 'fs';
 import path = require('path');
 
 const init = () => {
-  Mock.on('GET http://localhost/users', {
+  Mock.on('GET /users', {
     statusCode: 200,
     data: async () => {
       return readFileSync(
@@ -13,7 +13,7 @@ const init = () => {
     },
   });
 
-  Mock.on('GET http://localhost/users/1', {
+  Mock.on('GET /users/1', {
     statusCode: 200,
     data: async () => {
       return readFileSync(
@@ -23,7 +23,7 @@ const init = () => {
     },
   });
 
-  Mock.on('GET http://localhost/users/10', {
+  Mock.on('GET /users/10', {
     statusCode: 200,
     data: async () => {
       return readFileSync(

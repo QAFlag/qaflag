@@ -65,6 +65,14 @@ export class PlaywrightContext extends Context implements ContextInterface {
     return locator;
   }
 
+  public async visible(selector: string, opts?: FindOpts) {
+    return this.exists(`${selector} >> visible=true`, opts);
+  }
+
+  public async hidden(selector: string, opts?: FindOpts) {
+    return this.exists(`${selector} >> visible=false`, opts);
+  }
+
   public async count(selector: string, opts?: FindOpts) {
     const locator = this.find(selector, opts);
     return locator.count();
