@@ -66,7 +66,8 @@ const findSuiteByName = (
     );
     const matches = suites.suiteClasses.filter(
       suite =>
-        namePattern.test(suite.className) || filePattern.test(suite.fileName),
+        namePattern.test(suite.className) ||
+        filePattern.test(suite.relativePath),
     );
     if (matches.length) out.push(...matches);
   });
