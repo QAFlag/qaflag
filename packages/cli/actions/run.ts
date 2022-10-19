@@ -59,9 +59,14 @@ const findSuiteByName = (
 ): SuiteClass[] => {
   const out: SuiteClass[] = [];
   names.forEach(name => {
-    const pattern = new RegExp('^' + name.replace('*', '.*') + '$', 'i');
-    const matches = suites.suiteClasses.filter(suite =>
-      pattern.test(suite.className),
+    const namePattern = new RegExp('^' + name.replace('*', '.*') + '$', 'i');
+    const filePattern = new RegExp(
+      '^' + name.replace('*', '.*') + '.suite.js$',
+      'i',
+    );
+    const matches = suites.suiteClasses.filter(
+      suite =>
+        namePattern.test(suite.className) || filePattern.test(suite.fileName),
     );
     if (matches.length) out.push(...matches);
   });
