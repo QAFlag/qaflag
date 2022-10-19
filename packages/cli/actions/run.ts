@@ -17,11 +17,13 @@ export const run = async (
 ) => {
   if (options.build) await build(project);
   const suites = findSuites(project);
-  const selections = options.all
-    ? suites.suiteClasses
-    : command.args?.length
-    ? findSuiteByName(suites, command.args)
-    : [await pickSuite(suites)];
+  const selections = (
+    options.all
+      ? suites.suiteClasses
+      : command.args?.length
+      ? findSuiteByName(suites, command.args)
+      : [await pickSuite(suites)]
+  ).filter(selection => !!selection);
   if (!selections.length) return exitError('No suites selected.');
   const limit = pLimit(1);
   const completed = await Promise.all(
@@ -59,16 +61,11 @@ const findSuiteByName = (
 ): SuiteClass[] => {
   const out: SuiteClass[] = [];
   names.forEach(name => {
-    const namePattern = new RegExp('^' + name.replace('*', '.*') + '$', 'i');
-    const filePattern = new RegExp(
-      '^' + name.replace('*', '.*') + '.suite.js$',
-      'i',
-    );
-    const matches = suites.suiteClasses.filter(
-      suite =>
-        namePattern.test(suite.className) ||
-        filePattern.test(suite.relativePath),
-    );
+    const namePattern = new RegExp(`^${name.replace('*', '.*')}$`, 'i');
+    const matches = suites.suiteClasses.filter(suite => {
+      const fileName = (suite.relativePath.split('.') || []).pop() || '';
+      return namePattern.test(suite.className) || namePattern.test(fileName);
+    });
     if (matches.length) out.push(...matches);
   });
   return out;
