@@ -47,8 +47,8 @@ export const init = async (project: Project) => {
   printList([
     'Installed QA Flag core depdenency',
     `Installed QA Flag types: ${humanReadableList(responses.types)}`,
-    'Created qaflag.json',
-    'Created qaflag.tsconfig.json',
+    'Created QAFlag Configuration - qaflag.json',
+    `Created TS Config - ${project.settings.tsConfigPath}`,
   ]);
   printLineBreak();
 };

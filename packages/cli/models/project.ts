@@ -46,6 +46,7 @@ export default class Project {
         initial.baseUrl ||
         'http://localhost:3000',
       theme: initial.theme || 'dark',
+      tsConfigPath: initial.tsConfigPath || './qaflag.tsconfig.json',
       input: {
         path: initial.input?.path || './src',
         pattern: initial.input?.pattern || '**/*.suite.ts',
@@ -64,17 +65,19 @@ export default class Project {
   public write() {
     fs.writeFileSync(this.configPath, JSON.stringify(this.settings, null, 2));
     fs.writeFileSync(
-      './qaflag.tsconfig.json',
+      this.settings.tsConfigPath,
       JSON.stringify(
         {
           compilerOptions: {
             module: 'commonjs',
             target: 'es6',
+            lib: ['es7'],
             rootDir: this.settings.input.path,
             outDir: this.settings.output.path,
             allowJs: true,
             removeComments: true,
             experimentalDecorators: true,
+            emitDecoratorMetadata: true,
           },
           include: [
             `${this.settings.input.path}/${this.settings.input.pattern}`,

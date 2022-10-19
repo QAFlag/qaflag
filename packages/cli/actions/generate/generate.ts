@@ -54,18 +54,13 @@ const generatePersona = (project: Project, name: string) => {
   writeFile(
     filePath,
     `
-import {
-  Persona,
-  WebBrowser,
-  Laptop,
-  Windows,
-  Using,
-} from '@qaflag/core';
+import { Persona, Windows, Laptop, Chrome } from "@qaflag/core";
 
 export class ${className}Persona extends Persona(
   '${title}',
-  Using(Windows, Laptop),
-  WebBrowser('chrome'),
+  Windows(),
+  Laptop(),
+  Chrome(),
 ) {}
   `.trim(),
   );
