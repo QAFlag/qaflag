@@ -24,6 +24,10 @@ export const fetchWithAxios = async (
     //transformResponse: [data => data],
     headers: (() => {
       const out = {};
+      const bearerToken = req.bearerToken || req.persona?.bearerToken;
+      if (bearerToken) {
+        out['Authorization'] = `Bearer ${bearerToken}`;
+      }
       req.headers.forEach(header => {
         out[header.key] = header.value;
       });
