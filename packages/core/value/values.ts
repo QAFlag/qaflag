@@ -173,15 +173,23 @@ export abstract class PrimitiveValueAbstract<InputType>
   }
 
   public get keys() {
-    return new ArrayValue(Object.keys(this.$), this.opts);
+    return new ArrayValue(Object.keys(this.toArrayOrObject()), this.opts);
   }
 
   public get values() {
-    return new ArrayValue(Object.values(this.$), this.opts);
+    return new ArrayValue(Object.values(this.toArrayOrObject()), this.opts);
   }
 
   public get entries() {
-    return new ArrayValue(Object.entries(this.$), this.opts);
+    return new ArrayValue(Object.entries(this.toArrayOrObject()), this.opts);
+  }
+
+  public toObject(): object {
+    return Object(this.$);
+  }
+
+  public toArray(): unknown[] {
+    return Array.isArray(this.$) ? this.$ : [this.$];
   }
 
   public toNumber(): number {
@@ -198,6 +206,10 @@ export abstract class PrimitiveValueAbstract<InputType>
 
   public valueOf() {
     return this.input;
+  }
+
+  private toArrayOrObject() {
+    return Array.isArray(this.$) ? this.$ : Object(this.$);
   }
 }
 

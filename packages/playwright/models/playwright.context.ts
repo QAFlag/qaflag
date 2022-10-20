@@ -7,6 +7,7 @@ import {
 import { Locator, PageScreenshotOptions } from 'playwright';
 import { PlaywrightInstance } from './playwright.adapter';
 import { PlaywrightValue } from './playwright.value';
+import { ClickOpts } from './pointer';
 import { WaitForNavigationOpts, WaitForUrlOpts } from './wait-for';
 
 export type NavigationOpts =
@@ -121,5 +122,14 @@ export class PlaywrightContext extends Context implements ContextInterface {
 
   public pause(millseconds: number) {
     return this.page.waitForTimeout(millseconds);
+  }
+
+  public async click(
+    selector: string,
+    findOpts?: FindOpts,
+    clickOpts?: ClickOpts,
+  ) {
+    const element = await this.visible(selector, findOpts);
+    return element.mouse.click(clickOpts);
   }
 }
