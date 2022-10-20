@@ -6,3 +6,4 @@ export * from './models/playwright.adapter';
 export * from './models/bounding-box.value';
 export * from './models/playwright.assertion';
 export * from './utils/exists-as';
+export * from './utils/as';

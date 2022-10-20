@@ -34,4 +34,3 @@ export * from './utils/axios-mock';
 export * from './utils/cookies';
 export * from './utils/to-type';
 export * from './utils/uri';
-export * from './utils/as';
