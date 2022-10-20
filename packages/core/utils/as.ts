@@ -2,5 +2,10 @@ interface AsProvider {
   as(newName: string): this;
 }
 
-export const as = <T extends AsProvider>(value: T, name: string): T =>
-  value.as(name);
+export const as = async <T extends AsProvider>(
+  value: Promise<T>,
+  name: string,
+): Promise<T> => {
+  const awaitedValue = await value;
+  return awaitedValue.as(name);
+};
