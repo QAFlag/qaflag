@@ -414,6 +414,7 @@ export class Test<InputType = unknown>
       if (value === null || value === undefined) return false;
       if (typeof value == 'number' && value <= 0) return false;
       if (Array.isArray(value) && value.length == 0) return false;
+      if (value === false) return false;
       return true;
     });
   }
