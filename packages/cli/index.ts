@@ -88,7 +88,7 @@ program
 program
   .command('generate')
   .alias('g')
-  .argument('<schematic>', 'Thing you want to generate')
+  .argument('<schematic>', 'Thing you want to generate: suite or persona')
   .argument('<name>', 'What you want to call it')
   .action(async (schematic, name, options) =>
     generate(project, schematic, name, options),

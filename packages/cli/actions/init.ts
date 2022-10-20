@@ -8,6 +8,7 @@ import {
 import Project from '../models/project';
 import { addPackages } from '../utils/install';
 import { humanReadableList } from '@qaflag/core';
+import { exitError } from 'utils/exit';
 
 export const init = async (project: Project) => {
   printHeader();
@@ -39,16 +40,20 @@ export const init = async (project: Project) => {
       hint: '- Space to select. Return to submit',
     },
   ]);
-  await addPackages(['@qaflag/core', ...responses.types]);
-  project.settings.baseUrl = responses.baseUrl;
-  project.settings.input.path = responses.src;
-  project.write();
-  printLineBreak();
-  printList([
-    'Installed QA Flag core depdenency',
-    `Installed QA Flag types: ${humanReadableList(responses.types)}`,
-    'Created QAFlag Configuration - qaflag.json',
-    `Created TS Config - ${project.settings.tsConfigPath}`,
-  ]);
-  printLineBreak();
+  try {
+    await addPackages(['@qaflag/core', ...responses.types]);
+    project.settings.baseUrl = responses.baseUrl;
+    project.settings.input.path = responses.src;
+    project.write();
+    printLineBreak();
+    printList([
+      'Installed QA Flag core depdenency',
+      `Installed QA Flag types: ${humanReadableList(responses.types)}`,
+      'Created QAFlag Configuration - qaflag.json',
+      `Created TS Config - ${project.settings.tsConfigPath}`,
+    ]);
+    printLineBreak();
+  } catch (ex) {
+    return exitError(ex);
+  }
 };

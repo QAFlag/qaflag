@@ -48,7 +48,7 @@ export class ${className}Suite extends Suite({
 
 const generatePersona = (project: Project, name: string) => {
   const filePath = getFilePath(project, name, 'persona');
-  const className = getClassNameFromPath(filePath);
+  const className = getClassNameFromPath(name);
   const title = titleize(className).replace("'", '');
   printLines([`Generate persona ${filePath}`]);
   writeFile(
