@@ -1,6 +1,7 @@
-import { printLines, printList } from '../utils/print';
+import { printLines, printTable } from '../utils/print';
 import { findSuites } from '../utils/find-suites';
 import Project from '../models/project';
+import chalk = require('chalk');
 
 export const list = (project: Project) => {
   const suites = findSuites(project);
@@ -12,9 +13,12 @@ export const list = (project: Project) => {
     `With pattern: ${project.settings.output.pattern}`,
     '',
   ]);
-  printList(
-    Object.values(suites.suiteClasses).map(
-      suite => `${suite.className} - ${suite.relativePath}`,
-    ),
+  printTable(
+    [chalk.blueBright('Name'), chalk.blueBright('Path')],
+    [32, 100],
+    Object.values(suites.suiteClasses).map(suite => [
+      suite.className,
+      suite.relativePath,
+    ]),
   );
 };
