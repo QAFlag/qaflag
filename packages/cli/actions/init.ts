@@ -8,7 +8,7 @@ import {
 import Project from '../models/project';
 import { addPackages } from '../utils/install';
 import { humanReadableList } from '@qaflag/core';
-import { exitError } from 'utils/exit';
+import { exitError } from '../utils/exit';
 
 export const init = async (project: Project) => {
   printHeader();
