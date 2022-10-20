@@ -12,6 +12,10 @@ import {
 export abstract class Context implements ContextInterface {
   constructor(public readonly scenario: ScenarioInterface) {}
 
+  public get persona() {
+    return this.scenario.persona;
+  }
+
   public get logger() {
     return this.scenario.logger;
   }

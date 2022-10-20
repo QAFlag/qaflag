@@ -7,6 +7,7 @@ import {
 import { Locator, PageScreenshotOptions } from 'playwright';
 import { PlaywrightInstance } from './playwright.adapter';
 import { PlaywrightValue } from './playwright.value';
+import { WaitForNavigationOpts, WaitForUrlOpts } from './wait-for';
 
 export type NavigationOpts =
   | {
@@ -103,7 +104,22 @@ export class PlaywrightContext extends Context implements ContextInterface {
     return this.page.goto(url, opts);
   }
 
-  public waitForNavigation() {
-    return this.page.waitForNavigation();
+  public waitForNavigation(opts?: WaitForNavigationOpts) {
+    return this.page.waitForNavigation(opts);
+  }
+
+  public waitForSelector(selector: string) {
+    return this.page.waitForSelector(selector);
+  }
+
+  public waitForURL(
+    url: string | RegExp | ((url: URL) => boolean),
+    opts?: WaitForUrlOpts,
+  ) {
+    return this.page.waitForURL(url, opts);
+  }
+
+  public pause(millseconds: number) {
+    return this.page.waitForTimeout(millseconds);
   }
 }
