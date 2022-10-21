@@ -15,6 +15,15 @@ export class Keyboard implements KeyboardInterface {
     return this.locator.$.type(text, opts);
   }
 
+  public async inputMasked(text: string, opts?: KeyboardOpts) {
+    this.locator.logger.action(
+      'INPUT',
+      this.locator,
+      ''.padStart(text.length, '*'),
+    );
+    return this.locator.$.type(text, opts);
+  }
+
   public async press(key: string, opts?: KeyboardOpts) {
     this.locator.logger.action('PRESS', this.locator, key);
     return this.locator.$.press(key, opts);
