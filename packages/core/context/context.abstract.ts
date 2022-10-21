@@ -24,12 +24,27 @@ export abstract class Context implements ContextInterface {
     this.logger.debug(messages);
   }
 
+  public info(messages: string | string[]) {
+    this.logger.info(messages);
+  }
+
+  public heading(messages: string | string[]) {
+    this.logger.heading(messages);
+  }
+
   public fail(content: string | LogContent | LogContent[]) {
     this.logger.fail(content);
   }
 
   public pass(content: string | LogContent | LogContent[]) {
     this.logger.pass(content);
+  }
+
+  public async group<T>(heading: string, tests: () => Promise<T>) {
+    this.logger.heading(heading);
+    const result = await tests();
+    this.logger.horizontalRule();
+    return result;
   }
 
   protected stringValue(input: string, name: string) {

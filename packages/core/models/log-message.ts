@@ -2,8 +2,11 @@ export const LogMessageTypeEnum = [
   'action',
   'pass',
   'fail',
+  'heading',
   'info',
   'optionalFail',
+  'horizontalRule',
+  'lineBreak',
 ] as const;
 export type LogMessageType = typeof LogMessageTypeEnum[number];
 

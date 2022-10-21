@@ -94,6 +94,28 @@ export class Logger implements LoggerInterface {
     });
   }
 
+  public horizontalRule() {
+    this.log('horizontalRule', '-------');
+  }
+
+  public lineBreak() {
+    this.log('lineBreak', '');
+  }
+
+  public info(content: string | string[]) {
+    const messages = Array.isArray(content) ? content : [content];
+    messages.forEach(message => {
+      this.log('info', { text: this.messageToString(message) });
+    });
+  }
+
+  public heading(content: string | string[]) {
+    const messages = Array.isArray(content) ? content : [content];
+    messages.forEach(message => {
+      this.log('heading', { text: this.messageToString(message) });
+    });
+  }
+
   public action(name: string, target?: ValueInterface, text?: string) {
     this.log('action', {
       name,

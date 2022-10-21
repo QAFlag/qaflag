@@ -23,12 +23,14 @@ export class UsersSuite extends Suite({
   @GetList()
   async getListOfUsers(context: JsonContext) {
     context.requestDuration.should.be.lessThan(100);
-    const items = context.find('[*]');
-    items.must.all.match.dto(UserDto);
-    items.must.be.an.array();
-    items.must.all.have.properties(['name', 'username']);
-    items.must.have.length.greaterThan(0);
-    items.array.length.must.be.greaterThan(0);
+    await context.group('Test List', async () => {
+      const items = context.find('[*]');
+      items.must.all.match.dto(UserDto);
+      items.must.be.an.array();
+      items.must.all.have.properties(['name', 'username']);
+      items.must.have.length.greaterThan(0);
+      items.array.length.must.be.greaterThan(0);
+    });
     const ids = context.find('[*].id');
     ids.must.all.be.greaterThan(0);
     ids.must.not.have.any.be.lessThan(0);

@@ -129,6 +129,18 @@ export const outputSuiteToConsole = (
                   ` ${message.text}`,
                 )
               );
+            } else if (message.type == 'heading') {
+              return chalk.underline(
+                chalk.bold(
+                  chalk.hex(theme.scenario.content.action.textColor)(
+                    ` ${message.text}`,
+                  ),
+                ),
+              );
+            } else if (message.type == 'horizontalRule') {
+              return '------';
+            } else if (message.type == 'lineBreak') {
+              return '';
             } else {
               return `  ${message.text}`;
             }
