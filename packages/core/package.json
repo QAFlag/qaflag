@@ -1,6 +1,6 @@
 {
   "name": "@qaflag/core",
-  "version": "0.0.45",
+  "version": "0.0.46",
   "description": "Base requirements for the QA Flag library",
   "keywords": [
     "qa",
