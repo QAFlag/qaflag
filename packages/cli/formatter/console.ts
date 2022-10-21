@@ -79,7 +79,7 @@ export const outputSuiteToConsole = (
         [
           '',
           chalk.hex(theme.scenario.content.subtextcolor)(
-            `  Persona: ${scenario.persona.name} | ${scenario.type}`,
+            `  ${scenario.type} | Persona: ${scenario.persona.name}`,
           ),
           chalk.hex(theme.scenario.content.subtextcolor)(
             `  ${scenario.request.method.toUpperCase()} ${
@@ -133,7 +133,7 @@ export const outputSuiteToConsole = (
               return chalk.underline(
                 chalk.bold(
                   chalk.hex(theme.scenario.content.action.textColor)(
-                    ` ${message.text}`,
+                    `  ${message.text}  `,
                   ),
                 ),
               );

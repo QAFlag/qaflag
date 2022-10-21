@@ -43,7 +43,7 @@ export abstract class Context implements ContextInterface {
   public async group<T>(heading: string, tests: () => Promise<T>) {
     this.logger.heading(heading);
     const result = await tests();
-    this.logger.horizontalRule();
+    this.logger.lineBreak();
     return result;
   }
 
