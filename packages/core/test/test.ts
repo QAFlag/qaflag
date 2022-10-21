@@ -323,6 +323,10 @@ export class Test<InputType = unknown>
     this.validator('isIP', 'IP Address', version);
   }
 
+  public divisibleBy(n?: number) {
+    this.validator('isDivisibleBy', `Divisible by ${n}`, n);
+  }
+
   public true() {
     this.message.push('true');
     this.execute(item => item === true);
@@ -379,6 +383,42 @@ export class Test<InputType = unknown>
 
   public url() {
     this.is('urlString', 'URL');
+  }
+
+  public jwt() {
+    this.validator('isJWT', 'JWT');
+  }
+
+  public md5() {
+    this.validator('isMD5', 'MD5 Hash');
+  }
+
+  public postalCode(countryCode: string) {
+    this.validator(
+      'isPostalCode',
+      `Postal Code in ${countryCode}`,
+      countryCode,
+    );
+  }
+
+  public uuid(version?: number) {
+    this.validator('isUUID', 'UUID', version);
+  }
+
+  public uppercase() {
+    this.validator('isUppercase', 'uppercase');
+  }
+
+  public lowercase() {
+    this.validator('isLowercase', 'lowercase');
+  }
+
+  public slug() {
+    this.validator('isSlug', 'slug');
+  }
+
+  public mimeType() {
+    this.validator('isMimeType', 'valid mime type');
   }
 
   public emptyString() {

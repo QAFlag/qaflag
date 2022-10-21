@@ -22,16 +22,16 @@ const defaultInputs: { [key in DeviceType]: DeviceInput[] } = {
   tv: ['remote'],
   phone: ['touch', 'keyboard'],
   tablet: ['touch', 'keyboard'],
-  speaker: ['voice'],
+  speaker: ['microphone'],
 };
 
 const defaultOutputs: { [key in DeviceType]: DeviceOutput[] } = {
-  laptop: ['screen', 'printer', 'voice'],
-  desktop: ['screen', 'printer', 'voice'],
-  tv: ['screen', 'voice'],
-  phone: ['screen', 'voice'],
-  tablet: ['screen', 'voice'],
-  speaker: ['voice'],
+  laptop: ['screen', 'printer', 'speaker'],
+  desktop: ['screen', 'printer', 'speaker'],
+  tv: ['screen', 'speaker'],
+  phone: ['screen', 'speaker'],
+  tablet: ['screen', 'speaker'],
+  speaker: ['speaker'],
 };
 
 type DeviceParams = Pick<

@@ -1,12 +1,10 @@
-interface ExistsAsProvider {
-  as(newName: string): this;
-  exists(): typeof this;
-}
+import { PlaywrightValue } from '../models/playwright.value';
 
-export async function existsAs<T extends ExistsAsProvider>(
+export async function existsAs<T extends PlaywrightValue>(
   value: T,
   name: string,
 ): Promise<T> {
   const renamed = value.as(name);
-  return renamed.exists();
+  await renamed.must.exist();
+  return renamed;
 }

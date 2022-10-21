@@ -54,25 +54,44 @@ export class PlaywrightContext extends Context implements ContextInterface {
     return this.playwright.context;
   }
 
-  public find(selector: string, opts?: FindOpts) {
+  public find(selector: string, opts?: FindOpts): PlaywrightValue {
     return new PlaywrightValue(this.playwright.page.locator(selector, opts), {
       name: selector,
       logger: this.scenario.logger,
     });
   }
 
-  public async exists(selector: string, opts?: FindOpts) {
-    const locator = this.find(selector, opts);
-    await locator.must.exist();
-    return locator;
+  public exists(element: PlaywrightValue): Promise<PlaywrightValue>;
+  public exists(selector: string, opts?: FindOpts): Promise<PlaywrightValue>;
+  public async exists(
+    selector: string | PlaywrightValue,
+    opts?: FindOpts,
+  ): Promise<PlaywrightValue> {
+    const element = await this.findOverload(selector, opts);
+    await element.must.exist();
+    return element;
   }
 
-  public async visible(selector: string, opts?: FindOpts) {
-    return this.exists(`${selector} >> visible=true`, opts);
+  public visible(element: PlaywrightValue): Promise<PlaywrightValue>;
+  public visible(selector: string, opts?: FindOpts): Promise<PlaywrightValue>;
+  public async visible(
+    selector: string | PlaywrightValue,
+    opts?: FindOpts,
+  ): Promise<PlaywrightValue> {
+    const element = await this.findOverload(selector, opts);
+    await element.must.be.visible();
+    return element;
   }
 
-  public async hidden(selector: string, opts?: FindOpts) {
-    return this.exists(`${selector} >> visible=false`, opts);
+  public hidden(element: PlaywrightValue): Promise<PlaywrightValue>;
+  public hidden(selector: string, opts?: FindOpts): Promise<PlaywrightValue>;
+  public async hidden(
+    selector: string | PlaywrightValue,
+    opts?: FindOpts,
+  ): Promise<PlaywrightValue> {
+    const element = await this.findOverload(selector, opts);
+    await element.must.be.hidden();
+    return element;
   }
 
   public async count(selector: string, opts?: FindOpts) {
@@ -124,12 +143,18 @@ export class PlaywrightContext extends Context implements ContextInterface {
     return this.page.waitForTimeout(millseconds);
   }
 
-  public async click(
-    selector: string,
-    findOpts?: FindOpts,
-    clickOpts?: ClickOpts,
-  ) {
-    const element = await this.visible(selector, findOpts);
-    return element.mouse.click(clickOpts);
+  public async click(element: PlaywrightValue, opts: ClickOpts) {
+    if (this.persona.hasMouse) await element.mouse.click(opts);
+    else if (this.persona.hasTouch) await element.touch.click(opts);
+    else if (this.persona.hasRemote) await element.mouse.click(opts);
+    else if (this.persona.hasKeyboard) await element.keyboard.press('Enter');
+    return element;
+  }
+
+  private async findOverload(
+    selector: string | PlaywrightValue,
+    opts?: FindOpts,
+  ): Promise<PlaywrightValue> {
+    return typeof selector == 'string' ? this.find(selector, opts) : selector;
   }
 }

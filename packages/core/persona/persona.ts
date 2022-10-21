@@ -68,6 +68,38 @@ export const Persona = (
       this.#viewportSize = value;
     }
 
+    public get hasMouse() {
+      return this.deviceInputs.includes('mouse');
+    }
+
+    public get hasTouch() {
+      return this.deviceInputs.includes('touch');
+    }
+
+    public get hasKeyboard() {
+      return this.deviceInputs.includes('keyboard');
+    }
+
+    public get hasRemote() {
+      return this.deviceInputs.includes('remote');
+    }
+
+    public get hasMicrophone() {
+      return this.deviceInputs.includes('microphone');
+    }
+
+    public get hasSpeaker() {
+      return this.deviceOutputs.includes('speaker');
+    }
+
+    public get hasPrinter() {
+      return this.deviceOutputs.includes('printer');
+    }
+
+    public get hasScreen() {
+      return this.deviceOutputs.includes('screen');
+    }
+
     public async __startUp(suite: SuiteInterface): Promise<void> {
       if (!this[BeforeSymbol] || this.#hasStarted) return;
       const opts: Partial<HttpRequestOptions> = {

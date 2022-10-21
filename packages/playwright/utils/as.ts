@@ -1,8 +1,6 @@
-interface AsProvider {
-  as(newName: string): this;
-}
+import { PlaywrightValue } from '../models/playwright.value';
 
-export async function as<T extends AsProvider>(
+export async function as<T extends PlaywrightValue>(
   value: Promise<T> | T,
   name: string,
 ): Promise<T> {

@@ -43,6 +43,7 @@ export interface MustBeNumber {
   greaterThanOrEquals(value: number): void;
   lessThan(value: number): void;
   lessThanOrEquals(value: number): void;
+  divisibleBy(value: number): void;
 }
 
 export interface MustBe extends MustBeAn {
@@ -88,6 +89,14 @@ export interface MustBeAn {
   emptyString(): void;
   emptyArray(): void;
   emptyObject(): void;
+  jwt(): void;
+  md5(): void;
+  mimeType(): void;
+  postalCode(countryCode: string): void;
+  uuid(version?: number): void;
+  uppercase(): void;
+  lowercase(): void;
+  slug(): void;
 }
 
 export interface MustAll {

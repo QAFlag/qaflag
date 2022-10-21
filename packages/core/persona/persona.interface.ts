@@ -10,8 +10,13 @@ export type DeviceType =
   | 'laptop'
   | 'tv'
   | 'speaker';
-export type DeviceInput = 'touch' | 'mouse' | 'keyboard' | 'voice' | 'remote';
-export type DeviceOutput = 'screen' | 'voice' | 'printer';
+export type DeviceInput =
+  | 'touch'
+  | 'mouse'
+  | 'keyboard'
+  | 'microphone'
+  | 'remote';
+export type DeviceOutput = 'screen' | 'printer' | 'speaker';
 
 export type Cookies = KeyValue<string> | Cookie[];
 
@@ -110,6 +115,15 @@ export interface PersonaQualities {
   cookies: Cookie[];
   // Perferences
   colorScheme: ColorScheme;
+  // Helpers
+  readonly hasMouse: boolean;
+  readonly hasTouch: boolean;
+  readonly hasRemote: boolean;
+  readonly hasKeyboard: boolean;
+  readonly hasMicrophone: boolean;
+  readonly hasPrinter: boolean;
+  readonly hasScreen: boolean;
+  readonly hasSpeaker: boolean;
 }
 
 export type PersonaInitOptions = Partial<PersonaQualities>;
