@@ -1,6 +1,6 @@
-import { PlaywrightValue } from '../models/playwright.value';
+import { ValueInterface } from '@qaflag/core';
 
-export async function as<T extends PlaywrightValue>(
+export async function as<T extends ValueInterface>(
   value: Promise<T> | T,
   name: string,
 ): Promise<T> {

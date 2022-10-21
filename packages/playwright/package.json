@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@qaflag/core": "^0.0.44",
-    "playwright": "^1.20.2"
+    "playwright": "^1.27.1"
   },
   "gitHead": "0cf5cd6ba6109991b47293f14e9c9c029b180038",
   "devDependencies": {
