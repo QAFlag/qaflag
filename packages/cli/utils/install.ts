@@ -1,5 +1,6 @@
 import { existsSync } from 'fs-extra';
 import path = require('path');
+import { exitError } from './exit';
 import { shell } from './shell';
 
 export const hasYarn = (cwd = process.cwd()) => {
@@ -34,5 +35,7 @@ export const addPackages = (packages: string[]) => {
   if (which === 'pnpm') {
     return shell(`pnpm add --D ${packages.join(' ')}`);
   }
-  throw 'No package manager detected for this project. Run this command in the root of your project, where the package.json is located.';
+  exitError(
+    'No package manager detected for this project. Run this command in the root of your project, where the package.json is located.',
+  );
 };

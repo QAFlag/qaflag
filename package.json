@@ -6,7 +6,8 @@
     "build": "lerna run build",
     "start": "./packages/cli/dist/index.js",
     "publish": "lerna run build && lerna run tsc && lerna publish",
-    "prepare": "husky install"
+    "prepare": "husky install",
+     "cli": "./packages/cli/dist/index.js"
   },
   "dependencies": {},
   "devDependencies": {

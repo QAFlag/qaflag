@@ -3,6 +3,7 @@ import chalk = require('chalk');
 import { LightTheme } from '../themes/light';
 import { DarkTheme } from '../themes/dark';
 import { pill, printLineBreak, printLines } from '../utils/print';
+import { titleize } from '../utils/string';
 
 export const outputSuiteToConsole = (
   suite: SuiteInterface,
@@ -61,8 +62,18 @@ export const outputSuiteToConsole = (
         [
           '',
           [
-            chalk.hex(theme.scenario.head.textColor).bold(`${scenario.title}`),
+            chalk
+              .hex(theme.scenario.head.textColor)
+              .bold(`${titleize(scenario.title)}`),
             scenario.description,
+          ],
+          [
+            chalk.italic(
+              `${scenario.request.method.toUpperCase()} ${
+                scenario.request.url
+              } (${scenario.type})`,
+            ),
+            chalk.italic(`${scenario.logger.duration}ms`),
           ],
           '',
         ],
@@ -78,14 +89,6 @@ export const outputSuiteToConsole = (
       printLines(
         [
           '',
-          chalk.hex(theme.scenario.content.subtextcolor)(
-            `  ${scenario.type} | Persona: ${scenario.persona.name}`,
-          ),
-          chalk.hex(theme.scenario.content.subtextcolor)(
-            `  ${scenario.request.method.toUpperCase()} ${
-              scenario.request.url
-            }  ${scenario.logger.duration}ms`,
-          ),
           ...scenario.logger.messages.map(message => {
             if (message.type == 'pass') {
               return (

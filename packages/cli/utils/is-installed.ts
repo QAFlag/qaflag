@@ -7,5 +7,8 @@ export const isInstalled = (packageName: string) => {
   }
 };
 
-export const whichInstalled = (packageNames: string[]) =>
-  packageNames.find(packageName => isInstalled(packageName));
+export const whichInstalled = (packageNames: string[]) => {
+  return packageNames.find(packageName =>
+    isInstalled(`@qaflag/${packageName}`),
+  );
+};
