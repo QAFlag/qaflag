@@ -98,7 +98,11 @@ export function Suite(suiteOpts: SuiteOpts) {
               this.events.emit('beforeEach', scenario);
               await scenario.__startUp();
               await scenario.__execute();
-              await scenario.__next(scenario);
+              try {
+                await scenario.__next(scenario);
+              } catch (ex) {
+                scenario.logger.fail(`${ex}`);
+              }
               await scenario.__tearDown();
               this.events.emit('afterEach', scenario);
               this.logger.log(scenario.status == 'pass' ? 'pass' : 'fail', {

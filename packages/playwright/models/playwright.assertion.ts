@@ -1,7 +1,14 @@
 import { Locator } from 'playwright';
 import { PlaywrightValue } from './playwright.value';
 
-export type AwaitedAssertion = (data: Locator) => Promise<boolean>;
+export type AssertionResult = {
+  pass: Promise<boolean> | boolean;
+  actualValue?: string;
+};
+
+export type AwaitedAssertion = (
+  data: Locator,
+) => Promise<AssertionResult> | AssertionResult;
 export type mustOrShould = 'must' | 'should';
 
 export class PlaywrightAssertion {
@@ -47,6 +54,11 @@ export class PlaywrightAssertion {
     return this;
   }
 
+  public get in() {
+    this.message.push('in');
+    return this;
+  }
+
   public get all() {
     this.evalType = 'every';
     this.message.push('all');
@@ -74,50 +86,107 @@ export class PlaywrightAssertion {
 
   protected async execute(assertion: AwaitedAssertion) {
     const result = await assertion(this.input.$);
-    const pass = this.isNot ? !result : result;
+    const pass = this.isNot ? !(await result.pass) : await result.pass;
     this.input.logger.log(
       pass ? 'pass' : this.mustOrShould == 'should' ? 'optionalFail' : 'fail',
       this.message.join(' '),
     );
-    if (!pass) {
-      //this.input.logger.log('info', `Actual Value: ${this.input.string.$}`);
+    if (!pass || result.actualValue) {
+      this.input.logger.log('info', `Actual Value: ${result.actualValue}`);
     }
   }
 
   public async visible() {
     this.message.push('visible');
-    return this.execute(input => input.isVisible());
+    return this.execute(async input => {
+      const isVisible = await input.isVisible();
+      return { pass: isVisible };
+    });
   }
 
   public async hidden() {
     this.message.push('hidden');
-    return this.execute(() => this.input.$.isHidden());
+    return this.execute(() => ({ pass: this.input.$.isHidden() }));
   }
 
   public async checked() {
     this.message.push('checked');
-    return this.execute(() => this.input.$.isChecked());
+    return this.execute(() => ({ pass: this.input.$.isChecked() }));
   }
 
   public async editable() {
     this.message.push('editable');
-    return this.execute(() => this.input.$.isEditable());
+    return this.execute(() => ({ pass: this.input.$.isEditable() }));
   }
 
   public async enabled() {
     this.message.push('enabled');
-    return this.execute(() => this.input.$.isEnabled());
+    return this.execute(() => ({ pass: this.input.$.isEnabled() }));
   }
 
   public async disabled() {
     this.message.push('disabled');
-    return this.execute(() => this.input.$.isDisabled());
+    return this.execute(() => ({ pass: this.input.$.isDisabled() }));
   }
 
   public async exist() {
     this.message.push('exist');
     return this.execute(async () => {
-      return (await this.input.$.count()) > 0;
+      const count = await this.input.$.count();
+      return { pass: count > 0 };
+    });
+  }
+
+  public async className(name: string) {
+    this.message.push(`class ${name}`);
+    return this.execute(async () => {
+      const classList = await this.input.classList();
+      return {
+        pass: classList
+          .map(className => className.toUpperCase())
+          .$.includes(name.toUpperCase()),
+        actualValue: classList.$.join(' '),
+      };
+    });
+  }
+
+  public async tagName(name: string) {
+    this.message.push(`tag <${name.toUpperCase()}>`);
+    return this.execute(async () => {
+      const tagName = (await this.input.tagName()).$.toUpperCase();
+      return { pass: tagName == name.toUpperCase(), actualValue: tagName };
+    });
+  }
+
+  public async value(value: string) {
+    this.message.push(`value <${value}>`);
+    return this.execute(async () => {
+      const elementValue = await this.input.value();
+      return {
+        pass: elementValue.$ == value,
+        actualValue: elementValue.$,
+      };
+    });
+  }
+
+  public async attribute(name: string, value: string) {
+    this.message.push(`atribute <${name}>`);
+    return this.execute(async () => {
+      const attributeValue = await this.input.attribute(name);
+      return {
+        pass: attributeValue.$ == value,
+        actualValue: attributeValue.$,
+      };
+    });
+  }
+
+  public async focus() {
+    this.message.push('focus');
+    return this.execute(async () => {
+      const hasFocus = await this.input.$.evaluate(
+        node => document.activeElement === node,
+      );
+      return { pass: hasFocus };
     });
   }
 }

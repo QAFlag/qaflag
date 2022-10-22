@@ -11,6 +11,7 @@ import { Keyboard } from './keyboard';
 import { Mouse, Touch } from './pointer';
 import { PlaywrightAssertion } from './playwright.assertion';
 import { FindOpts } from './playwright.context';
+import { PlaywrightMust } from '../types/playwrite-must';
 
 export interface LocatorOpts extends ValueOpts {
   selector: string;
@@ -44,11 +45,11 @@ export class PlaywrightValue
     return new Form(this);
   }
 
-  public get must() {
+  public get must(): PlaywrightMust {
     return new PlaywrightAssertion(this, 'must');
   }
 
-  public get should() {
+  public get should(): PlaywrightMust {
     return new PlaywrightAssertion(this, 'should');
   }
 
@@ -125,6 +126,15 @@ export class PlaywrightValue
     );
   }
 
+  public async classList(opts?: TimeoutOpts) {
+    const classList = await this.input
+      .first()
+      .evaluate(el => el.classList.value.split(' '), opts);
+    return this.createArray<string>(classList, {
+      name: `Class List of ${this.name}`,
+    });
+  }
+
   public async count(): Promise<NumericValue>;
   public async count(selector: string): Promise<NumericValue>;
   public async count(selector?: string) {
@@ -177,5 +187,12 @@ export class PlaywrightValue
 
   public async scrollTo(opts?: TimeoutOpts) {
     return this.input.scrollIntoViewIfNeeded(opts);
+  }
+
+  public async parent() {
+    return new PlaywrightValue(this.input.locator('xpath=..'), {
+      ...this.opts,
+      name: `Parent of ${this.name}`,
+    });
   }
 }
