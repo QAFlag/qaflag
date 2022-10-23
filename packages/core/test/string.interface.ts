@@ -22,7 +22,8 @@ interface StringMustBe extends StringMustBeAn {
   uppercase(): void;
   lowercase(): void;
   empty(): void;
-  alpha(): void;
+  onlyLetters(): void;
+  onlyNumbers(): void;
   alphanumeric(): void;
 }
 

@@ -15,6 +15,10 @@ export interface MustNot {
   include(value: any): void;
   contain(value: string | string[]): void;
   exist(): void;
+  roundTo(value: number): void;
+  roundUpTo(value: number): void;
+  roundDownTo(value: number): void;
+  zero(): void;
 }
 
 export interface MustMatch {
@@ -45,6 +49,16 @@ export interface MustBe extends MustBeAn {
   false(): void;
   truthy(): void;
   falsy(): void;
+  closeTo(value: number, within?: number): void;
+  before(date: string | Date): void;
+  after(date: string | Date): void;
+  inThePast(): void;
+  inTheFuture(): void;
+  alphanumeric(): void;
+  onlyLetters(): void;
+  onlyNumbers(): void;
+  numeric(): void;
+  empty(): void;
 }
 
 export interface MustBeAn {
@@ -64,6 +78,7 @@ export interface MustBeAn {
   negativeNumber(): void;
   negativeInteger(): void;
   nonZeroNumber(): void;
+  nonZeroInteger(): void;
   evenInteger(): void;
   oddInteger(): void;
   ipAddress(version?: number): void;

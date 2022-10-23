@@ -333,9 +333,14 @@ export class Test<ValueWrapper extends ValueInterface = ValueInterface>
     this.execute(item => /^[A-Za-z0-9]+$/.test(String(item)));
   }
 
-  public alpha() {
-    this.message.push('alphabetical');
+  public onlyLetters() {
+    this.message.push('only letters');
     this.execute(item => /^[A-Za-z]+$/.test(String(item)));
+  }
+
+  public onlyNumbers() {
+    this.message.push('only numbers');
+    this.execute(item => /^[0-9]+$/.test(String(item)));
   }
 
   /**
