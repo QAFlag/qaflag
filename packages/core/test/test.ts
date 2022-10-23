@@ -4,79 +4,23 @@ import { MustBeAn, MustBe, MustHave, Must, MustMatch } from './test.interface';
 import is from '@sindresorhus/is';
 import { humanReadableList } from '../utils/helpers';
 import { ArrayValue, NumericValue } from '../value/values';
+import { TestBase } from './test-base';
 
 export type assertion = (data: unknown) => boolean;
 export type mustOrShould = 'must' | 'should';
 
-export class Test<InputType = unknown>
+export class Test<InputType>
+  extends TestBase<InputType>
   implements MustBe, MustHave, Must, MustBeAn, MustMatch
 {
-  protected message: string[];
-
   constructor(
-    protected input: ValueInterface<InputType>,
-    protected mustOrShould: mustOrShould,
-    protected isNot: boolean = false,
-    protected evalType: 'standard' | 'every' | 'some' = 'standard',
+    input: ValueInterface<InputType>,
+    mustOrShould: mustOrShould,
+    isNot: boolean = false,
+    evalType: 'standard' | 'every' | 'some' = 'standard',
     message?: string[],
   ) {
-    this.message = message || [input.name, mustOrShould];
-  }
-
-  public get not() {
-    this.isNot = !this.isNot;
-    this.message.push('not');
-    return this;
-  }
-
-  public get be() {
-    this.message.push('be');
-    return this;
-  }
-
-  public get match() {
-    this.message.push('match');
-    return this;
-  }
-
-  public get a() {
-    this.message.push('a');
-    return this;
-  }
-
-  public get an() {
-    this.message.push('an');
-    return this;
-  }
-
-  public get have() {
-    this.message.push('have');
-    return this;
-  }
-
-  public get all() {
-    this.evalType = 'every';
-    this.message.push('all');
-    return this;
-  }
-
-  public get none() {
-    this.evalType = 'some';
-    this.isNot = true;
-    this.message.push('none');
-    return this;
-  }
-
-  public get any() {
-    this.evalType = 'some';
-    this.message.push('any');
-    return this;
-  }
-
-  public get some() {
-    this.evalType = 'some';
-    this.message.push('some');
-    return this;
+    super(input, mustOrShould, isNot, evalType, message);
   }
 
   private validator(
@@ -302,9 +246,19 @@ export class Test<InputType = unknown>
     this.is('number');
   }
 
+  public zero() {
+    this.message.push('zero');
+    this.execute(value => String(value) === '0');
+  }
+
   public nonZeroNumber() {
     this.message.push('non-zero number');
     this.execute(value => is.number(value) && value != 0);
+  }
+
+  public nonZeroInteger() {
+    this.message.push('non-zero integer');
+    this.execute(value => is.integer(value) && value != 0);
   }
 
   public oddInteger() {
@@ -315,6 +269,10 @@ export class Test<InputType = unknown>
     this.is('evenInteger', 'even integer');
   }
 
+  public numeric() {
+    this.is('numericString', 'numeric');
+  }
+
   public numericString() {
     this.is('numericString', 'numeric string');
   }
@@ -323,8 +281,8 @@ export class Test<InputType = unknown>
     this.validator('isIP', 'IP Address', version);
   }
 
-  public divisibleBy(n?: number) {
-    this.validator('isDivisibleBy', `Divisible by ${n}`, n);
+  public divisibleBy(n: number) {
+    this.validator('isDivisibleBy', `divisible by ${n}`, n);
   }
 
   public true() {
@@ -421,6 +379,10 @@ export class Test<InputType = unknown>
     this.validator('isMimeType', 'valid mime type');
   }
 
+  public empty() {
+    this.is('emptyStringOrWhitespace', 'empty string');
+  }
+
   public emptyString() {
     this.is('emptyStringOrWhitespace', 'empty string');
   }
@@ -439,6 +401,34 @@ export class Test<InputType = unknown>
 
   public mongoId() {
     this.validator('isMongoId', 'Mongo ID');
+  }
+
+  public before(date: string | Date) {
+    const dateString = typeof date == 'string' ? date : Date.toString();
+    this.validator('isBefore', `before ${dateString}`, dateString);
+  }
+
+  public after(date: string | Date) {
+    const dateString = typeof date == 'string' ? date : Date.toString();
+    this.validator('isAfter', `after ${dateString}`, dateString);
+  }
+
+  public inThePast() {
+    this.validator('isBefore', 'in the past');
+  }
+
+  public inTheFuture() {
+    this.validator('isAfter', 'in the future');
+  }
+
+  public alphanumeric() {
+    this.message.push('alphanumeric');
+    this.execute(item => /^[A-Za-z0-9]+$/.test(String(item)));
+  }
+
+  public alpha() {
+    this.message.push('alphabetical');
+    this.execute(item => /^[A-Za-z]+$/.test(String(item)));
   }
 
   public type(typeName: string) {

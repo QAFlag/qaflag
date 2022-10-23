@@ -7,6 +7,11 @@ import {
 import { toType } from '../utils/to-type';
 import { test } from '../test/test';
 import is from '@sindresorhus/is';
+import { NumberMust } from '../test/number.interface';
+import { StringMust } from '../test/string.interface';
+import { BooleanMust } from '../test/boolean.interface';
+import { DateMust } from '../test/date.interface';
+import { ArrayMust } from '../test/array.interface';
 
 export interface ValueOpts {
   name: string;
@@ -156,14 +161,6 @@ export abstract class PrimitiveValueAbstract<InputType>
     });
   }
 
-  public get must(): Must {
-    return test(this, 'must');
-  }
-
-  public get should(): Must {
-    return test(this, 'should');
-  }
-
   public get number() {
     return new NumericValue(this.toNumber(), this.opts);
   }
@@ -213,11 +210,35 @@ export abstract class PrimitiveValueAbstract<InputType>
   }
 }
 
-export class GenericValue extends PrimitiveValueAbstract<any> {}
+export class GenericValue extends PrimitiveValueAbstract<any> {
+  public get must(): Must {
+    return test(this, 'must');
+  }
 
-export class BooleanValue extends PrimitiveValueAbstract<boolean> {}
+  public get should(): Must {
+    return test(this, 'should');
+  }
+}
+
+export class BooleanValue extends PrimitiveValueAbstract<boolean> {
+  public get must(): BooleanMust {
+    return test(this, 'must');
+  }
+
+  public get should(): BooleanMust {
+    return test(this, 'should');
+  }
+}
 
 export class ArrayValue<T = any> extends PrimitiveValueAbstract<T[]> {
+  public get must(): ArrayMust {
+    return test(this, 'must');
+  }
+
+  public get should(): ArrayMust {
+    return test(this, 'should');
+  }
+
   public get first() {
     return new GenericValue(this.$[0], {
       ...this.opts,
@@ -248,9 +269,25 @@ export class ArrayValue<T = any> extends PrimitiveValueAbstract<T[]> {
   }
 }
 
-export class NumericValue extends PrimitiveValueAbstract<number> {}
+export class NumericValue extends PrimitiveValueAbstract<number> {
+  public get must(): NumberMust {
+    return test(this, 'must');
+  }
+
+  public get should(): NumberMust {
+    return test(this, 'should');
+  }
+}
 
 export class StringValue extends PrimitiveValueAbstract<string> {
+  public get must(): StringMust {
+    return test(this, 'must');
+  }
+
+  public get should(): StringMust {
+    return test(this, 'should');
+  }
+
   public get trim() {
     return new StringValue(this.$.trim(), {
       ...this.opts,
@@ -260,6 +297,14 @@ export class StringValue extends PrimitiveValueAbstract<string> {
 }
 
 export class DateValue extends PrimitiveValueAbstract<Date> {
+  public get must(): DateMust {
+    return test(this, 'must');
+  }
+
+  public get should(): DateMust {
+    return test(this, 'should');
+  }
+
   public get unixTime() {
     return new NumericValue(Math.floor(this.$.getTime() / 1000), {
       ...this.opts,

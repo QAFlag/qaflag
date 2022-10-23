@@ -1,3 +1,4 @@
+import { TestBase } from '@qaflag/core';
 import { Locator } from 'playwright';
 import { PlaywrightValue } from './playwright.value';
 
@@ -11,76 +12,25 @@ export type AwaitedAssertion = (
 ) => Promise<AssertionResult> | AssertionResult;
 export type mustOrShould = 'must' | 'should';
 
-export class PlaywrightAssertion {
+export class PlaywrightAssertion extends TestBase {
   protected message: string[];
   protected isNot: boolean = false;
   protected evalType: 'standard' | 'every' | 'some' = 'standard';
 
+  protected input: PlaywrightValue;
+
   constructor(
-    protected input: PlaywrightValue,
-    protected mustOrShould: mustOrShould,
+    input: PlaywrightValue,
+    mustOrShould: mustOrShould,
+    isNot: boolean = false,
+    evalType: 'standard' | 'every' | 'some' = 'standard',
+    message?: string[],
   ) {
-    this.message = [input.name, mustOrShould];
-  }
-
-  public get not() {
-    this.isNot = !this.isNot;
-    this.message.push('not');
-    return this;
-  }
-
-  public get be() {
-    this.message.push('be');
-    return this;
-  }
-
-  public get match() {
-    this.message.push('match');
-    return this;
-  }
-
-  public get a() {
-    this.message.push('a');
-    return this;
-  }
-
-  public get an() {
-    this.message.push('an');
-    return this;
-  }
-
-  public get have() {
-    this.message.push('have');
-    return this;
+    super(input, mustOrShould, isNot, evalType, message);
   }
 
   public get in() {
     this.message.push('in');
-    return this;
-  }
-
-  public get all() {
-    this.evalType = 'every';
-    this.message.push('all');
-    return this;
-  }
-
-  public get none() {
-    this.evalType = 'some';
-    this.isNot = true;
-    this.message.push('none');
-    return this;
-  }
-
-  public get any() {
-    this.evalType = 'some';
-    this.message.push('any');
-    return this;
-  }
-
-  public get some() {
-    this.evalType = 'some';
-    this.message.push('some');
     return this;
   }
 

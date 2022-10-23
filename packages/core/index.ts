@@ -11,6 +11,7 @@ export * from './persona/attributes';
 export * from './persona/persona.interface';
 export * from './test/test';
 export * from './test/test.interface';
+export * from './test/test-base';
 export * from './models/http-request';
 export * from './models/http-response';
 export * from './models/kv-store';

@@ -1,3 +1,5 @@
+import { NumberMust } from './number.interface';
+
 export interface Must {
   all: MustAll;
   not: MustNot;
@@ -32,18 +34,9 @@ export interface MustHave {
   some: MustHaveSome;
   any: MustHaveAny;
   none: MustHaveNone;
-  length: MustBeNumber;
+  length: NumberMust;
   property(propertyName: string): void;
   properties(propertyNames: string[]): void;
-}
-
-export interface MustBeNumber {
-  equalTo(value: any): void;
-  greaterThan(value: number): void;
-  greaterThanOrEquals(value: number): void;
-  lessThan(value: number): void;
-  lessThanOrEquals(value: number): void;
-  divisibleBy(value: number): void;
 }
 
 export interface MustBe extends MustBeAn {
