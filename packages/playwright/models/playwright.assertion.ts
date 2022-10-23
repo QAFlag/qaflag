@@ -1,14 +1,13 @@
 import { TestBase } from '@qaflag/core';
-import { Locator } from 'playwright';
 import { PlaywrightValue } from './playwright.value';
 
 export type AssertionResult = {
-  pass: Promise<boolean> | boolean;
-  actualValue?: string;
+  pass: boolean;
+  actualValue?: string | null;
 };
 
 export type AwaitedAssertion = (
-  data: Locator,
+  data: PlaywrightValue,
 ) => Promise<AssertionResult> | AssertionResult;
 export type mustOrShould = 'must' | 'should';
 
@@ -35,13 +34,29 @@ export class PlaywrightAssertion extends TestBase {
   }
 
   protected async execute(assertion: AwaitedAssertion) {
-    const result = await assertion(this.input.$);
-    const pass = this.isNot ? !(await result.pass) : await result.pass;
+    const result: AssertionResult = await (async () => {
+      if (this.evalType === 'standard') {
+        return assertion(this.input);
+      }
+      const arr = await this.input.queryAll();
+      const results = await Promise.all(arr.map(item => assertion(item)));
+      return {
+        pass:
+          this.evalType == 'every'
+            ? results.every(result => result.pass)
+            : results.some(result => result.pass),
+        actualValue: results
+          .map(result => result.actualValue)
+          .filter(actualValue => actualValue !== undefined)
+          .join(', '),
+      };
+    })();
+    const pass = this.isNot ? !result.pass : result.pass;
     this.input.logger.log(
       pass ? 'pass' : this.mustOrShould == 'should' ? 'optionalFail' : 'fail',
       this.message.join(' '),
     );
-    if (!pass || result.actualValue) {
+    if (!pass && result.actualValue) {
       this.input.logger.log('info', `Actual Value: ${result.actualValue}`);
     }
   }
@@ -49,48 +64,75 @@ export class PlaywrightAssertion extends TestBase {
   public async visible() {
     this.message.push('visible');
     return this.execute(async input => {
-      const isVisible = await input.isVisible();
-      return { pass: isVisible };
+      const isVisible = await input.$.isVisible();
+      return { pass: isVisible, actualValue: isVisible ? 'visible' : 'hidden' };
     });
   }
 
   public async hidden() {
     this.message.push('hidden');
-    return this.execute(() => ({ pass: this.input.$.isHidden() }));
+    return this.execute(async item => {
+      const isHidden = await item.$.isHidden();
+      return { pass: isHidden, actualValue: isHidden ? 'hidden' : 'visible' };
+    });
   }
 
   public async checked() {
     this.message.push('checked');
-    return this.execute(() => ({ pass: this.input.$.isChecked() }));
+    return this.execute(async item => {
+      const isChecked = await item.$.isChecked();
+      return {
+        pass: isChecked,
+        actualValue: isChecked ? 'checked' : 'unchecked',
+      };
+    });
   }
 
   public async editable() {
     this.message.push('editable');
-    return this.execute(() => ({ pass: this.input.$.isEditable() }));
+    return this.execute(async item => {
+      const isEditable = await item.$.isEditable();
+      return {
+        pass: isEditable,
+        actualValue: isEditable ? 'editable' : 'not editable',
+      };
+    });
   }
 
   public async enabled() {
     this.message.push('enabled');
-    return this.execute(() => ({ pass: this.input.$.isEnabled() }));
+    return this.execute(async item => {
+      const isEnabled = await item.$.isEnabled();
+      return {
+        pass: isEnabled,
+        actualValue: isEnabled ? 'enabled' : 'disabled',
+      };
+    });
   }
 
   public async disabled() {
     this.message.push('disabled');
-    return this.execute(() => ({ pass: this.input.$.isDisabled() }));
+    return this.execute(async item => {
+      const isDisabled = await item.$.isDisabled();
+      return {
+        pass: isDisabled,
+        actualValue: isDisabled ? 'disabled' : 'enabled',
+      };
+    });
   }
 
   public async exist() {
     this.message.push('exist');
-    return this.execute(async () => {
-      const count = await this.input.$.count();
+    return this.execute(async item => {
+      const count = await item.$.count();
       return { pass: count > 0 };
     });
   }
 
   public async className(name: string) {
     this.message.push(`class ${name}`);
-    return this.execute(async () => {
-      const classList = await this.input.classList();
+    return this.execute(async item => {
+      const classList = await item.classList();
       return {
         pass: classList
           .map(className => className.toUpperCase())
@@ -102,38 +144,38 @@ export class PlaywrightAssertion extends TestBase {
 
   public async tagName(name: string) {
     this.message.push(`tag <${name.toUpperCase()}>`);
-    return this.execute(async () => {
-      const tagName = (await this.input.tagName()).$.toUpperCase();
+    return this.execute(async item => {
+      const tagName = (await item.tagName()).$.toUpperCase();
       return { pass: tagName == name.toUpperCase(), actualValue: tagName };
     });
   }
 
   public async value(value: string) {
     this.message.push(`value <${value}>`);
-    return this.execute(async () => {
-      const elementValue = await this.input.value();
+    return this.execute(async item => {
+      const elementValue = (await item.value()).$;
       return {
-        pass: elementValue.$ == value,
-        actualValue: elementValue.$,
+        pass: elementValue == value,
+        actualValue: elementValue,
       };
     });
   }
 
   public async attribute(name: string, value: string) {
     this.message.push(`atribute <${name}>`);
-    return this.execute(async () => {
-      const attributeValue = await this.input.attribute(name);
+    return this.execute(async item => {
+      const attributeValue = (await item.attribute(name)).$;
       return {
-        pass: attributeValue.$ == value,
-        actualValue: attributeValue.$,
+        pass: attributeValue == value,
+        actualValue: attributeValue,
       };
     });
   }
 
   public async focus() {
     this.message.push('focus');
-    return this.execute(async () => {
-      const hasFocus = await this.input.$.evaluate(
+    return this.execute(async item => {
+      const hasFocus = await item.$.evaluate(
         node => document.activeElement === node,
       );
       return { pass: hasFocus };

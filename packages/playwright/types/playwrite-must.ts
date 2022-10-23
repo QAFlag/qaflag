@@ -2,6 +2,7 @@ type PlaywrightAssertionOutput = Promise<void>;
 
 export interface PlaywrightMust extends PlaywrightMustNot {
   not: PlaywrightMustNot;
+  all: PlaywrightMust;
 }
 
 export interface PlaywrightMustNot {
@@ -16,6 +17,10 @@ export interface PlaywrightMustHave {
   focus(): PlaywrightAssertionOutput;
   value(value: string): PlaywrightAssertionOutput;
   attribute(name: string, value: string): PlaywrightAssertionOutput;
+  all: PlaywrightMust;
+  some: PlaywrightMust;
+  none: PlaywrightMust;
+  any: PlaywrightMust;
 }
 
 export interface PlaywrightMustBeIn {

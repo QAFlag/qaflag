@@ -195,4 +195,18 @@ export class PlaywrightValue
       name: `Parent of ${this.name}`,
     });
   }
+
+  public async queryAll(): Promise<PlaywrightValue[]> {
+    const count = await this.input.count();
+    const locators: PlaywrightValue[] = [];
+    for (let i = 0; i < count; i++) {
+      locators.push(
+        new PlaywrightValue(this.input.nth(i), {
+          ...this.opts,
+          name: `${i} in ${this.name}`,
+        }),
+      );
+    }
+    return locators;
+  }
 }
