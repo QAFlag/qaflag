@@ -23,9 +23,10 @@ export class PlaywrightAssertion extends TestBase {
     mustOrShould: mustOrShould,
     isNot: boolean = false,
     evalType: 'standard' | 'every' | 'some' = 'standard',
+    evalCount: number = 0,
     message?: string[],
   ) {
-    super(input, mustOrShould, isNot, evalType, message);
+    super(input, mustOrShould, isNot, evalType, evalCount, message);
   }
 
   public get in() {

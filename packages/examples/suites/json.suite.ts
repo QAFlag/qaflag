@@ -35,6 +35,9 @@ export class UsersSuite extends Suite({
     ids.must.all.be.greaterThan(0);
     ids.must.not.have.any.be.lessThan(0);
     ids.must.have.some.be.greaterThan(0);
+    ids.must.have.only(1).be.equalTo(1);
+    ids.must.have.atLeast(5).be.greaterThan(2);
+    ids.must.have.atMost(2).be.lessThan(3);
     const names = context.find('[*].name').array;
     names.length.must.be.equalTo(10);
     names.first.must.have.length.be.greaterThan(0);

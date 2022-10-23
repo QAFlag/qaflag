@@ -1,6 +1,14 @@
 import { ValueInterface } from '../value/value.interface';
 import { mustOrShould } from './test';
 
+export type TestEvalEnum =
+  | 'standard'
+  | 'every'
+  | 'some'
+  | 'only'
+  | 'atMost'
+  | 'atLeast';
+
 export class TestBase {
   protected message: string[];
 
@@ -8,7 +16,8 @@ export class TestBase {
     protected input: ValueInterface,
     protected mustOrShould: mustOrShould,
     protected isNot: boolean = false,
-    protected evalType: 'standard' | 'every' | 'some' = 'standard',
+    protected evalType: TestEvalEnum = 'standard',
+    protected evalCount: number,
     message?: string[],
   ) {
     this.message = message || [input.name, mustOrShould];
@@ -67,6 +76,55 @@ export class TestBase {
   public get some() {
     this.evalType = 'some';
     this.message.push('some');
+    return this;
+  }
+
+  public only(count: number) {
+    this.evalType = 'only';
+    this.evalCount = count;
+    this.message.push(`only ${count}`);
+    return this;
+  }
+
+  public just(count: number) {
+    this.evalType = 'only';
+    this.evalCount = count;
+    this.message.push(`just ${count}`);
+    return this;
+  }
+
+  public atMost(count: number) {
+    this.evalType = 'atMost';
+    this.evalCount = count;
+    this.message.push(`at most ${count}`);
+    return this;
+  }
+
+  public atLeast(count: number) {
+    this.evalType = 'atLeast';
+    this.evalCount = count;
+    this.message.push(`at least ${count}`);
+    return this;
+  }
+
+  public noLessThan(count: number) {
+    this.evalType = 'atLeast';
+    this.evalCount = count;
+    this.message.push(`no less than ${count}`);
+    return this;
+  }
+
+  public moreThan(count: number) {
+    this.evalType = 'atLeast';
+    this.evalCount = count + 1;
+    this.message.push(`more than ${count}`);
+    return this;
+  }
+
+  public noMoreThan(count: number) {
+    this.evalType = 'atMost';
+    this.evalCount = count;
+    this.message.push(`no more than ${count}`);
     return this;
   }
 }

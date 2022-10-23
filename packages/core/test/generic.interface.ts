@@ -31,6 +31,9 @@ export interface MustHave {
   any: MustHaveAny;
   none: MustHaveNone;
   length: NumberMust;
+  only(n: number): MustHaveSome;
+  atMost(n: number): MustHaveSome;
+  atLeast(n: number): MustHaveSome;
   property(propertyName: string): void;
   properties(propertyNames: string[]): void;
 }

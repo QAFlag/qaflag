@@ -3,7 +3,7 @@ import validator from 'validator';
 import is from '@sindresorhus/is';
 import { humanReadableList } from '../utils/helpers';
 import { ArrayValue, NumericValue } from '../value/values';
-import { TestBase } from './test-base';
+import { TestBase, TestEvalEnum } from './test-base';
 import { Must } from './generic.interface';
 
 export type assertion = (data: unknown) => boolean;
@@ -17,10 +17,11 @@ export class Test<ValueWrapper extends ValueInterface = ValueInterface>
     input: ValueWrapper,
     mustOrShould: mustOrShould,
     isNot: boolean = false,
-    evalType: 'standard' | 'every' | 'some' = 'standard',
+    evalType: TestEvalEnum = 'standard',
+    evalCount = 0,
     message?: string[],
   ) {
-    super(input, mustOrShould, isNot, evalType, message);
+    super(input, mustOrShould, isNot, evalType, evalCount, message);
   }
 
   private validator(
@@ -41,13 +42,17 @@ export class Test<ValueWrapper extends ValueInterface = ValueInterface>
 
   protected execute(assertion: assertion) {
     const result = (() => {
+      if (this.evalType === 'standard') return assertion(this.input.$);
       if (this.evalType === 'every') {
         return this.input.array.$.every(item => assertion(item));
       }
       if (this.evalType === 'some') {
         return this.input.array.$.some(item => assertion(item));
       }
-      return assertion(this.input.$);
+      const count = this.input.array.$.filter(item => assertion(item)).length;
+      if (this.evalType === 'atLeast') return count >= this.evalCount;
+      if (this.evalType === 'atMost') return count <= this.evalCount;
+      return count == this.evalCount;
     })();
     const pass = this.isNot ? !result : result;
     const text = this.message.join(' ');
@@ -63,10 +68,14 @@ export class Test<ValueWrapper extends ValueInterface = ValueInterface>
   }
 
   private clone(input: ValueInterface, pushWord: string) {
-    return new Test(input, this.mustOrShould, this.isNot, this.evalType, [
-      ...this.message,
-      pushWord,
-    ]);
+    return new Test(
+      input,
+      this.mustOrShould,
+      this.isNot,
+      this.evalType,
+      this.evalCount,
+      [...this.message, pushWord],
+    );
   }
 
   /**
