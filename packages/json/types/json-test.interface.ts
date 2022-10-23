@@ -1,5 +1,4 @@
 import {
-  Must,
   MustAll,
   MustBe,
   MustBeAn,
@@ -14,18 +13,15 @@ import {
 import { ClassConstructor } from 'class-transformer';
 import { ValidatorOptions } from 'class-validator';
 
-export interface JsonMust extends Must {
-  all: JsonMustAll;
+export interface JsonMust extends JsonMustNot {
   not: JsonMustNot;
-  be: JsonMustBe;
-  have: JsonMustHave;
-  match: JsonMustMatch;
 }
 
 export interface JsonMustNot extends MustNot {
   be: JsonMustBe;
   have: JsonMustHave;
   match: JsonMustMatch;
+  all: JsonMustAll;
 }
 
 export interface JsonMustMatch extends MustMatch {

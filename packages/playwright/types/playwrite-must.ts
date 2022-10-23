@@ -1,15 +1,13 @@
 type PlaywrightAssertionOutput = Promise<void>;
 
-export interface PlaywrightMust {
+export interface PlaywrightMust extends PlaywrightMustNot {
   not: PlaywrightMustNot;
-  be: PlaywrightMustBe;
-  have: PlaywrightMustHave;
-  exist(): PlaywrightAssertionOutput;
 }
 
 export interface PlaywrightMustNot {
   be: PlaywrightMustBe;
   have: PlaywrightMustHave;
+  exist(): PlaywrightAssertionOutput;
 }
 
 export interface PlaywrightMustHave {

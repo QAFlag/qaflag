@@ -2,6 +2,9 @@ export interface NumberMust {
   be: NumberMustBe;
   not: NumberMust;
   equal(value: number): void;
+  roundTo(value: number): void;
+  roundDownTo(value: number): void;
+  roundUpTo(value: number): void;
 }
 
 export interface NumberMustBe extends NumberMustBeAn {
@@ -14,6 +17,7 @@ export interface NumberMustBe extends NumberMustBeAn {
   lessThanOrEquals(value: number): void;
   divisibleBy(value: number): void;
   between(valueA: number, valueB: number): void;
+  closeTo(value: number, within?: number): void;
   zero(): void;
 }
 

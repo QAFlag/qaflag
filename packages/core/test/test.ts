@@ -1,20 +1,20 @@
 import { ValueInterface } from '../value/value.interface';
 import validator from 'validator';
-import { MustBeAn, MustBe, MustHave, Must, MustMatch } from './test.interface';
 import is from '@sindresorhus/is';
 import { humanReadableList } from '../utils/helpers';
 import { ArrayValue, NumericValue } from '../value/values';
 import { TestBase } from './test-base';
+import { Must } from './generic.interface';
 
 export type assertion = (data: unknown) => boolean;
 export type mustOrShould = 'must' | 'should';
 
-export class Test<InputType>
-  extends TestBase<InputType>
-  implements MustBe, MustHave, Must, MustBeAn, MustMatch
+export class Test<ValueWrapper extends ValueInterface = ValueInterface>
+  extends TestBase
+  implements Must
 {
   constructor(
-    input: ValueInterface<InputType>,
+    input: ValueWrapper,
     mustOrShould: mustOrShould,
     isNot: boolean = false,
     evalType: 'standard' | 'every' | 'some' = 'standard',
@@ -62,12 +62,16 @@ export class Test<InputType>
     }
   }
 
-  private clone<T>(input: ValueInterface<T>, pushWord: string) {
+  private clone(input: ValueInterface, pushWord: string) {
     return new Test(input, this.mustOrShould, this.isNot, this.evalType, [
       ...this.message,
       pushWord,
     ]);
   }
+
+  /**
+   * CONVERSIONS
+   */
 
   public get length() {
     const getLength = (item: unknown) =>
@@ -94,6 +98,10 @@ export class Test<InputType>
     );
   }
 
+  /**
+   * GENERIC
+   */
+
   public equal(value: any) {
     this.message.push(`equal ${value}`);
     this.execute(item => item == value);
@@ -109,63 +117,9 @@ export class Test<InputType>
     this.execute(item => item === value);
   }
 
-  public like(value: any) {
-    this.message.push(`like ${value}`);
-    this.execute(
-      item =>
-        String(item).toLocaleLowerCase().trim() ===
-        value.toLocaleLowerCase().trim(),
-    );
-  }
-
-  public greaterThan(value: number) {
-    this.message.push(`greater than ${value}`);
-    this.execute(item => Number(item) > value);
-  }
-
-  public greaterThanOrEquals(value: number) {
-    this.message.push(`greater than or equal to ${value}`);
-    this.execute(item => Number(item) >= value);
-  }
-
-  public lessThan(value: number) {
-    this.message.push(`less than ${value}`);
-    this.execute(item => Number(item) < value);
-  }
-
-  public lessThanOrEquals(value: number) {
-    this.message.push(`less than or equal to ${value}`);
-    this.execute(item => Number(item) <= value);
-  }
-
-  public between(valueA: number, valueB: number) {
-    this.message.push(`between ${valueA} and ${valueB}`);
-    this.execute(item => is.inRange(Number(item), [valueA, valueB]));
-  }
-
   public include(value: any) {
     this.message.push(`include ${value}`);
     this.execute(item => (Array.isArray(item) ? item : [item]).includes(value));
-  }
-
-  public startWith(value: string | string[]) {
-    this.message.push(`start with ${value}`);
-    this.execute(item => {
-      const str = String(item);
-      return Array.isArray(value)
-        ? value.some(x => str.startsWith(x))
-        : str.startsWith(value);
-    });
-  }
-
-  public endWith(value: string | string[]) {
-    this.message.push(`end with ${value}`);
-    this.execute(item => {
-      const str = String(item);
-      return Array.isArray(value)
-        ? value.some(x => str.endsWith(x))
-        : str.endsWith(value);
-    });
   }
 
   public contain(thatValue: string | string[]) {
@@ -188,33 +142,56 @@ export class Test<InputType>
     });
   }
 
-  public property(propertyName: string) {
-    this.message.push(`property ${propertyName}`);
+  public exist() {
+    this.message.push('exist');
+    this.execute(value => {
+      if (value === null || value === undefined) return false;
+      if (typeof value == 'number' && value <= 0) return false;
+      if (Array.isArray(value) && value.length == 0) return false;
+      if (value === false) return false;
+      return true;
+    });
+  }
+
+  public true() {
+    this.message.push('true');
+    this.execute(item => item === true);
+  }
+
+  public false() {
+    this.message.push('false');
+    this.execute(item => item === false);
+  }
+
+  public nullOrUndefined() {
+    this.is('nullOrUndefined', 'null or undefined');
+  }
+
+  public null() {
+    this.is('null_', 'null');
+  }
+
+  public undefined() {
+    this.is('undefined');
+  }
+
+  public boolean() {
+    this.is('boolean');
+  }
+
+  public truthy() {
+    this.is('truthy');
+  }
+
+  public empty() {
+    this.is('emptyStringOrWhitespace', 'empty string');
+  }
+
+  public type(typeName: string) {
+    this.message.push(typeName);
     this.execute(
-      item => is.object(item) && item[propertyName] !== this.undefined,
+      value => is(value).toLocaleLowerCase() == typeName.toLocaleLowerCase(),
     );
-  }
-
-  public properties(propertyNames: string[]) {
-    this.message.push(`properties ${humanReadableList(propertyNames)}`);
-    this.execute(
-      item =>
-        is.object(item) &&
-        propertyNames.every(prop => item[prop] !== this.undefined),
-    );
-  }
-
-  public regularExpression(value: RegExp) {
-    this.message.push(`regular expression ${value}`);
-    this.execute(item => validator.matches(String(item), value));
-  }
-
-  public email() {
-    this.validator('isEmail', 'email address');
-  }
-
-  public creditCard() {
-    this.validator('isCreditCard', 'credit card');
   }
 
   public date() {
@@ -237,40 +214,58 @@ export class Test<InputType>
     this.is('array');
   }
 
-  public arrayOf(typeName: 'string' | 'number' | 'boolean' | 'object') {
-    this.message.push(`array of ${typeName}s`);
-    this.execute(value => is.array(value, is[typeName as string]));
-  }
-
   public number() {
     this.is('number');
   }
 
-  public zero() {
-    this.message.push('zero');
-    this.execute(value => String(value) === '0');
-  }
-
-  public nonZeroNumber() {
-    this.message.push('non-zero number');
-    this.execute(value => is.number(value) && value != 0);
-  }
-
-  public nonZeroInteger() {
-    this.message.push('non-zero integer');
-    this.execute(value => is.integer(value) && value != 0);
-  }
-
-  public oddInteger() {
-    this.is('oddInteger', 'odd integer');
-  }
-
-  public evenInteger() {
-    this.is('evenInteger', 'even integer');
-  }
-
   public numeric() {
     this.is('numericString', 'numeric');
+  }
+
+  /**
+   * STRINGS
+   */
+
+  public like(value: any) {
+    this.message.push(`like ${value}`);
+    this.execute(
+      item =>
+        String(item).toLocaleLowerCase().trim() ===
+        value.toLocaleLowerCase().trim(),
+    );
+  }
+
+  public startWith(value: string | string[]) {
+    this.message.push(`start with ${value}`);
+    this.execute(item => {
+      const str = String(item);
+      return Array.isArray(value)
+        ? value.some(x => str.startsWith(x))
+        : str.startsWith(value);
+    });
+  }
+
+  public endWith(value: string | string[]) {
+    this.message.push(`end with ${value}`);
+    this.execute(item => {
+      const str = String(item);
+      return Array.isArray(value)
+        ? value.some(x => str.endsWith(x))
+        : str.endsWith(value);
+    });
+  }
+
+  public regularExpression(value: RegExp) {
+    this.message.push(`regular expression ${value}`);
+    this.execute(item => validator.matches(String(item), value));
+  }
+
+  public email() {
+    this.validator('isEmail', 'email address');
+  }
+
+  public creditCard() {
+    this.validator('isCreditCard', 'credit card');
   }
 
   public numericString() {
@@ -279,64 +274,6 @@ export class Test<InputType>
 
   public ipAddress(version?: number) {
     this.validator('isIP', 'IP Address', version);
-  }
-
-  public divisibleBy(n: number) {
-    this.validator('isDivisibleBy', `divisible by ${n}`, n);
-  }
-
-  public true() {
-    this.message.push('true');
-    this.execute(item => item === true);
-  }
-
-  public false() {
-    this.message.push('false');
-    this.execute(item => item === false);
-  }
-
-  public positiveNumber() {
-    this.message.push('positive number');
-    this.execute(item => Number(item) > 0);
-  }
-
-  public positiveInteger() {
-    this.message.push('positive integer');
-    this.execute(value => is.integer(value) && Number(value) > 0);
-  }
-
-  public negativeNumber() {
-    this.message.push('negative number');
-    this.execute(item => Number(item) < 0);
-  }
-
-  public negativeInteger() {
-    this.message.push('positive integer');
-    this.execute(value => is.integer(value) && Number(value) < 0);
-  }
-
-  public nullOrUndefined() {
-    this.is('nullOrUndefined', 'null or undefined');
-  }
-
-  public nan() {
-    this.is('nan', 'NaN');
-  }
-
-  public null() {
-    this.is('null_', 'null');
-  }
-
-  public undefined() {
-    this.is('undefined');
-  }
-
-  public boolean() {
-    this.is('boolean');
-  }
-
-  public truthy() {
-    this.is('truthy');
   }
 
   public url() {
@@ -379,20 +316,8 @@ export class Test<InputType>
     this.validator('isMimeType', 'valid mime type');
   }
 
-  public empty() {
-    this.is('emptyStringOrWhitespace', 'empty string');
-  }
-
   public emptyString() {
     this.is('emptyStringOrWhitespace', 'empty string');
-  }
-
-  public emptyArray() {
-    this.is('emptyArray', 'empty array');
-  }
-
-  public emptyObject() {
-    this.is('emptyObject', 'empty object');
   }
 
   public falsy() {
@@ -402,6 +327,159 @@ export class Test<InputType>
   public mongoId() {
     this.validator('isMongoId', 'Mongo ID');
   }
+
+  public alphanumeric() {
+    this.message.push('alphanumeric');
+    this.execute(item => /^[A-Za-z0-9]+$/.test(String(item)));
+  }
+
+  public alpha() {
+    this.message.push('alphabetical');
+    this.execute(item => /^[A-Za-z]+$/.test(String(item)));
+  }
+
+  /**
+   * NUMBERS
+   */
+
+  public greaterThan(value: number) {
+    this.message.push(`greater than ${value}`);
+    this.execute(item => Number(item) > value);
+  }
+
+  public greaterThanOrEquals(value: number) {
+    this.message.push(`greater than or equal to ${value}`);
+    this.execute(item => Number(item) >= value);
+  }
+
+  public lessThan(value: number) {
+    this.message.push(`less than ${value}`);
+    this.execute(item => Number(item) < value);
+  }
+
+  public lessThanOrEquals(value: number) {
+    this.message.push(`less than or equal to ${value}`);
+    this.execute(item => Number(item) <= value);
+  }
+
+  public between(valueA: number, valueB: number) {
+    this.message.push(`between ${valueA} and ${valueB}`);
+    this.execute(item => is.inRange(Number(item), [valueA, valueB]));
+  }
+
+  public closeTo(value: number, within: number = 0.01) {
+    this.message.push(`close to ${value}`);
+    this.execute(item =>
+      is.inRange(Number(item), [value - within, value + within]),
+    );
+  }
+
+  public roundTo(value: number) {
+    this.message.push(`round to ${value}`);
+    this.execute(item => Math.round(Number(item)) == value);
+  }
+
+  public roundUpTo(value: number) {
+    this.message.push(`round up to ${value}`);
+    this.execute(item => Math.ceil(Number(item)) == value);
+  }
+
+  public roundDownTo(value: number) {
+    this.message.push(`round down to ${value}`);
+    this.execute(item => Math.floor(Number(item)) == value);
+  }
+
+  public zero() {
+    this.message.push('zero');
+    this.execute(value => String(value) === '0');
+  }
+
+  public nonZeroNumber() {
+    this.message.push('non-zero number');
+    this.execute(value => is.number(value) && value != 0);
+  }
+
+  public nonZeroInteger() {
+    this.message.push('non-zero integer');
+    this.execute(value => is.integer(value) && value != 0);
+  }
+
+  public oddInteger() {
+    this.is('oddInteger', 'odd integer');
+  }
+
+  public evenInteger() {
+    this.is('evenInteger', 'even integer');
+  }
+
+  public divisibleBy(n: number) {
+    this.validator('isDivisibleBy', `divisible by ${n}`, n);
+  }
+
+  public positiveNumber() {
+    this.message.push('positive number');
+    this.execute(item => Number(item) > 0);
+  }
+
+  public positiveInteger() {
+    this.message.push('positive integer');
+    this.execute(value => is.integer(value) && Number(value) > 0);
+  }
+
+  public negativeNumber() {
+    this.message.push('negative number');
+    this.execute(item => Number(item) < 0);
+  }
+
+  public negativeInteger() {
+    this.message.push('positive integer');
+    this.execute(value => is.integer(value) && Number(value) < 0);
+  }
+
+  public nan() {
+    this.is('nan', 'NaN');
+  }
+
+  /**
+   * OBJECTS
+   */
+
+  public property(propertyName: string) {
+    this.message.push(`property ${propertyName}`);
+    this.execute(
+      item => is.object(item) && item[propertyName] !== this.undefined,
+    );
+  }
+
+  public properties(propertyNames: string[]) {
+    this.message.push(`properties ${humanReadableList(propertyNames)}`);
+    this.execute(
+      item =>
+        is.object(item) &&
+        propertyNames.every(prop => item[prop] !== this.undefined),
+    );
+  }
+
+  public emptyObject() {
+    this.is('emptyObject', 'empty object');
+  }
+
+  /**
+   * ARRAY
+   */
+
+  public arrayOf(typeName: 'string' | 'number' | 'boolean' | 'object') {
+    this.message.push(`array of ${typeName}s`);
+    this.execute(value => is.array(value, is[typeName as string]));
+  }
+
+  public emptyArray() {
+    this.is('emptyArray', 'empty array');
+  }
+
+  /**
+   * DATE
+   */
 
   public before(date: string | Date) {
     const dateString = typeof date == 'string' ? date : Date.toString();
@@ -420,36 +498,11 @@ export class Test<InputType>
   public inTheFuture() {
     this.validator('isAfter', 'in the future');
   }
-
-  public alphanumeric() {
-    this.message.push('alphanumeric');
-    this.execute(item => /^[A-Za-z0-9]+$/.test(String(item)));
-  }
-
-  public alpha() {
-    this.message.push('alphabetical');
-    this.execute(item => /^[A-Za-z]+$/.test(String(item)));
-  }
-
-  public type(typeName: string) {
-    this.message.push(typeName);
-    this.execute(
-      value => is(value).toLocaleLowerCase() == typeName.toLocaleLowerCase(),
-    );
-  }
-
-  public exist() {
-    this.message.push('exist');
-    this.execute(value => {
-      if (value === null || value === undefined) return false;
-      if (typeof value == 'number' && value <= 0) return false;
-      if (Array.isArray(value) && value.length == 0) return false;
-      if (value === false) return false;
-      return true;
-    });
-  }
 }
 
-export function test<T>(input: ValueInterface<T>, type: mustOrShould) {
-  return new Test<T>(input, type);
+export function test<ValueWrapper extends ValueInterface>(
+  input: ValueWrapper,
+  type: mustOrShould,
+): Test<ValueWrapper> {
+  return new Test(input, type);
 }

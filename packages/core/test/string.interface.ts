@@ -2,7 +2,8 @@ export interface StringMust {
   be: StringMustBe;
   match: StringMustMatch;
   not: StringMust;
-  equal(value: string): void;
+  equal(value: any): void;
+  exactly(value: string): void;
   contain(value: string | string[]): void;
   startWith(value: string | string[]): void;
   endWith(value: string | string[]): void;
@@ -15,8 +16,8 @@ interface StringMustMatch {
 interface StringMustBe extends StringMustBeAn {
   a: StringMustBeAn;
   an: StringMustBeAn;
-  equalTo(value: string): void;
-  like(value: string): void;
+  equalTo(value: any): void;
+  like(value: any): void;
   numeric(): void;
   uppercase(): void;
   lowercase(): void;

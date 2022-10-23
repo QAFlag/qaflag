@@ -1,5 +1,5 @@
 import { NumberMustBe } from './number.interface';
-import { Must } from './test.interface';
+import { Must } from './generic.interface';
 
 export interface ArrayMust {
   be: ArrayMustBe;

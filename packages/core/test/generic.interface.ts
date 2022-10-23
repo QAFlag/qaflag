@@ -1,8 +1,11 @@
 import { NumberMust } from './number.interface';
 
-export interface Must {
+export interface Must extends MustNot {
+  not: Must;
+}
+
+export interface MustNot {
   all: MustAll;
-  not: MustNot;
   be: MustBe;
   have: MustHave;
   match: MustMatch;
@@ -12,17 +15,6 @@ export interface Must {
   include(value: any): void;
   contain(value: string | string[]): void;
   exist(): void;
-}
-
-export interface MustNot {
-  be: MustBe;
-  have: MustHave;
-  match: MustMatch;
-  equal(value: any): void;
-  startWith(value: string | string[]): void;
-  endWith(value: string | string[]): void;
-  include(value: any): void;
-  contain(value: string | string[]): void;
 }
 
 export interface MustMatch {

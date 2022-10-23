@@ -1,11 +1,11 @@
 import { ValueInterface } from '../value/value.interface';
 import { mustOrShould } from './test';
 
-export class TestBase<InputType = unknown> {
+export class TestBase {
   protected message: string[];
 
   constructor(
-    protected input: ValueInterface<InputType>,
+    protected input: ValueInterface,
     protected mustOrShould: mustOrShould,
     protected isNot: boolean = false,
     protected evalType: 'standard' | 'every' | 'some' = 'standard',

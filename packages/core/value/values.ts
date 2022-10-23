@@ -1,11 +1,10 @@
-import { Must } from '../test/test.interface';
 import { LoggerInterface } from '../types/log-provider.interface';
 import {
   ValueInterface,
   PrimitiveValueInterface,
 } from '../value/value.interface';
 import { toType } from '../utils/to-type';
-import { test } from '../test/test';
+import { Test, test } from '../test/test';
 import is from '@sindresorhus/is';
 import { NumberMust } from '../test/number.interface';
 import { StringMust } from '../test/string.interface';
@@ -51,6 +50,10 @@ export abstract class ValueAbstract<InputType>
     return this;
   }
 
+  public get number() {
+    return new NumericValue(this.toNumber(), this.opts);
+  }
+
   public get string() {
     return new StringValue(this.toString(), this.opts);
   }
@@ -61,6 +64,14 @@ export abstract class ValueAbstract<InputType>
 
   public get array() {
     return new ArrayValue(this.toArray(), this.opts);
+  }
+
+  public get date() {
+    return new DateValue(this.toDate(), this.opts);
+  }
+
+  public get generic() {
+    return new GenericValue(this, this.opts);
   }
 
   protected isArray(): boolean {
@@ -101,8 +112,16 @@ export abstract class ValueAbstract<InputType>
       : JSON.stringify(this.input);
   }
 
+  protected toNumber(): number {
+    return Number(this.input);
+  }
+
   protected toArray(): any[] {
     return Array.isArray(this.input) ? this.input : [this.input];
+  }
+
+  protected toDate() {
+    return new Date(this.toString());
   }
 
   protected createGeneric(data: any, opts?: Partial<ValueOpts>) {
@@ -205,17 +224,25 @@ export abstract class PrimitiveValueAbstract<InputType>
     return this.input;
   }
 
+  public split(separator: string) {
+    return new ArrayValue(this.toString().split(separator), this.opts);
+  }
+
+  public join(separator: string) {
+    return new StringValue(this.toArray().join(separator), this.opts);
+  }
+
   private toArrayOrObject() {
     return Array.isArray(this.$) ? this.$ : Object(this.$);
   }
 }
 
 export class GenericValue extends PrimitiveValueAbstract<any> {
-  public get must(): Must {
+  public get must(): Test<any> {
     return test(this, 'must');
   }
 
-  public get should(): Must {
+  public get should(): Test<any> {
     return test(this, 'should');
   }
 }
