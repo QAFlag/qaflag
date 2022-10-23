@@ -23,8 +23,6 @@ export interface PlaywrightMustBeIn {
 }
 
 export interface PlaywrightMustBe {
-  a: PlaywrightMustBeAn;
-  an: PlaywrightMustBeAn;
   in: PlaywrightMustBeIn;
   visible(): PlaywrightAssertionOutput;
   hidden(): PlaywrightAssertionOutput;
@@ -32,10 +30,4 @@ export interface PlaywrightMustBe {
   enabled(): PlaywrightAssertionOutput;
   disabled(): PlaywrightAssertionOutput;
   editable(): PlaywrightAssertionOutput;
-}
-
-export interface PlaywrightMustBeAn {}
-
-export interface PlaywrightMustHaveNone {
-  be: PlaywrightMustBe;
 }
