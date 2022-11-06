@@ -68,8 +68,9 @@ export class UsersSuite extends Suite({
     step: 2,
   })
   async getLastUser(context: JsonContext) {
-    context.find('email').must.be.email();
-    context.find('email').must.be.a.string();
+    if (context.find('email').must.be.a.string().passes) {
+      context.find('email').must.be.email();
+    }
     context.document.must.match.dto(UserDto);
     context.document.must.match.jsonSchema('@user');
     context.document.must.match.jtd('@userJtd');

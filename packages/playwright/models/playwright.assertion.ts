@@ -29,6 +29,10 @@ export class PlaywrightAssertion extends TestBase {
     super(input, mustOrShould, isNot, evalType, evalCount, message);
   }
 
+  public reset(): PlaywrightAssertion {
+    return new PlaywrightAssertion(this.input, this.mustOrShould);
+  }
+
   public get in() {
     this.message.push('in');
     return this;

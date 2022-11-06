@@ -9,7 +9,7 @@ export type TestEvalEnum =
   | 'atMost'
   | 'atLeast';
 
-export class TestBase {
+export abstract class TestBase {
   protected message: string[];
 
   constructor(
@@ -127,4 +127,6 @@ export class TestBase {
     this.message.push(`no more than ${count}`);
     return this;
   }
+
+  public abstract reset(): TestBase;
 }

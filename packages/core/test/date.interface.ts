@@ -1,12 +1,14 @@
+import { TestResult } from './result';
+
 export interface DateMust {
   be: DateMustBe;
   not: DateMust;
-  equal(value: Date): void;
+  equal(value: Date): TestResult<typeof this>;
 }
 
 interface DateMustBe {
-  inThePast(): void;
-  inTheFuture(): void;
-  before(otherDate: string | Date): void;
-  after(otherDate: string | Date): void;
+  inThePast(): TestResult<typeof this>;
+  inTheFuture(): TestResult<typeof this>;
+  before(otherDate: string | Date): TestResult<typeof this>;
+  after(otherDate: string | Date): TestResult<typeof this>;
 }

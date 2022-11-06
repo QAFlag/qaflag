@@ -1,11 +1,12 @@
-interface GenericTest {
-  reset(): typeof this;
-}
+import { TestBase } from './test-base';
 
-export class TestResult<TestType extends GenericTest> {
-  constructor(private test: TestType, public readonly passed: boolean) {}
+export class TestResult<TestType extends TestBase> {
+  constructor(
+    public readonly test: TestType,
+    public readonly passes: boolean,
+  ) {}
 
-  public get and(): TestType {
-    return this.test.reset();
+  public get fails(): boolean {
+    return !this.passes;
   }
 }

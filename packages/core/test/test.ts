@@ -80,7 +80,7 @@ export class Test<ValueWrapper extends ValueInterface = ValueInterface>
     );
   }
 
-  public reset() {
+  public reset(): Test<ValueWrapper> {
     return new Test(this.input, this.mustOrShould);
   }
 
