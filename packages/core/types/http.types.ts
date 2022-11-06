@@ -1,3 +1,4 @@
+import FormData = require('form-data');
 import { KeyValue } from './general.types';
 
 export const CONTENT_TYPE_JSON = 'application/json';
@@ -57,7 +58,7 @@ export type HttpData =
   | null
   | undefined;
 
-export type HttpBody = Buffer | KeyValue | string | null;
+export type HttpBody = Buffer | KeyValue | FormData | string | null;
 
 export type HttpResponseType =
   | 'arraybuffer'

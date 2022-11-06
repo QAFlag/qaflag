@@ -5,6 +5,7 @@ import { wrapper } from 'axios-cookiejar-support';
 import { CookieJar } from 'tough-cookie';
 import { AxiosMock } from './axios-mock';
 import { HttpRequestInterface } from '../types/http-request.interface';
+import FormData = require('form-data');
 
 export const Mock = new AxiosMock(axios);
 
@@ -31,6 +32,9 @@ export const fetchWithAxios = async (
       req.headers.forEach(header => {
         out[header.key] = header.value;
       });
+      if (req.data instanceof FormData) {
+        return { ...out, ...req.data.getHeaders() };
+      }
       return out;
     })(),
     params: req.queryString,

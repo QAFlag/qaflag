@@ -72,7 +72,12 @@ export class HttpRequest implements HttpRequestInterface {
     this.#path = value;
   }
 
+  public get isPathFullUrl() {
+    return /^[a-z]+:\/\//i.test(this.#path);
+  }
+
   public get baseUrl() {
+    if (this.isPathFullUrl) return undefined;
     return this.opts.baseUrl;
   }
 
