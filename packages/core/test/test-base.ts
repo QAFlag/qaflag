@@ -1,5 +1,6 @@
 import { ValueInterface } from '../value/value.interface';
-import { mustOrShould } from './test';
+
+export type mustShouldCould = 'must' | 'should' | 'could';
 
 export type TestEvalEnum =
   | 'standard'
@@ -14,13 +15,21 @@ export abstract class TestBase {
 
   constructor(
     protected input: ValueInterface,
-    protected mustOrShould: mustOrShould,
+    protected mustShouldCould: mustShouldCould,
     protected isNot: boolean = false,
     protected evalType: TestEvalEnum = 'standard',
     protected evalCount: number,
     message?: string[],
   ) {
-    this.message = message || [input.name, mustOrShould];
+    this.message = message || [input.name, mustShouldCould];
+  }
+
+  protected get needsResultOutput(): boolean {
+    return this.mustShouldCould !== 'could';
+  }
+
+  protected get isOptional(): boolean {
+    return this.mustShouldCould !== 'must';
   }
 
   public get not() {

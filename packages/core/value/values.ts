@@ -245,6 +245,10 @@ export class GenericValue extends PrimitiveValueAbstract<any> {
   public get should(): Test<any> {
     return test(this, 'should');
   }
+
+  public get could(): Test<any> {
+    return test(this, 'could');
+  }
 }
 
 export class BooleanValue extends PrimitiveValueAbstract<boolean> {

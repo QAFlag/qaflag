@@ -13,6 +13,10 @@ export class JsonValue extends ValueAbstract<JsonData> {
     return new JsonAssertion(this, 'should');
   }
 
+  public get could(): JsonMust {
+    return new JsonAssertion(this, 'could');
+  }
+
   public find(selector: string) {
     const results: JsonData = jmespath.search(this.input, selector);
     return new JsonValue(results, { name: selector, logger: this.logger });

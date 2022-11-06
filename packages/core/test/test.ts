@@ -3,12 +3,11 @@ import validator from 'validator';
 import is from '@sindresorhus/is';
 import { humanReadableList } from '../utils/helpers';
 import { ArrayValue, NumericValue } from '../value/values';
-import { TestBase, TestEvalEnum } from './test-base';
+import { mustShouldCould, TestBase, TestEvalEnum } from './test-base';
 import { Must } from './generic.interface';
 import { TestResult } from './result';
 
 export type assertion = (data: unknown) => boolean;
-export type mustOrShould = 'must' | 'should';
 
 export class Test<ValueWrapper extends ValueInterface = ValueInterface>
   extends TestBase
@@ -16,13 +15,13 @@ export class Test<ValueWrapper extends ValueInterface = ValueInterface>
 {
   constructor(
     input: ValueWrapper,
-    mustOrShould: mustOrShould,
+    mustShouldCould: mustShouldCould,
     isNot: boolean = false,
     evalType: TestEvalEnum = 'standard',
     evalCount = 0,
     message?: string[],
   ) {
-    super(input, mustOrShould, isNot, evalType, evalCount, message);
+    super(input, mustShouldCould, isNot, evalType, evalCount, message);
   }
 
   private validator(
@@ -57,10 +56,12 @@ export class Test<ValueWrapper extends ValueInterface = ValueInterface>
     })();
     const pass = this.isNot ? !result : result;
     const text = this.message.join(' ');
-    this.input.logger.log(
-      pass ? 'pass' : this.mustOrShould == 'should' ? 'optionalFail' : 'fail',
-      { text },
-    );
+    if (this.needsResultOutput) {
+      this.input.logger.log(
+        pass ? 'pass' : this.isOptional ? 'optionalFail' : 'fail',
+        { text },
+      );
+    }
     if (!pass) {
       this.input.logger.log('info', {
         text: `Actual Value: ${this.input.string.$}`,
@@ -72,7 +73,7 @@ export class Test<ValueWrapper extends ValueInterface = ValueInterface>
   private clone(input: ValueInterface, pushWord: string) {
     return new Test(
       input,
-      this.mustOrShould,
+      this.mustShouldCould,
       this.isNot,
       this.evalType,
       this.evalCount,
@@ -81,7 +82,7 @@ export class Test<ValueWrapper extends ValueInterface = ValueInterface>
   }
 
   public reset(): Test<ValueWrapper> {
-    return new Test(this.input, this.mustOrShould);
+    return new Test(this.input, this.mustShouldCould);
   }
 
   /**
@@ -524,7 +525,7 @@ export class Test<ValueWrapper extends ValueInterface = ValueInterface>
 
 export function test<ValueWrapper extends ValueInterface>(
   input: ValueWrapper,
-  type: mustOrShould,
+  type: mustShouldCould,
 ): Test<ValueWrapper> {
   return new Test(input, type);
 }

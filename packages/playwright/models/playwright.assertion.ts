@@ -1,4 +1,4 @@
-import { TestBase } from '@qaflag/core';
+import { mustShouldCould, TestBase } from '@qaflag/core';
 import { PlaywrightValue } from './playwright.value';
 
 export type AssertionResult = {
@@ -20,17 +20,17 @@ export class PlaywrightAssertion extends TestBase {
 
   constructor(
     input: PlaywrightValue,
-    mustOrShould: mustOrShould,
+    mustShouldCould: mustShouldCould,
     isNot: boolean = false,
     evalType: 'standard' | 'every' | 'some' = 'standard',
     evalCount: number = 0,
     message?: string[],
   ) {
-    super(input, mustOrShould, isNot, evalType, evalCount, message);
+    super(input, mustShouldCould, isNot, evalType, evalCount, message);
   }
 
   public reset(): PlaywrightAssertion {
-    return new PlaywrightAssertion(this.input, this.mustOrShould);
+    return new PlaywrightAssertion(this.input, this.mustShouldCould);
   }
 
   public get in() {
@@ -57,10 +57,12 @@ export class PlaywrightAssertion extends TestBase {
       };
     })();
     const pass = this.isNot ? !result.pass : result.pass;
-    this.input.logger.log(
-      pass ? 'pass' : this.mustOrShould == 'should' ? 'optionalFail' : 'fail',
-      this.message.join(' '),
-    );
+    if (this.needsResultOutput) {
+      this.input.logger.log(
+        pass ? 'pass' : this.isOptional ? 'optionalFail' : 'fail',
+        this.message.join(' '),
+      );
+    }
     if (!pass && result.actualValue) {
       this.input.logger.log('info', `Actual Value: ${result.actualValue}`);
     }
