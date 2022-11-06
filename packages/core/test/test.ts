@@ -5,6 +5,7 @@ import { humanReadableList } from '../utils/helpers';
 import { ArrayValue, NumericValue } from '../value/values';
 import { TestBase, TestEvalEnum } from './test-base';
 import { Must } from './generic.interface';
+import { TestResult } from './result';
 
 export type assertion = (data: unknown) => boolean;
 export type mustOrShould = 'must' | 'should';
@@ -31,13 +32,13 @@ export class Test<ValueWrapper extends ValueInterface = ValueInterface>
   ) {
     const method = validator[methodName] as Function;
     this.message.push(thing);
-    this.execute(item => method(String(item), opts));
+    return this.execute(item => method(String(item), opts));
   }
 
   protected is(methodName: keyof typeof is, noun?: string) {
     const method = is[methodName] as Function;
     this.message.push(noun || methodName);
-    this.execute(value => method(value));
+    return this.execute(value => method(value));
   }
 
   protected execute(assertion: assertion) {
@@ -65,6 +66,7 @@ export class Test<ValueWrapper extends ValueInterface = ValueInterface>
         text: `Actual Value: ${this.input.string.$}`,
       });
     }
+    return new TestResult(this, pass);
   }
 
   private clone(input: ValueInterface, pushWord: string) {
@@ -76,6 +78,10 @@ export class Test<ValueWrapper extends ValueInterface = ValueInterface>
       this.evalCount,
       [...this.message, pushWord],
     );
+  }
+
+  public reset() {
+    return new Test(this.input, this.mustOrShould);
   }
 
   /**
@@ -113,27 +119,29 @@ export class Test<ValueWrapper extends ValueInterface = ValueInterface>
 
   public equal(value: any) {
     this.message.push(`equal ${value}`);
-    this.execute(item => item == value);
+    return this.execute(item => item == value);
   }
 
   public equalTo(value: any) {
     this.message.push(`equal to ${value}`);
-    this.execute(item => item == value);
+    return this.execute(item => item == value);
   }
 
   public exactly(value: any) {
     this.message.push(`exactly ${value}`);
-    this.execute(item => item === value);
+    return this.execute(item => item === value);
   }
 
   public include(value: any) {
     this.message.push(`include ${value}`);
-    this.execute(item => (Array.isArray(item) ? item : [item]).includes(value));
+    return this.execute(item =>
+      (Array.isArray(item) ? item : [item]).includes(value),
+    );
   }
 
   public contain(thatValue: string | string[]) {
     this.message.push(`contain ${thatValue}`);
-    this.execute(thisValue => {
+    return this.execute(thisValue => {
       if (typeof thisValue == 'string') {
         return Array.isArray(thatValue)
           ? thatValue.some(x => validator.contains(thisValue, x))
@@ -153,7 +161,7 @@ export class Test<ValueWrapper extends ValueInterface = ValueInterface>
 
   public exist() {
     this.message.push('exist');
-    this.execute(value => {
+    return this.execute(value => {
       if (value === null || value === undefined) return false;
       if (typeof value == 'number' && value <= 0) return false;
       if (Array.isArray(value) && value.length == 0) return false;
@@ -164,71 +172,71 @@ export class Test<ValueWrapper extends ValueInterface = ValueInterface>
 
   public true() {
     this.message.push('true');
-    this.execute(item => item === true);
+    return this.execute(item => item === true);
   }
 
   public false() {
     this.message.push('false');
-    this.execute(item => item === false);
+    return this.execute(item => item === false);
   }
 
   public nullOrUndefined() {
-    this.is('nullOrUndefined', 'null or undefined');
+    return this.is('nullOrUndefined', 'null or undefined');
   }
 
   public null() {
-    this.is('null_', 'null');
+    return this.is('null_', 'null');
   }
 
   public undefined() {
-    this.is('undefined');
+    return this.is('undefined');
   }
 
   public boolean() {
-    this.is('boolean');
+    return this.is('boolean');
   }
 
   public truthy() {
-    this.is('truthy');
+    return this.is('truthy');
   }
 
   public empty() {
-    this.is('emptyStringOrWhitespace', 'empty string');
+    return this.is('emptyStringOrWhitespace', 'empty string');
   }
 
   public type(typeName: string) {
     this.message.push(typeName);
-    this.execute(
+    return this.execute(
       value => is(value).toLocaleLowerCase() == typeName.toLocaleLowerCase(),
     );
   }
 
   public date() {
-    this.validator('isDate', 'date');
+    return this.validator('isDate', 'date');
   }
 
   public integer() {
-    this.validator('isInt', 'integer');
+    return this.validator('isInt', 'integer');
   }
 
   public string() {
-    this.is('string');
+    return this.is('string');
   }
 
   public object() {
-    this.is('object');
+    return this.is('object');
   }
 
   public array() {
-    this.is('array');
+    return this.is('array');
   }
 
   public number() {
-    this.is('number');
+    return this.is('number');
   }
 
   public numeric() {
-    this.is('numericString', 'numeric');
+    return this.is('numericString', 'numeric');
   }
 
   /**
@@ -237,7 +245,7 @@ export class Test<ValueWrapper extends ValueInterface = ValueInterface>
 
   public like(value: any) {
     this.message.push(`like ${value}`);
-    this.execute(
+    return this.execute(
       item =>
         String(item).toLocaleLowerCase().trim() ===
         value.toLocaleLowerCase().trim(),
@@ -246,7 +254,7 @@ export class Test<ValueWrapper extends ValueInterface = ValueInterface>
 
   public startWith(value: string | string[]) {
     this.message.push(`start with ${value}`);
-    this.execute(item => {
+    return this.execute(item => {
       const str = String(item);
       return Array.isArray(value)
         ? value.some(x => str.startsWith(x))
@@ -256,7 +264,7 @@ export class Test<ValueWrapper extends ValueInterface = ValueInterface>
 
   public endWith(value: string | string[]) {
     this.message.push(`end with ${value}`);
-    this.execute(item => {
+    return this.execute(item => {
       const str = String(item);
       return Array.isArray(value)
         ? value.some(x => str.endsWith(x))
@@ -266,39 +274,39 @@ export class Test<ValueWrapper extends ValueInterface = ValueInterface>
 
   public regularExpression(value: RegExp) {
     this.message.push(`regular expression ${value}`);
-    this.execute(item => validator.matches(String(item), value));
+    return this.execute(item => validator.matches(String(item), value));
   }
 
   public email() {
-    this.validator('isEmail', 'email address');
+    return this.validator('isEmail', 'email address');
   }
 
   public creditCard() {
-    this.validator('isCreditCard', 'credit card');
+    return this.validator('isCreditCard', 'credit card');
   }
 
   public numericString() {
-    this.is('numericString', 'numeric string');
+    return this.is('numericString', 'numeric string');
   }
 
   public ipAddress(version?: number) {
-    this.validator('isIP', 'IP Address', version);
+    return this.validator('isIP', 'IP Address', version);
   }
 
   public url() {
-    this.is('urlString', 'URL');
+    return this.is('urlString', 'URL');
   }
 
   public jwt() {
-    this.validator('isJWT', 'JWT');
+    return this.validator('isJWT', 'JWT');
   }
 
   public md5() {
-    this.validator('isMD5', 'MD5 Hash');
+    return this.validator('isMD5', 'MD5 Hash');
   }
 
   public postalCode(countryCode: string) {
-    this.validator(
+    return this.validator(
       'isPostalCode',
       `Postal Code in ${countryCode}`,
       countryCode,
@@ -306,50 +314,50 @@ export class Test<ValueWrapper extends ValueInterface = ValueInterface>
   }
 
   public uuid(version?: number) {
-    this.validator('isUUID', 'UUID', version);
+    return this.validator('isUUID', 'UUID', version);
   }
 
   public uppercase() {
-    this.validator('isUppercase', 'uppercase');
+    return this.validator('isUppercase', 'uppercase');
   }
 
   public lowercase() {
-    this.validator('isLowercase', 'lowercase');
+    return this.validator('isLowercase', 'lowercase');
   }
 
   public slug() {
-    this.validator('isSlug', 'slug');
+    return this.validator('isSlug', 'slug');
   }
 
   public mimeType() {
-    this.validator('isMimeType', 'valid mime type');
+    return this.validator('isMimeType', 'valid mime type');
   }
 
   public emptyString() {
-    this.is('emptyStringOrWhitespace', 'empty string');
+    return this.is('emptyStringOrWhitespace', 'empty string');
   }
 
   public falsy() {
-    this.is('falsy');
+    return this.is('falsy');
   }
 
   public mongoId() {
-    this.validator('isMongoId', 'Mongo ID');
+    return this.validator('isMongoId', 'Mongo ID');
   }
 
   public alphanumeric() {
     this.message.push('alphanumeric');
-    this.execute(item => /^[A-Za-z0-9]+$/.test(String(item)));
+    return this.execute(item => /^[A-Za-z0-9]+$/.test(String(item)));
   }
 
   public onlyLetters() {
     this.message.push('only letters');
-    this.execute(item => /^[A-Za-z]+$/.test(String(item)));
+    return this.execute(item => /^[A-Za-z]+$/.test(String(item)));
   }
 
   public onlyNumbers() {
     this.message.push('only numbers');
-    this.execute(item => /^[0-9]+$/.test(String(item)));
+    return this.execute(item => /^[0-9]+$/.test(String(item)));
   }
 
   /**
@@ -358,100 +366,100 @@ export class Test<ValueWrapper extends ValueInterface = ValueInterface>
 
   public greaterThan(value: number) {
     this.message.push(`greater than ${value}`);
-    this.execute(item => Number(item) > value);
+    return this.execute(item => Number(item) > value);
   }
 
   public greaterThanOrEquals(value: number) {
     this.message.push(`greater than or equal to ${value}`);
-    this.execute(item => Number(item) >= value);
+    return this.execute(item => Number(item) >= value);
   }
 
   public lessThan(value: number) {
     this.message.push(`less than ${value}`);
-    this.execute(item => Number(item) < value);
+    return this.execute(item => Number(item) < value);
   }
 
   public lessThanOrEquals(value: number) {
     this.message.push(`less than or equal to ${value}`);
-    this.execute(item => Number(item) <= value);
+    return this.execute(item => Number(item) <= value);
   }
 
   public between(valueA: number, valueB: number) {
     this.message.push(`between ${valueA} and ${valueB}`);
-    this.execute(item => is.inRange(Number(item), [valueA, valueB]));
+    return this.execute(item => is.inRange(Number(item), [valueA, valueB]));
   }
 
   public closeTo(value: number, within: number = 0.01) {
     this.message.push(`close to ${value}`);
-    this.execute(item =>
+    return this.execute(item =>
       is.inRange(Number(item), [value - within, value + within]),
     );
   }
 
   public roundTo(value: number) {
     this.message.push(`round to ${value}`);
-    this.execute(item => Math.round(Number(item)) == value);
+    return this.execute(item => Math.round(Number(item)) == value);
   }
 
   public roundUpTo(value: number) {
     this.message.push(`round up to ${value}`);
-    this.execute(item => Math.ceil(Number(item)) == value);
+    return this.execute(item => Math.ceil(Number(item)) == value);
   }
 
   public roundDownTo(value: number) {
     this.message.push(`round down to ${value}`);
-    this.execute(item => Math.floor(Number(item)) == value);
+    return this.execute(item => Math.floor(Number(item)) == value);
   }
 
   public zero() {
     this.message.push('zero');
-    this.execute(value => String(value) === '0');
+    return this.execute(value => String(value) === '0');
   }
 
   public nonZeroNumber() {
     this.message.push('non-zero number');
-    this.execute(value => is.number(value) && value != 0);
+    return this.execute(value => is.number(value) && value != 0);
   }
 
   public nonZeroInteger() {
     this.message.push('non-zero integer');
-    this.execute(value => is.integer(value) && value != 0);
+    return this.execute(value => is.integer(value) && value != 0);
   }
 
   public oddInteger() {
-    this.is('oddInteger', 'odd integer');
+    return this.is('oddInteger', 'odd integer');
   }
 
   public evenInteger() {
-    this.is('evenInteger', 'even integer');
+    return this.is('evenInteger', 'even integer');
   }
 
   public divisibleBy(n: number) {
-    this.validator('isDivisibleBy', `divisible by ${n}`, n);
+    return this.validator('isDivisibleBy', `divisible by ${n}`, n);
   }
 
   public positiveNumber() {
     this.message.push('positive number');
-    this.execute(item => Number(item) > 0);
+    return this.execute(item => Number(item) > 0);
   }
 
   public positiveInteger() {
     this.message.push('positive integer');
-    this.execute(value => is.integer(value) && Number(value) > 0);
+    return this.execute(value => is.integer(value) && Number(value) > 0);
   }
 
   public negativeNumber() {
     this.message.push('negative number');
-    this.execute(item => Number(item) < 0);
+    return this.execute(item => Number(item) < 0);
   }
 
   public negativeInteger() {
     this.message.push('positive integer');
-    this.execute(value => is.integer(value) && Number(value) < 0);
+    return this.execute(value => is.integer(value) && Number(value) < 0);
   }
 
   public nan() {
-    this.is('nan', 'NaN');
+    return this.is('nan', 'NaN');
   }
 
   /**
@@ -460,14 +468,14 @@ export class Test<ValueWrapper extends ValueInterface = ValueInterface>
 
   public property(propertyName: string) {
     this.message.push(`property ${propertyName}`);
-    this.execute(
+    return this.execute(
       item => is.object(item) && item[propertyName] !== this.undefined,
     );
   }
 
   public properties(propertyNames: string[]) {
     this.message.push(`properties ${humanReadableList(propertyNames)}`);
-    this.execute(
+    return this.execute(
       item =>
         is.object(item) &&
         propertyNames.every(prop => item[prop] !== this.undefined),
@@ -475,7 +483,7 @@ export class Test<ValueWrapper extends ValueInterface = ValueInterface>
   }
 
   public emptyObject() {
-    this.is('emptyObject', 'empty object');
+    return this.is('emptyObject', 'empty object');
   }
 
   /**
@@ -484,11 +492,11 @@ export class Test<ValueWrapper extends ValueInterface = ValueInterface>
 
   public arrayOf(typeName: 'string' | 'number' | 'boolean' | 'object') {
     this.message.push(`array of ${typeName}s`);
-    this.execute(value => is.array(value, is[typeName as string]));
+    return this.execute(value => is.array(value, is[typeName as string]));
   }
 
   public emptyArray() {
-    this.is('emptyArray', 'empty array');
+    return this.is('emptyArray', 'empty array');
   }
 
   /**
@@ -497,20 +505,20 @@ export class Test<ValueWrapper extends ValueInterface = ValueInterface>
 
   public before(date: string | Date) {
     const dateString = typeof date == 'string' ? date : Date.toString();
-    this.validator('isBefore', `before ${dateString}`, dateString);
+    return this.validator('isBefore', `before ${dateString}`, dateString);
   }
 
   public after(date: string | Date) {
     const dateString = typeof date == 'string' ? date : Date.toString();
-    this.validator('isAfter', `after ${dateString}`, dateString);
+    return this.validator('isAfter', `after ${dateString}`, dateString);
   }
 
   public inThePast() {
-    this.validator('isBefore', 'in the past');
+    return this.validator('isBefore', 'in the past');
   }
 
   public inTheFuture() {
-    this.validator('isAfter', 'in the future');
+    return this.validator('isAfter', 'in the future');
   }
 }
 
