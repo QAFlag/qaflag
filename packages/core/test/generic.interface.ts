@@ -1,3 +1,4 @@
+import { GenericValue } from '../value/values';
 import { NumberMust } from './number.interface';
 import { TestResult } from './result';
 
@@ -10,16 +11,16 @@ export interface MustNot {
   be: MustBe;
   have: MustHave;
   match: MustMatch;
-  equal(value: any): TestResult<typeof this>;
-  startWith(value: string | string[]): TestResult<typeof this>;
-  endWith(value: string | string[]): TestResult<typeof this>;
-  include(value: any): TestResult<typeof this>;
-  contain(value: string | string[]): TestResult<typeof this>;
-  exist(): TestResult<typeof this>;
-  roundTo(value: number): TestResult<typeof this>;
-  roundUpTo(value: number): TestResult<typeof this>;
-  roundDownTo(value: number): TestResult<typeof this>;
-  zero(): TestResult<typeof this>;
+  equal(value: any): TestResult<GenericValue>;
+  startWith(value: string | string[]): TestResult<GenericValue>;
+  endWith(value: string | string[]): TestResult<GenericValue>;
+  include(value: any): TestResult<GenericValue>;
+  contain(value: string | string[]): TestResult<GenericValue>;
+  exist(): TestResult<GenericValue>;
+  roundTo(value: number): TestResult<GenericValue>;
+  roundUpTo(value: number): TestResult<GenericValue>;
+  roundDownTo(value: number): TestResult<GenericValue>;
+  zero(): TestResult<GenericValue>;
 }
 
 export interface MustMatch {
@@ -35,74 +36,74 @@ export interface MustHave {
   only(n: number): MustHaveSome;
   atMost(n: number): MustHaveSome;
   atLeast(n: number): MustHaveSome;
-  property(propertyName: string): TestResult<typeof this>;
-  properties(propertyNames: string[]): TestResult<typeof this>;
+  property(propertyName: string): TestResult<GenericValue>;
+  properties(propertyNames: string[]): TestResult<GenericValue>;
 }
 
 export interface MustBe extends MustBeAn {
   a: MustBeAn;
   an: MustBeAn;
-  equalTo(value: any): TestResult<typeof this>;
-  exactly(value: any): TestResult<typeof this>;
-  like(value: any): TestResult<typeof this>;
-  greaterThan(value: number): TestResult<typeof this>;
-  greaterThanOrEquals(value: number): TestResult<typeof this>;
-  lessThan(value: number): TestResult<typeof this>;
-  lessThanOrEquals(value: number): TestResult<typeof this>;
-  true(): TestResult<typeof this>;
-  false(): TestResult<typeof this>;
-  truthy(): TestResult<typeof this>;
-  falsy(): TestResult<typeof this>;
-  closeTo(value: number, within?: number): TestResult<typeof this>;
-  before(date: string | Date): TestResult<typeof this>;
-  after(date: string | Date): TestResult<typeof this>;
-  inThePast(): TestResult<typeof this>;
-  inTheFuture(): TestResult<typeof this>;
-  alphanumeric(): TestResult<typeof this>;
-  onlyLetters(): TestResult<typeof this>;
-  onlyNumbers(): TestResult<typeof this>;
-  numeric(): TestResult<typeof this>;
-  empty(): TestResult<typeof this>;
+  equalTo(value: any): TestResult<GenericValue>;
+  exactly(value: any): TestResult<GenericValue>;
+  like(value: any): TestResult<GenericValue>;
+  greaterThan(value: number): TestResult<GenericValue>;
+  greaterThanOrEquals(value: number): TestResult<GenericValue>;
+  lessThan(value: number): TestResult<GenericValue>;
+  lessThanOrEquals(value: number): TestResult<GenericValue>;
+  true(): TestResult<GenericValue>;
+  false(): TestResult<GenericValue>;
+  truthy(): TestResult<GenericValue>;
+  falsy(): TestResult<GenericValue>;
+  closeTo(value: number, within?: number): TestResult<GenericValue>;
+  before(date: string | Date): TestResult<GenericValue>;
+  after(date: string | Date): TestResult<GenericValue>;
+  inThePast(): TestResult<GenericValue>;
+  inTheFuture(): TestResult<GenericValue>;
+  alphanumeric(): TestResult<GenericValue>;
+  onlyLetters(): TestResult<GenericValue>;
+  onlyNumbers(): TestResult<GenericValue>;
+  numeric(): TestResult<GenericValue>;
+  empty(): TestResult<GenericValue>;
 }
 
 export interface MustBeAn {
-  type(typeName: string): TestResult<typeof this>;
-  email(): TestResult<typeof this>;
-  creditCard(): TestResult<typeof this>;
-  date(): TestResult<typeof this>;
-  object(): TestResult<typeof this>;
-  array(): TestResult<typeof this>;
+  type(typeName: string): TestResult<GenericValue>;
+  email(): TestResult<GenericValue>;
+  creditCard(): TestResult<GenericValue>;
+  date(): TestResult<GenericValue>;
+  object(): TestResult<GenericValue>;
+  array(): TestResult<GenericValue>;
   arrayOf(
     typeName: 'string' | 'number' | 'boolean' | 'object',
-  ): TestResult<typeof this>;
-  number(): TestResult<typeof this>;
-  string(): TestResult<typeof this>;
-  nan(): TestResult<typeof this>;
-  integer(): TestResult<typeof this>;
-  positiveNumber(): TestResult<typeof this>;
-  positiveInteger(): TestResult<typeof this>;
-  negativeNumber(): TestResult<typeof this>;
-  negativeInteger(): TestResult<typeof this>;
-  nonZeroNumber(): TestResult<typeof this>;
-  nonZeroInteger(): TestResult<typeof this>;
-  evenInteger(): TestResult<typeof this>;
-  oddInteger(): TestResult<typeof this>;
-  ipAddress(version?: number): TestResult<typeof this>;
-  url(): TestResult<typeof this>;
-  null(): TestResult<typeof this>;
-  undefined(): TestResult<typeof this>;
-  numericString(): TestResult<typeof this>;
-  emptyString(): TestResult<typeof this>;
-  emptyArray(): TestResult<typeof this>;
-  emptyObject(): TestResult<typeof this>;
-  jwt(): TestResult<typeof this>;
-  md5(): TestResult<typeof this>;
-  mimeType(): TestResult<typeof this>;
-  postalCode(countryCode: string): TestResult<typeof this>;
-  uuid(version?: number): TestResult<typeof this>;
-  uppercase(): TestResult<typeof this>;
-  lowercase(): TestResult<typeof this>;
-  slug(): TestResult<typeof this>;
+  ): TestResult<GenericValue>;
+  number(): TestResult<GenericValue>;
+  string(): TestResult<GenericValue>;
+  nan(): TestResult<GenericValue>;
+  integer(): TestResult<GenericValue>;
+  positiveNumber(): TestResult<GenericValue>;
+  positiveInteger(): TestResult<GenericValue>;
+  negativeNumber(): TestResult<GenericValue>;
+  negativeInteger(): TestResult<GenericValue>;
+  nonZeroNumber(): TestResult<GenericValue>;
+  nonZeroInteger(): TestResult<GenericValue>;
+  evenInteger(): TestResult<GenericValue>;
+  oddInteger(): TestResult<GenericValue>;
+  ipAddress(version?: number): TestResult<GenericValue>;
+  url(): TestResult<GenericValue>;
+  null(): TestResult<GenericValue>;
+  undefined(): TestResult<GenericValue>;
+  numericString(): TestResult<GenericValue>;
+  emptyString(): TestResult<GenericValue>;
+  emptyArray(): TestResult<GenericValue>;
+  emptyObject(): TestResult<GenericValue>;
+  jwt(): TestResult<GenericValue>;
+  md5(): TestResult<GenericValue>;
+  mimeType(): TestResult<GenericValue>;
+  postalCode(countryCode: string): TestResult<GenericValue>;
+  uuid(version?: number): TestResult<GenericValue>;
+  uppercase(): TestResult<GenericValue>;
+  lowercase(): TestResult<GenericValue>;
+  slug(): TestResult<GenericValue>;
 }
 
 export interface MustAll {
@@ -110,12 +111,12 @@ export interface MustAll {
   have: MustHave;
   match: MustMatch;
   not: MustNot;
-  equal(value: any): TestResult<typeof this>;
-  startWith(value: string | string[]): TestResult<typeof this>;
-  endWith(value: string | string[]): TestResult<typeof this>;
-  include(value: any): TestResult<typeof this>;
-  contain(value: string | string[]): TestResult<typeof this>;
-  exist(): TestResult<typeof this>;
+  equal(value: any): TestResult<GenericValue>;
+  startWith(value: string | string[]): TestResult<GenericValue>;
+  endWith(value: string | string[]): TestResult<GenericValue>;
+  include(value: any): TestResult<GenericValue>;
+  contain(value: string | string[]): TestResult<GenericValue>;
+  exist(): TestResult<GenericValue>;
 }
 
 export interface MustHaveAll {

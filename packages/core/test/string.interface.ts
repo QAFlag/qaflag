@@ -1,43 +1,44 @@
+import { StringValue } from '../value/values';
 import { TestResult } from './result';
 
 export interface StringMust {
   be: StringMustBe;
   match: StringMustMatch;
   not: StringMust;
-  equal(value: any): TestResult<typeof this>;
-  exactly(value: string): TestResult<typeof this>;
-  contain(value: string | string[]): TestResult<typeof this>;
-  startWith(value: string | string[]): TestResult<typeof this>;
-  endWith(value: string | string[]): TestResult<typeof this>;
+  equal(value: any): TestResult<StringValue>;
+  exactly(value: string): TestResult<StringValue>;
+  contain(value: string | string[]): TestResult<StringValue>;
+  startWith(value: string | string[]): TestResult<StringValue>;
+  endWith(value: string | string[]): TestResult<StringValue>;
 }
 
 interface StringMustMatch {
-  regularExpression(value: RegExp): TestResult<typeof this>;
+  regularExpression(value: RegExp): TestResult<StringValue>;
 }
 
 interface StringMustBe extends StringMustBeAn {
   a: StringMustBeAn;
   an: StringMustBeAn;
-  equalTo(value: any): TestResult<typeof this>;
-  like(value: any): TestResult<typeof this>;
-  numeric(): TestResult<typeof this>;
-  uppercase(): TestResult<typeof this>;
-  lowercase(): TestResult<typeof this>;
-  empty(): TestResult<typeof this>;
-  onlyLetters(): TestResult<typeof this>;
-  onlyNumbers(): TestResult<typeof this>;
-  alphanumeric(): TestResult<typeof this>;
+  equalTo(value: any): TestResult<StringValue>;
+  like(value: any): TestResult<StringValue>;
+  numeric(): TestResult<StringValue>;
+  uppercase(): TestResult<StringValue>;
+  lowercase(): TestResult<StringValue>;
+  empty(): TestResult<StringValue>;
+  onlyLetters(): TestResult<StringValue>;
+  onlyNumbers(): TestResult<StringValue>;
+  alphanumeric(): TestResult<StringValue>;
 }
 
 interface StringMustBeAn {
-  creditCard(): TestResult<typeof this>;
-  email(): TestResult<typeof this>;
-  numericString(): TestResult<typeof this>;
-  ipAddress(): TestResult<typeof this>;
-  jwt(): TestResult<typeof this>;
-  md5(): TestResult<typeof this>;
-  uuid(): TestResult<typeof this>;
-  slug(): TestResult<typeof this>;
-  mimeType(): TestResult<typeof this>;
-  mongoId(): TestResult<typeof this>;
+  creditCard(): TestResult<StringValue>;
+  email(): TestResult<StringValue>;
+  numericString(): TestResult<StringValue>;
+  ipAddress(): TestResult<StringValue>;
+  jwt(): TestResult<StringValue>;
+  md5(): TestResult<StringValue>;
+  uuid(): TestResult<StringValue>;
+  slug(): TestResult<StringValue>;
+  mimeType(): TestResult<StringValue>;
+  mongoId(): TestResult<StringValue>;
 }

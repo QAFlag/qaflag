@@ -9,7 +9,7 @@ import { TestResult } from './result';
 
 export type assertion = (data: unknown) => boolean;
 
-export class Test<ValueWrapper extends ValueInterface = ValueInterface>
+export class Test<ValueWrapper extends ValueInterface>
   extends TestBase
   implements Must
 {
@@ -22,6 +22,10 @@ export class Test<ValueWrapper extends ValueInterface = ValueInterface>
     message?: string[],
   ) {
     super(input, mustShouldCould, isNot, evalType, evalCount, message);
+  }
+
+  public _value() {
+    return this.input;
   }
 
   public _clone(input?: ValueInterface, pushWord?: string) {

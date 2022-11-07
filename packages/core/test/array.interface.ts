@@ -1,6 +1,7 @@
 import { NumberMustBe } from './number.interface';
 import { Must } from './generic.interface';
 import { TestResult } from './result';
+import { ArrayValue, NumericValue } from '../value/values';
 
 export interface ArrayMust {
   be: ArrayMustBe;
@@ -10,24 +11,24 @@ export interface ArrayMust {
   any: Must;
   some: Must;
   not: ArrayMust;
-  equal(thatArray: unknown[]): TestResult<typeof this>;
-  include(value: any): TestResult<typeof this>;
-  contain(value: string | string[]): TestResult<typeof this>;
+  equal(thatArray: unknown[]): TestResult<ArrayValue>;
+  include(value: any): TestResult<ArrayValue>;
+  contain(value: string | string[]): TestResult<ArrayValue>;
 }
 
 interface ArrayMustBe {
   an: ArrayMustBeAn;
-  empty(): TestResult<typeof this>;
-  equalTo(thatArray: unknown[]): TestResult<typeof this>;
+  empty(): TestResult<ArrayValue>;
+  equalTo(thatArray: unknown[]): TestResult<ArrayValue>;
   arrayOf(
     typeName: 'string' | 'number' | 'boolean' | 'object',
-  ): TestResult<typeof this>;
+  ): TestResult<ArrayValue>;
 }
 
 interface ArrayMustBeAn {
   arrayOf(
     typeName: 'string' | 'number' | 'boolean' | 'object',
-  ): TestResult<typeof this>;
+  ): TestResult<ArrayValue>;
 }
 
 interface ArrayMustHave {
@@ -40,11 +41,11 @@ interface ArrayMustHave {
 
 interface ArrayMustHaveLength {
   be: NumberMustBe;
-  equalTo(value: number): TestResult<typeof this>;
-  greaterThan(value: number): TestResult<typeof this>;
-  greaterThanOrEquals(value: number): TestResult<typeof this>;
-  lessThan(value: number): TestResult<typeof this>;
-  lessThanOrEquals(value: number): TestResult<typeof this>;
-  divisibleBy(value: number): TestResult<typeof this>;
-  between(valueA: number, valueB: number): TestResult<typeof this>;
+  equalTo(value: number): TestResult<NumericValue>;
+  greaterThan(value: number): TestResult<NumericValue>;
+  greaterThanOrEquals(value: number): TestResult<NumericValue>;
+  lessThan(value: number): TestResult<NumericValue>;
+  lessThanOrEquals(value: number): TestResult<NumericValue>;
+  divisibleBy(value: number): TestResult<NumericValue>;
+  between(valueA: number, valueB: number): TestResult<NumericValue>;
 }

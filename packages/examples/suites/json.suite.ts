@@ -29,7 +29,10 @@ export class UsersSuite extends Suite({
       items.must.be.an.array();
       items.must.all.have.properties(['name', 'username']);
       items.must.have.length.be.greaterThan(0);
-      items.array.length.must.be.greaterThan(0);
+      items.array.length.must.be
+        .greaterThan(0)
+        .and.must.be.lessThan(100)
+        .and.must.be.a.positiveInteger();
     });
     const ids = context.find('[*].id');
     ids.must.all.be.greaterThan(0);

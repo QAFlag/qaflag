@@ -1,13 +1,14 @@
+import { BooleanValue } from '../value/values';
 import { TestResult } from './result';
 
 export interface BooleanMust {
   be: BooleanMustBe;
   not: BooleanMust;
-  equal(value: boolean): TestResult<typeof this>;
+  equal(value: boolean): TestResult<BooleanValue>;
 }
 
 interface BooleanMustBe {
-  true(): TestResult<typeof this>;
-  false(): TestResult<typeof this>;
-  equalTo(value: boolean): TestResult<typeof this>;
+  true(): TestResult<BooleanValue>;
+  false(): TestResult<BooleanValue>;
+  equalTo(value: boolean): TestResult<BooleanValue>;
 }

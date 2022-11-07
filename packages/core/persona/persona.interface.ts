@@ -85,6 +85,7 @@ export type OperatingSystemType =
 
 export interface PersonaOperatingSystem {
   type?: OperatingSystemType | undefined;
+  userAgent?: string;
 }
 
 export interface PersonaQualities {
