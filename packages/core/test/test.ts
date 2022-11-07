@@ -14,7 +14,7 @@ export class Test<ValueWrapper extends ValueInterface>
   implements Must
 {
   constructor(
-    input: ValueWrapper,
+    protected readonly input: ValueWrapper,
     mustShouldCould: mustShouldCould,
     isNot: boolean = false,
     evalType: TestEvalEnum = 'standard',
@@ -24,11 +24,11 @@ export class Test<ValueWrapper extends ValueInterface>
     super(input, mustShouldCould, isNot, evalType, evalCount, message);
   }
 
-  public _value() {
+  public _value(): ValueWrapper {
     return this.input;
   }
 
-  public _clone(input?: ValueInterface, pushWord?: string) {
+  public _clone(input?: ValueInterface, pushWord?: string): Test<ValueWrapper> {
     return new Test(
       input || this.input,
       this.mustShouldCould,
@@ -36,7 +36,7 @@ export class Test<ValueWrapper extends ValueInterface>
       this.evalType,
       this.evalCount,
       pushWord ? [...this.message, pushWord] : this.message,
-    );
+    ) as Test<ValueWrapper>;
   }
 
   private validator(
