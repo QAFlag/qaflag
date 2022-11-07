@@ -136,6 +136,4 @@ export abstract class TestBase {
     this.message.push(`no more than ${count}`);
     return this;
   }
-
-  public abstract reset(): TestBase;
 }

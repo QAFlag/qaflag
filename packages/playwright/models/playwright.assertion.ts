@@ -29,10 +29,6 @@ export class PlaywrightAssertion extends TestBase {
     super(input, mustShouldCould, isNot, evalType, evalCount, message);
   }
 
-  public reset(): PlaywrightAssertion {
-    return new PlaywrightAssertion(this.input, this.mustShouldCould);
-  }
-
   public get in() {
     this.message.push('in');
     return this;
@@ -62,9 +58,9 @@ export class PlaywrightAssertion extends TestBase {
         pass ? 'pass' : this.isOptional ? 'optionalFail' : 'fail',
         this.message.join(' '),
       );
-    }
-    if (!pass && result.actualValue) {
-      this.input.logger.log('info', `Actual Value: ${result.actualValue}`);
+      if (!pass && result.actualValue) {
+        this.input.logger.log('info', `Actual Value: ${result.actualValue}`);
+      }
     }
   }
 

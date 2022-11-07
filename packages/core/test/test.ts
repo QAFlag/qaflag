@@ -24,6 +24,17 @@ export class Test<ValueWrapper extends ValueInterface = ValueInterface>
     super(input, mustShouldCould, isNot, evalType, evalCount, message);
   }
 
+  public _clone(input?: ValueInterface, pushWord?: string) {
+    return new Test(
+      input || this.input,
+      this.mustShouldCould,
+      this.isNot,
+      this.evalType,
+      this.evalCount,
+      pushWord ? [...this.message, pushWord] : this.message,
+    );
+  }
+
   private validator(
     methodName: keyof typeof validator,
     thing: string,
@@ -61,28 +72,13 @@ export class Test<ValueWrapper extends ValueInterface = ValueInterface>
         pass ? 'pass' : this.isOptional ? 'optionalFail' : 'fail',
         { text },
       );
-    }
-    if (!pass) {
-      this.input.logger.log('info', {
-        text: `Actual Value: ${this.input.string.$}`,
-      });
+      if (!pass) {
+        this.input.logger.log('info', {
+          text: `Actual Value: ${this.input.string.$}`,
+        });
+      }
     }
     return new TestResult(this, pass);
-  }
-
-  private clone(input: ValueInterface, pushWord: string) {
-    return new Test(
-      input,
-      this.mustShouldCould,
-      this.isNot,
-      this.evalType,
-      this.evalCount,
-      [...this.message, pushWord],
-    );
-  }
-
-  public reset(): Test<ValueWrapper> {
-    return new Test(this.input, this.mustShouldCould);
   }
 
   /**
@@ -97,7 +93,7 @@ export class Test<ValueWrapper extends ValueInterface = ValueInterface>
         ? getLength(this.input.$)
         : this.input.array.$.map(item => getLength(item));
     if (typeof length == 'number') {
-      return this.clone(
+      return this._clone(
         new NumericValue(length, {
           name: `Length of ${this.input.name}`,
           logger: this.input.logger,
@@ -105,7 +101,7 @@ export class Test<ValueWrapper extends ValueInterface = ValueInterface>
         'length',
       );
     }
-    return this.clone(
+    return this._clone(
       new ArrayValue(Array.isArray(length) ? length : [length], {
         name: `Lengths of ${this.input.name}`,
         logger: this.input.logger,
