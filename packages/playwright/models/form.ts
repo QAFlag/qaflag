@@ -49,11 +49,32 @@ export class Form implements FormInterface {
     return this.locator.$.fill(value, opts);
   }
 
-  public async select(values: string | string[], opts?: FormOpts) {
+  public async select(
+    values:
+      | string
+      | string[]
+      | {
+          value?: string | undefined;
+          label?: string | undefined;
+          index?: number | undefined;
+        },
+    opts?: FormOpts,
+  ) {
+    this.locator.logger.action('SELECT', this.locator, values.toString());
     return this.locator.$.selectOption(values, opts);
   }
 
+  public async selectByText(text: string | RegExp, opts?: FormOpts) {
+    const optionToSelect = await this.locator
+      .find('option', {
+        hasText: text,
+      })
+      .textContent();
+    return this.select({ label: optionToSelect.$ });
+  }
+
   public async file(files: InputFiles, opts?: FormOpts) {
+    this.locator.logger.action('FILE', this.locator, files.toString());
     return this.locator.$.setInputFiles(files, opts);
   }
 }

@@ -5,7 +5,7 @@ import {
   ValueInterface,
   ValueOpts,
 } from '@qaflag/core';
-import { Locator } from 'playwright';
+import { Locator, PageScreenshotOptions } from 'playwright';
 import { Form } from './form';
 import { Keyboard } from './keyboard';
 import { Mouse, Touch } from './pointer';
@@ -290,5 +290,9 @@ export class PlaywrightValue
       }
     }
     return elements[smallestIndex].as(name);
+  }
+
+  public screenshot(opts: PageScreenshotOptions) {
+    return this.input.screenshot(opts);
   }
 }
