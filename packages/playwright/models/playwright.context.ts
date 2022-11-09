@@ -61,6 +61,44 @@ export class PlaywrightContext extends Context implements ContextInterface {
     });
   }
 
+  public getByAltText(altText: string) {
+    return new PlaywrightValue(this.playwright.page.getByAltText(altText), {
+      name: altText,
+      logger: this.scenario.logger,
+    });
+  }
+
+  public getByPlaceholder(placeholderText: string) {
+    return new PlaywrightValue(
+      this.playwright.page.getByPlaceholder(placeholderText),
+      {
+        name: placeholderText,
+        logger: this.scenario.logger,
+      },
+    );
+  }
+
+  public getByTitle(title: string) {
+    return new PlaywrightValue(this.playwright.page.getByTitle(title), {
+      name: title,
+      logger: this.scenario.logger,
+    });
+  }
+
+  public getByTestId(testId: string) {
+    return new PlaywrightValue(this.playwright.page.getByTestId(testId), {
+      name: testId,
+      logger: this.scenario.logger,
+    });
+  }
+
+  public getByText(testId: string) {
+    return new PlaywrightValue(this.playwright.page.getByText(testId), {
+      name: testId,
+      logger: this.scenario.logger,
+    });
+  }
+
   public exists(element: PlaywrightValue): Promise<PlaywrightValue>;
   public exists(selector: string, opts?: FindOpts): Promise<PlaywrightValue>;
   public async exists(

@@ -209,4 +209,86 @@ export class PlaywrightValue
     }
     return locators;
   }
+
+  public async waitFor(opts: {
+    state?: 'attached' | 'detached' | 'visible' | 'hidden';
+    timeout?: number;
+  }) {
+    return this.input.waitFor(opts);
+  }
+
+  public getByAltText(altText: string) {
+    return new PlaywrightValue(this.input.getByAltText(altText), {
+      name: altText,
+      logger: this.logger,
+    });
+  }
+
+  public getByPlaceholder(placeholderText: string) {
+    return new PlaywrightValue(this.input.getByPlaceholder(placeholderText), {
+      name: placeholderText,
+      logger: this.logger,
+    });
+  }
+
+  public getByTitle(title: string) {
+    return new PlaywrightValue(this.input.getByTitle(title), {
+      name: title,
+      logger: this.logger,
+    });
+  }
+
+  public getByTestId(testId: string) {
+    return new PlaywrightValue(this.input.getByTestId(testId), {
+      name: testId,
+      logger: this.logger,
+    });
+  }
+
+  public getByText(testId: string) {
+    return new PlaywrightValue(this.input.getByText(testId), {
+      name: testId,
+      logger: this.logger,
+    });
+  }
+
+  public async largest(): Promise<PlaywrightValue> {
+    const elements = await this.queryAll();
+    const name = `Largest ${this.name}`;
+    if (!elements.length) {
+      throw `Can't get largest, since "${name}" did not exist.`;
+    }
+    let max = 0;
+    let largestIndex = 0;
+    for (let i = 0; i < elements.length; i++) {
+      const current = elements[i];
+      const currentBox = await current.boundingBox();
+      const currentSize = currentBox && currentBox.height * currentBox.width;
+      if (currentSize && currentSize > max) {
+        largestIndex = i;
+        max = currentSize;
+      }
+    }
+    return elements[largestIndex].as(name);
+  }
+
+  public async smallest(): Promise<PlaywrightValue> {
+    const elements = await this.queryAll();
+    const name = `Smallest ${this.name}`;
+    if (!elements.length) {
+      throw `Can't get smallest, since "${name}" did not exist.`;
+    }
+    let min: number | null = null;
+    let smallestIndex = 0;
+    for (let i = 0; i < elements.length; i++) {
+      const current = elements[i];
+      const currentBox = await current.boundingBox();
+      const currentSize = currentBox && currentBox.height * currentBox.width;
+      if (min === null || (currentSize && currentSize < min)) {
+        smallestIndex = i;
+        min = currentSize;
+      }
+    }
+    return elements[smallestIndex].as(name);
+  }
 }

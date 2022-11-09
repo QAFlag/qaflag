@@ -26,4 +26,13 @@ export class GoogleSearch extends Suite({
     const value = await textbox.first.value();
     value.must.equal(searchTerm);
   }
+
+  @Scenario({
+    uri: 'GET /',
+  })
+  async testHomepage(context: PlaywrightContext) {
+    const logo = await context.find('img').largest();
+    const altText = await logo.attribute('alt');
+    altText.must.equal('Google');
+  }
 }
