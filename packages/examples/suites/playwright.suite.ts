@@ -36,5 +36,8 @@ export class GoogleSearch extends Suite({
     altText.must.equal('Google');
     const count = await context.getByTag(['p', 'a']).count();
     count.must.be.greaterThan(0);
+    const input = await context.getClosest('input', logo);
+    await input.must.exist();
+    context.debug(input);
   }
 }

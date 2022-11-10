@@ -137,6 +137,59 @@ export class PlaywrightContext extends Context implements ContextInterface {
       : this.getByXpath(`//*[@${attributeName}=${value}]`);
   }
 
+  public async getClosest(
+    selector: string,
+    to: PlaywrightValue,
+    opts: {
+      maxDistance?: number;
+      position?: 'above' | 'below' | 'beside';
+    } = {},
+  ) {
+    const elements = await this.find(selector).queryAll();
+    const location = await to.boundingBox();
+    const name = `Closest ${selector} to ${to.name}`;
+    if (elements.length == 0 || !location) {
+      throw `Could not find any ${selector} close to ${to.name}`;
+    }
+    let min: number | null = null;
+    let smallestIndex: number | null = null;
+    for (let i = 0; i < elements.length; i++) {
+      const current = elements[i];
+      const currentBox = await current.boundingBox();
+      if (!currentBox) continue;
+      const distances = [
+        !opts.position || opts.position == 'below'
+          ? Math.abs(currentBox.top - location.bottom) +
+            Math.abs(currentBox.left - location.left)
+          : undefined,
+        !opts.position || opts.position == 'above'
+          ? Math.abs(currentBox.bottom - location.top) +
+            Math.abs(currentBox.left - location.left)
+          : undefined,
+        !opts.position || opts.position == 'beside'
+          ? Math.abs(currentBox.top - location.top) +
+            Math.abs(currentBox.right - location.left)
+          : undefined,
+        !opts.position || opts.position == 'beside'
+          ? Math.abs(currentBox.top - location.top) +
+            Math.abs(currentBox.left - location.right)
+          : undefined,
+      ].filter(n => !!n) as number[];
+      const diff = Math.min(...distances);
+      if (
+        (!opts?.maxDistance || diff < opts.maxDistance) &&
+        (min === null || diff < min)
+      ) {
+        smallestIndex = i;
+        min = diff;
+      }
+    }
+    if (smallestIndex === null) {
+      throw `Could not find any ${selector} close to ${to.name}`;
+    }
+    return elements[smallestIndex].as(name);
+  }
+
   public exists(element: PlaywrightValue): Promise<PlaywrightValue>;
   public exists(selector: string, opts?: FindOpts): Promise<PlaywrightValue>;
   public async exists(

@@ -14,7 +14,7 @@ export class Test<ValueWrapper extends ValueInterface>
   implements Must
 {
   constructor(
-    protected readonly input: ValueWrapper,
+    protected input: ValueWrapper,
     mustShouldCould: mustShouldCould,
     isNot: boolean = false,
     evalType: TestEvalEnum = 'standard',

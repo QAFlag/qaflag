@@ -149,13 +149,7 @@ export class PlaywrightValue
   }
 
   public async value(opts?: TimeoutOpts) {
-    const tagName = await this.tagName();
-    const value = ['SELECT', 'INPUT', 'TEXTAREA'].includes(tagName.$)
-      ? await this.input.inputValue(opts)
-      : await this.input
-          .locator('xpath=//select | //input | //textarea')
-          .inputValue();
-    return this.createString(value, {
+    return this.createString(await this.input.inputValue(opts), {
       name: `Value of ${this.name}`,
     });
   }
@@ -179,7 +173,18 @@ export class PlaywrightValue
   }
 
   public async boundingBox(opts?: TimeoutOpts) {
-    return this.input.boundingBox(opts);
+    const box = await this.input.boundingBox(opts);
+    if (!box) return null;
+    return {
+      ...box,
+      right: box.x + box.width,
+      bottom: box.y + box.height,
+      left: box.x,
+      top: box.y,
+      area: box.height * box.width,
+      middleX: Math.round(box.x + box.width * 0.5),
+      middleY: Math.round(box.y + box.height * 0.5),
+    };
   }
 
   public async focus(opts?: TimeoutOpts) {
@@ -284,6 +289,21 @@ export class PlaywrightValue
     return value === undefined
       ? this.getByXpath(`//*[@${attributeName}]`)
       : this.getByXpath(`//*[@${attributeName}=${value}]`);
+  }
+
+  public having(has: PlaywrightValue | string | RegExp) {
+    const isLocator = has instanceof PlaywrightValue;
+    const filtered = this.input.filter({
+      has: isLocator ? has.$ : undefined,
+      hasText: isLocator ? undefined : has,
+    });
+    const name = isLocator
+      ? `${this.name} having ${has.name}`
+      : `${this.name} having text ${has}`;
+    return new PlaywrightValue(filtered, {
+      name,
+      logger: this.logger,
+    });
   }
 
   public async largest(): Promise<PlaywrightValue> {

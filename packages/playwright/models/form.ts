@@ -1,5 +1,6 @@
-import { FormInterface } from '@qaflag/core';
+import { FormInterface, StringValue } from '@qaflag/core';
 import { ElementHandle } from 'playwright';
+import { TimeoutOpts } from '../types/timeout-opts';
 import { PagePosition } from './bounding-box.value';
 import { PlaywrightValue } from './playwright.value';
 
@@ -47,6 +48,13 @@ export class Form implements FormInterface {
   public async input(value: string, opts?: FormOpts) {
     this.locator.logger.action('FILL', this.locator, value);
     return this.locator.$.fill(value, opts);
+  }
+
+  public async value(opts?: TimeoutOpts) {
+    return new StringValue(await this.locator.$.inputValue(), {
+      logger: this.locator.logger,
+      name: `Value of ${this.locator.name}`,
+    });
   }
 
   public async select(
