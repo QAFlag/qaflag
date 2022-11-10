@@ -1,4 +1,5 @@
 import {
+  humanReadableList,
   NumericValue,
   UiElementInterface,
   ValueAbstract,
@@ -12,14 +13,8 @@ import { Mouse, Touch } from './pointer';
 import { PlaywrightAssertion } from './playwright.assertion';
 import { FindOpts } from './playwright.context';
 import { PlaywrightMust } from '../types/playwrite-must';
-
-export interface LocatorOpts extends ValueOpts {
-  selector: string;
-}
-
-interface TimeoutOpts {
-  timeout?: number;
-}
+import { TimeoutOpts } from '../types/timeout-opts';
+import { Role, RoleOptions } from '../types/role';
 
 export class PlaywrightValue
   extends ValueAbstract<Locator>
@@ -119,7 +114,7 @@ export class PlaywrightValue
 
   public async tagName(opts?: TimeoutOpts) {
     return this.createString(
-      await this.input.first().evaluate(el => el.tagName, opts),
+      await this.input.first().evaluate(el => el.tagName.toUpperCase(), opts),
       {
         name: `Tag of ${this.name}`,
       },
@@ -154,8 +149,14 @@ export class PlaywrightValue
   }
 
   public async value(opts?: TimeoutOpts) {
-    return this.createString(await this.input.inputValue(opts), {
-      name: `Input Value of ${this.name}`,
+    const tagName = await this.tagName();
+    const value = ['SELECT', 'INPUT', 'TEXTAREA'].includes(tagName.$)
+      ? await this.input.inputValue(opts)
+      : await this.input
+          .locator('xpath=//select | //input | //textarea')
+          .inputValue();
+    return this.createString(value, {
+      name: `Value of ${this.name}`,
     });
   }
 
@@ -219,37 +220,70 @@ export class PlaywrightValue
 
   public getByAltText(altText: string) {
     return new PlaywrightValue(this.input.getByAltText(altText), {
-      name: altText,
+      name: `alt=${altText}`,
       logger: this.logger,
     });
   }
 
   public getByPlaceholder(placeholderText: string) {
     return new PlaywrightValue(this.input.getByPlaceholder(placeholderText), {
-      name: placeholderText,
+      name: `placeholder=${placeholderText}`,
       logger: this.logger,
     });
   }
 
   public getByTitle(title: string) {
     return new PlaywrightValue(this.input.getByTitle(title), {
-      name: title,
+      name: `title=${title}`,
       logger: this.logger,
     });
   }
 
   public getByTestId(testId: string) {
     return new PlaywrightValue(this.input.getByTestId(testId), {
-      name: testId,
+      name: `testId=${testId}`,
       logger: this.logger,
     });
   }
 
-  public getByText(testId: string) {
-    return new PlaywrightValue(this.input.getByText(testId), {
-      name: testId,
+  public getByText(text: string) {
+    return new PlaywrightValue(this.input.getByText(text), {
+      name: `text=${text}`,
       logger: this.logger,
     });
+  }
+
+  public getByRole(role: Role, opts: RoleOptions) {
+    return new PlaywrightValue(this.input.getByRole(role, opts), {
+      name: `role=${role}`,
+      logger: this.logger,
+    });
+  }
+
+  public getByXpath(selector: string, opts?: FindOpts) {
+    return new PlaywrightValue(this.input.locator(`xpath=${selector}`, opts), {
+      name: selector,
+      logger: this.logger,
+    });
+  }
+
+  public getByTag(tags: string | string[]) {
+    if (Array.isArray(tags)) {
+      return this.getByXpath('//' + tags.join(' | //')).as(
+        humanReadableList(
+          tags.map(tag => `<${tag}>`),
+          ',',
+          'or',
+        ),
+      );
+    }
+    return this.getByXpath(`//${tags}`).as(`<${tags}>`);
+  }
+
+  public getByAttribute(attributeName: string, value?: string) {
+    return value === undefined
+      ? this.getByXpath(`//*[@${attributeName}]`)
+      : this.getByXpath(`//*[@${attributeName}=${value}]`);
   }
 
   public async largest(): Promise<PlaywrightValue> {

@@ -1,10 +1,12 @@
 import {
   Context,
   ContextInterface,
+  humanReadableList,
   ScenarioInterface,
   StringValue,
 } from '@qaflag/core';
 import { Locator, PageScreenshotOptions } from 'playwright';
+import { Role, RoleOptions } from '../types/role';
 import { PlaywrightInstance } from './playwright.adapter';
 import { PlaywrightValue } from './playwright.value';
 import { ClickOpts } from './pointer';
@@ -63,7 +65,7 @@ export class PlaywrightContext extends Context implements ContextInterface {
 
   public getByAltText(altText: string) {
     return new PlaywrightValue(this.playwright.page.getByAltText(altText), {
-      name: altText,
+      name: `alt=${altText}`,
       logger: this.scenario.logger,
     });
   }
@@ -72,7 +74,7 @@ export class PlaywrightContext extends Context implements ContextInterface {
     return new PlaywrightValue(
       this.playwright.page.getByPlaceholder(placeholderText),
       {
-        name: placeholderText,
+        name: `placeholder=${placeholderText}`,
         logger: this.scenario.logger,
       },
     );
@@ -80,23 +82,59 @@ export class PlaywrightContext extends Context implements ContextInterface {
 
   public getByTitle(title: string) {
     return new PlaywrightValue(this.playwright.page.getByTitle(title), {
-      name: title,
+      name: `title=${title}`,
       logger: this.scenario.logger,
     });
   }
 
   public getByTestId(testId: string) {
     return new PlaywrightValue(this.playwright.page.getByTestId(testId), {
-      name: testId,
+      name: `testId=${testId}`,
       logger: this.scenario.logger,
     });
   }
 
-  public getByText(testId: string) {
-    return new PlaywrightValue(this.playwright.page.getByText(testId), {
-      name: testId,
+  public getByText(text: string, opts?: { exact?: boolean }) {
+    return new PlaywrightValue(this.playwright.page.getByText(text, opts), {
+      name: `text=${text}`,
       logger: this.scenario.logger,
     });
+  }
+
+  public getByRole(role: Role, opts: RoleOptions) {
+    return new PlaywrightValue(this.playwright.page.getByRole(role, opts), {
+      name: `role=${role}`,
+      logger: this.logger,
+    });
+  }
+
+  public getByXpath(selector: string, opts?: FindOpts) {
+    return new PlaywrightValue(
+      this.playwright.page.locator(`xpath=${selector}`, opts),
+      {
+        name: selector,
+        logger: this.scenario.logger,
+      },
+    );
+  }
+
+  public getByTag(tags: string | string[]) {
+    if (Array.isArray(tags)) {
+      return this.getByXpath('//' + tags.join(' | //')).as(
+        humanReadableList(
+          tags.map(tag => `<${tag}>`),
+          ',',
+          'or',
+        ),
+      );
+    }
+    return this.getByXpath(`//${tags}`).as(`<${tags}>`);
+  }
+
+  public getByAttribute(attributeName: string, value?: string) {
+    return value === undefined
+      ? this.getByXpath(`//*[@${attributeName}]`)
+      : this.getByXpath(`//*[@${attributeName}=${value}]`);
   }
 
   public exists(element: PlaywrightValue): Promise<PlaywrightValue>;
@@ -178,6 +216,7 @@ export class PlaywrightContext extends Context implements ContextInterface {
   }
 
   public pause(millseconds: number) {
+    this.logger.action('PAUSE', undefined, `${millseconds}ms`);
     return this.page.waitForTimeout(millseconds);
   }
 

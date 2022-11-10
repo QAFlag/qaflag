@@ -34,5 +34,7 @@ export class GoogleSearch extends Suite({
     const logo = await context.find('img').largest();
     const altText = await logo.attribute('alt');
     altText.must.equal('Google');
+    const count = await context.getByTag(['p', 'a']).count();
+    count.must.be.greaterThan(0);
   }
 }

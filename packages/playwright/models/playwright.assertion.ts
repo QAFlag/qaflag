@@ -1,4 +1,5 @@
 import { mustShouldCould, TestBase } from '@qaflag/core';
+import { TimeoutOpts } from '../types/timeout-opts';
 import { PlaywrightValue } from './playwright.value';
 
 export type AssertionResult = {
@@ -64,26 +65,26 @@ export class PlaywrightAssertion extends TestBase {
     }
   }
 
-  public async visible() {
+  public async visible(opts?: TimeoutOpts) {
     this.message.push('visible');
     return this.execute(async input => {
-      const isVisible = await input.$.isVisible();
+      const isVisible = await input.$.isVisible(opts);
       return { pass: isVisible, actualValue: isVisible ? 'visible' : 'hidden' };
     });
   }
 
-  public async hidden() {
+  public async hidden(opts?: TimeoutOpts) {
     this.message.push('hidden');
     return this.execute(async item => {
-      const isHidden = await item.$.isHidden();
+      const isHidden = await item.$.isHidden(opts);
       return { pass: isHidden, actualValue: isHidden ? 'hidden' : 'visible' };
     });
   }
 
-  public async checked() {
+  public async checked(opts?: TimeoutOpts) {
     this.message.push('checked');
     return this.execute(async item => {
-      const isChecked = await item.$.isChecked();
+      const isChecked = await item.$.isChecked(opts);
       return {
         pass: isChecked,
         actualValue: isChecked ? 'checked' : 'unchecked',
@@ -91,10 +92,10 @@ export class PlaywrightAssertion extends TestBase {
     });
   }
 
-  public async editable() {
+  public async editable(opts?: TimeoutOpts) {
     this.message.push('editable');
     return this.execute(async item => {
-      const isEditable = await item.$.isEditable();
+      const isEditable = await item.$.isEditable(opts);
       return {
         pass: isEditable,
         actualValue: isEditable ? 'editable' : 'not editable',
@@ -102,10 +103,10 @@ export class PlaywrightAssertion extends TestBase {
     });
   }
 
-  public async enabled() {
+  public async enabled(opts?: TimeoutOpts) {
     this.message.push('enabled');
     return this.execute(async item => {
-      const isEnabled = await item.$.isEnabled();
+      const isEnabled = await item.$.isEnabled(opts);
       return {
         pass: isEnabled,
         actualValue: isEnabled ? 'enabled' : 'disabled',
@@ -113,10 +114,10 @@ export class PlaywrightAssertion extends TestBase {
     });
   }
 
-  public async disabled() {
+  public async disabled(opts?: TimeoutOpts) {
     this.message.push('disabled');
     return this.execute(async item => {
-      const isDisabled = await item.$.isDisabled();
+      const isDisabled = await item.$.isDisabled(opts);
       return {
         pass: isDisabled,
         actualValue: isDisabled ? 'disabled' : 'enabled',
@@ -132,10 +133,10 @@ export class PlaywrightAssertion extends TestBase {
     });
   }
 
-  public async className(name: string) {
+  public async className(name: string, opts?: TimeoutOpts) {
     this.message.push(`class ${name}`);
     return this.execute(async item => {
-      const classList = await item.classList();
+      const classList = await item.classList(opts);
       return {
         pass: classList
           .map(className => className.toUpperCase())
@@ -145,18 +146,18 @@ export class PlaywrightAssertion extends TestBase {
     });
   }
 
-  public async tagName(name: string) {
+  public async tagName(name: string, opts?: TimeoutOpts) {
     this.message.push(`tag <${name.toUpperCase()}>`);
     return this.execute(async item => {
-      const tagName = (await item.tagName()).$.toUpperCase();
+      const tagName = (await item.tagName(opts)).$.toUpperCase();
       return { pass: tagName == name.toUpperCase(), actualValue: tagName };
     });
   }
 
-  public async value(value: string) {
+  public async value(value: string, opts?: TimeoutOpts) {
     this.message.push(`value <${value}>`);
     return this.execute(async item => {
-      const elementValue = (await item.value()).$;
+      const elementValue = (await item.value(opts)).$;
       return {
         pass: elementValue == value,
         actualValue: elementValue,
@@ -164,10 +165,10 @@ export class PlaywrightAssertion extends TestBase {
     });
   }
 
-  public async attribute(name: string, value: string) {
+  public async attribute(name: string, value: string, opts?: TimeoutOpts) {
     this.message.push(`atribute <${name}>`);
     return this.execute(async item => {
-      const attributeValue = (await item.attribute(name)).$;
+      const attributeValue = (await item.attribute(name, opts)).$;
       return {
         pass: attributeValue == value,
         actualValue: attributeValue,
