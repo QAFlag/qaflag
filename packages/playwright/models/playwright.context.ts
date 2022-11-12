@@ -93,6 +93,15 @@ export class PlaywrightContext extends Context implements ContextInterface {
     return element;
   }
 
+  public async visible(
+    selector: string | FindQuery | RegExp | StateSelector,
+    ...subQueries: Array<SelectFilter | string | RegExp | FindQuery>
+  ) {
+    const element = this.find(selector, ...subQueries);
+    await element.must.be.visible();
+    return element;
+  }
+
   protected async getClosest(
     selector: string,
     to: PlaywrightValue,
