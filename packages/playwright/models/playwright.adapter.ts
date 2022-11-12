@@ -84,8 +84,25 @@ export class PlaywrightAdapter {
         ? { width: persona.viewportSize[0], height: persona.viewportSize[1] }
         : undefined,
     });
-    context.addCookies(request.getCookies());
+    await context.addCookies(request.getCookies());
     const page = await context.newPage();
+    page.on('domcontentloaded', () => {
+      page.addScriptTag({
+        content: `
+            const div = document.createElement("div");
+            div.setAttribute("id", "_QAFLAG_HELPER_");
+            document.querySelector("body").appendChild(div);
+            div.innerHTML = "<div class='qaFlagTop' style='position: fixed; top: -1px; width: 100%; height: 1px'></div>";
+            div.innerHTML += "<div class='qaFlagBottom' style='position: fixed; bottom: -1px; left: 0px; width: 100%; height: 1px'></div>";
+            div.innerHTML += "<div class='qaFlagLeft' style='position: fixed; top: 0px; left: -1px; width: 1px; height: 100%'></div>";
+            div.innerHTML += "<div class='qaFlagRight' style='position: fixed; top: 0px; right: -1px; width: 1px; height: 100%'></div>";
+            div.innerHTML += "<div class='qaFlagTL' style='position: fixed; top: -1px; left: -1px; width: 1px; height: 1px'></div>";
+            div.innerHTML += "<div class='qaFlagTR' style='position: fixed; top: -1px; right: -1px; width: 1px; height: 1px'></div>";
+            div.innerHTML += "<div class='qaFlagBL' style='position: fixed; bottom: -1px; left: -1px; width: 1px; height: 1px'></div>";
+            div.innerHTML += "<div class='qaFlagBR' style='position: fixed; bottom: -1px; right: -1px; width: 1px; height: 1px'></div>";
+        `,
+      });
+    });
     await page.goto(request.url.href);
     return {
       browser,

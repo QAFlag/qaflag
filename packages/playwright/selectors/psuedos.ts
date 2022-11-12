@@ -19,7 +19,17 @@ export const image = new StateSelector('is(img, svg)', 'image');
 
 export const link = new StateSelector('is(:any-link, [role="link"])', 'link');
 
-export const top = FindQuery.create('head', 'top of page');
+export const top = FindQuery.create('.qaFlagTop', 'top of page');
+export const left = FindQuery.create('.qaFlagLeft', 'left of page');
+export const bottom = FindQuery.create('.qaFlagBottom', 'bottom of page');
+export const right = FindQuery.create('.qaFlagRight', 'right of page');
+export const topLeft = FindQuery.create('.qaFlagTL', 'top left of page');
+export const topRight = FindQuery.create('.qaFlagTR', 'top right of page');
+export const bottomLeft = FindQuery.create('.qaFlagBL', 'bottom left of page');
+export const bottomRight = FindQuery.create(
+  '.qaFlagBR',
+  'bottom right of page',
+);
 
 const psuedoMapper: { [psuedo: string]: StateSelector } = {
   button,

@@ -10,7 +10,7 @@ import {
   first,
   header,
   image,
-  top,
+  topLeft,
 } from '@qaflag/playwright';
 
 export class JasonByrneSuite extends Suite({
@@ -21,7 +21,7 @@ export class JasonByrneSuite extends Suite({
     uri: 'GET https://www.jasonbyrne.net',
   })
   async firstScenario(context: PlaywrightContext) {
-    await context.exists(image, near(top));
+    await context.exists(image, near(topLeft));
     await context.exists('"Who am I?"', visible);
     await context.exists('*About Me*', within('nav'));
     await context.exists(/connect/i, within('nav'));
@@ -41,6 +41,7 @@ export class JasonByrneSuite extends Suite({
     );
     await experience.mouse.click();
     await context.waitForNavigation();
+    await context.exists(image, near(topLeft));
     await context.exists('"Experience"', header);
     await context.exists('*Echelon*');
     await context.pause(1000);
