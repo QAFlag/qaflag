@@ -70,6 +70,14 @@ export class PlaywrightValue
     });
   }
 
+  public locator(selector: string, opts?: FindOpts) {
+    return new PlaywrightValue(this.input.locator(selector, opts), {
+      ...this.opts,
+      name: `${selector} in ${this.name}`,
+      selector,
+    });
+  }
+
   public find(selector: string, opts?: FindOpts) {
     return new PlaywrightValue(this.input.locator(selector, opts), {
       ...this.opts,

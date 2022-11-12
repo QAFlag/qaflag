@@ -8,7 +8,7 @@ class SiblingFilter implements SelectFilter {
   ) {}
 
   public apply(previous: FindQuery): FindQuery {
-    return new FindQuery(
+    return FindQuery.create(
       `${this.input.selector} ${this.separator} ${previous.selector}`,
       `${this.input.name} with sibling ${previous.name}`,
     );

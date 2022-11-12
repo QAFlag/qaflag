@@ -56,6 +56,15 @@ export class PlaywrightContext extends Context implements ContextInterface {
     return this.playwright.context;
   }
 
+  public locator(selector: string, opts?: FindOpts): PlaywrightValue {
+    return new PlaywrightValue(this.playwright.page.locator(selector, opts), {
+      ...opts,
+      selector,
+      name: selector,
+      logger: this.scenario.logger,
+    });
+  }
+
   public find(
     selector: string | FindQuery,
     ...subQueries: Array<SelectFilter | string | FindQuery>

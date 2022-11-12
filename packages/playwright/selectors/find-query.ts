@@ -1,19 +1,71 @@
-import { isAlt } from './is-prefixed';
-import { isText } from './is-text';
-import { alt, text } from './modifiers';
+import {
+  extractAttribute,
+  extractPrefix,
+  extractRegex,
+  extractText,
+} from './is-prefixed';
+import {
+  alt,
+  SelectModifier,
+  text,
+  ariaLabel,
+  role,
+  href,
+  src,
+  placeholder,
+  id,
+  textPrefix,
+  attr,
+  matches,
+  contains,
+} from './modifiers';
 import SelectFilter from './select-filter';
 
+const prefixMapper: { [prefix: string]: SelectModifier } = {
+  alt,
+  text: textPrefix,
+  ariaLabel,
+  role,
+  href,
+  src,
+  placeholder,
+  id,
+};
+
 export default class FindQuery {
-  public static create(input: string | FindQuery) {
-    if (typeof input == 'string') {
-      if (isText(input)) return text(input.substring(1, input.length - 1));
-      if (isAlt(input)) return alt(input.substring(4));
-      return new FindQuery(input);
+  public static create(input: string | FindQuery, name?: string) {
+    // Already a find query? Leave it alone
+    if (input instanceof FindQuery) return input;
+    if (typeof name == 'string') return new FindQuery(input, name);
+    // Look for quoted text
+    const matchText = extractText(input);
+    if (matchText) {
+      if (matchText.type == '*') return contains(matchText.text);
+      return text(matchText.text);
     }
-    return input;
+    // Look for quoted text
+    const matchRegex = extractRegex(input);
+    if (matchRegex) return matches(matchRegex.pattern, matchRegex.flags);
+    // Prefixed
+    const matchPrefix = extractPrefix(input);
+    if (matchPrefix && prefixMapper[matchPrefix.prefix]) {
+      return prefixMapper[matchPrefix.prefix](matchPrefix.selector);
+    }
+    // Attribute selector
+    const matchAttribute = extractAttribute(input);
+    if (matchAttribute) {
+      return attr(
+        matchAttribute.attribute,
+        matchAttribute.value,
+        matchAttribute.tag,
+        matchAttribute.equality,
+      );
+    }
+    // Standard
+    return new FindQuery(input);
   }
 
-  constructor(
+  private constructor(
     private readonly _selector: string,
     private readonly _name?: string,
   ) {}

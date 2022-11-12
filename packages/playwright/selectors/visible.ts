@@ -5,7 +5,7 @@ class VisibleSelector implements SelectFilter {
   constructor() {}
 
   public apply(primarySelector: FindQuery): FindQuery {
-    return new FindQuery(
+    return FindQuery.create(
       `${primarySelector.selector}:visible`,
       `${primarySelector.name} (Visible)`,
     );

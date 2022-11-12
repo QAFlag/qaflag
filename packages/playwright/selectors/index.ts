@@ -7,3 +7,7 @@ export * from './within';
 export * from './parent';
 export * from './sibling';
 export * from './has';
+export * from './below';
+export * from './above';
+export * from './right-of';
+export * from './left-of';
