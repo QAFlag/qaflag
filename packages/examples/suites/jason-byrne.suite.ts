@@ -1,5 +1,13 @@
 import { Scenario, Suite } from '@qaflag/core';
-import { PlaywrightContext, PlaywrightScenario } from '@qaflag/playwright';
+import {
+  contains,
+  near,
+  PlaywrightContext,
+  PlaywrightScenario,
+  text,
+  visible,
+  within,
+} from '@qaflag/playwright';
 
 export class JasonByrneSuite extends Suite({
   title: 'Jason Byrne',
@@ -10,15 +18,16 @@ export class JasonByrneSuite extends Suite({
     step: 1,
   })
   async firstScenario(context: PlaywrightContext) {
-    const nav = await context.exists('header nav');
-    const links = await nav.exists('li a');
-    (await links.count()).must.equal(5);
-    await links.find("'Experience'").mouse.click();
-    await context.waitForNavigation();
-    await context.visible("'Job History'");
-    await links.find("'Projects'").mouse.click();
-    await context.waitForNavigation();
-    const count = await context.count("'QA Automation'");
-    count.must.be.greaterThan(0);
+    await context.exists(text('Who am I?'), visible);
+    await context.exists(text('About Me'), within('nav'));
+    const experience = await context.exists(
+      text('Experience'),
+      near(text('About Me')),
+    );
+    await experience.mouse.click();
+    await context
+      .find(contains('Experience'), within('main'), visible)
+      .must.exist();
+    await context.pause(1000);
   }
 }

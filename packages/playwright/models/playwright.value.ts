@@ -1,5 +1,4 @@
 import {
-  humanReadableList,
   NumericValue,
   UiElementInterface,
   ValueAbstract,
@@ -14,13 +13,15 @@ import { PlaywrightAssertion } from './playwright.assertion';
 import { FindOpts } from './playwright.context';
 import { PlaywrightMust } from '../types/playwrite-must';
 import { TimeoutOpts } from '../types/timeout-opts';
-import { Role, RoleOptions } from '../types/role';
 
 export class PlaywrightValue
   extends ValueAbstract<Locator>
   implements ValueInterface<Locator>, UiElementInterface<Locator>
 {
-  constructor(input: Locator, protected opts: ValueOpts) {
+  constructor(
+    input: Locator,
+    protected opts: ValueOpts & { selector: string },
+  ) {
     super(input, opts);
   }
 
@@ -216,94 +217,11 @@ export class PlaywrightValue
     return locators;
   }
 
-  public async waitFor(opts: {
+  public async waitFor(opts?: {
     state?: 'attached' | 'detached' | 'visible' | 'hidden';
     timeout?: number;
   }) {
     return this.input.waitFor(opts);
-  }
-
-  public getByAltText(altText: string) {
-    return new PlaywrightValue(this.input.getByAltText(altText), {
-      name: `alt=${altText}`,
-      logger: this.logger,
-    });
-  }
-
-  public getByPlaceholder(placeholderText: string) {
-    return new PlaywrightValue(this.input.getByPlaceholder(placeholderText), {
-      name: `placeholder=${placeholderText}`,
-      logger: this.logger,
-    });
-  }
-
-  public getByTitle(title: string) {
-    return new PlaywrightValue(this.input.getByTitle(title), {
-      name: `title=${title}`,
-      logger: this.logger,
-    });
-  }
-
-  public getByTestId(testId: string) {
-    return new PlaywrightValue(this.input.getByTestId(testId), {
-      name: `testId=${testId}`,
-      logger: this.logger,
-    });
-  }
-
-  public getByText(text: string) {
-    return new PlaywrightValue(this.input.getByText(text), {
-      name: `text=${text}`,
-      logger: this.logger,
-    });
-  }
-
-  public getByRole(role: Role, opts: RoleOptions) {
-    return new PlaywrightValue(this.input.getByRole(role, opts), {
-      name: `role=${role}`,
-      logger: this.logger,
-    });
-  }
-
-  public getByXpath(selector: string, opts?: FindOpts) {
-    return new PlaywrightValue(this.input.locator(`xpath=${selector}`, opts), {
-      name: selector,
-      logger: this.logger,
-    });
-  }
-
-  public getByTag(tags: string | string[]) {
-    if (Array.isArray(tags)) {
-      return this.getByXpath('//' + tags.join(' | //')).as(
-        humanReadableList(
-          tags.map(tag => `<${tag}>`),
-          ',',
-          'or',
-        ),
-      );
-    }
-    return this.getByXpath(`//${tags}`).as(`<${tags}>`);
-  }
-
-  public getByAttribute(attributeName: string, value?: string) {
-    return value === undefined
-      ? this.getByXpath(`//*[@${attributeName}]`)
-      : this.getByXpath(`//*[@${attributeName}=${value}]`);
-  }
-
-  public having(has: PlaywrightValue | string | RegExp) {
-    const isLocator = has instanceof PlaywrightValue;
-    const filtered = this.input.filter({
-      has: isLocator ? has.$ : undefined,
-      hasText: isLocator ? undefined : has,
-    });
-    const name = isLocator
-      ? `${this.name} having ${has.name}`
-      : `${this.name} having text ${has}`;
-    return new PlaywrightValue(filtered, {
-      name,
-      logger: this.logger,
-    });
   }
 
   public async largest(): Promise<PlaywrightValue> {

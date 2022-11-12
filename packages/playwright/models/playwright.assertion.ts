@@ -129,7 +129,7 @@ export class PlaywrightAssertion extends TestBase {
     this.message.push('exist');
     return this.execute(async item => {
       const count = await item.$.count();
-      return { pass: count > 0 };
+      return { pass: count > 0, actualValue: item.$['_selector'] };
     });
   }
 

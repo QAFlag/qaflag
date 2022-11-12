@@ -1,0 +1,22 @@
+import SelectFilter from './select-filter';
+import FindQuery from './find-query';
+
+class SiblingFilter implements SelectFilter {
+  constructor(
+    public readonly input: FindQuery,
+    private readonly separator: string,
+  ) {}
+
+  public apply(previous: FindQuery): FindQuery {
+    return new FindQuery(
+      `${this.input.selector} ${this.separator} ${previous.selector}`,
+      `${this.input.name} with sibling ${previous.name}`,
+    );
+  }
+}
+
+export const sibling = (selector: string | FindQuery) =>
+  new SiblingFilter(FindQuery.create(selector), '~');
+
+export const previousSibling = (selector: string | FindQuery) =>
+  new SiblingFilter(FindQuery.create(selector), '+');

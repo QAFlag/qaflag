@@ -1,16 +1,16 @@
 import {
   Context,
   ContextInterface,
-  humanReadableList,
   ScenarioInterface,
   StringValue,
 } from '@qaflag/core';
 import { Locator, PageScreenshotOptions } from 'playwright';
-import { Role, RoleOptions } from '../types/role';
 import { PlaywrightInstance } from './playwright.adapter';
 import { PlaywrightValue } from './playwright.value';
 import { ClickOpts } from './pointer';
 import { WaitForNavigationOpts, WaitForUrlOpts } from './wait-for';
+import FindQuery from '../selectors/find-query';
+import SelectFilter from '../selectors/select-filter';
 
 export type NavigationOpts =
   | {
@@ -56,88 +56,33 @@ export class PlaywrightContext extends Context implements ContextInterface {
     return this.playwright.context;
   }
 
-  public find(selector: string, opts?: FindOpts): PlaywrightValue {
-    return new PlaywrightValue(this.playwright.page.locator(selector, opts), {
-      name: selector,
-      logger: this.scenario.logger,
-    });
-  }
-
-  public getByAltText(altText: string) {
-    return new PlaywrightValue(this.playwright.page.getByAltText(altText), {
-      name: `alt=${altText}`,
-      logger: this.scenario.logger,
-    });
-  }
-
-  public getByPlaceholder(placeholderText: string) {
+  public find(
+    selector: string | FindQuery,
+    ...subQueries: Array<SelectFilter | string | FindQuery>
+  ): PlaywrightValue {
+    const inputQuery = FindQuery.create(selector);
+    const finalQuery = inputQuery.apply(subQueries);
+    console.log(finalQuery.selector);
     return new PlaywrightValue(
-      this.playwright.page.getByPlaceholder(placeholderText),
+      this.playwright.page.locator(finalQuery.selector),
       {
-        name: `placeholder=${placeholderText}`,
+        selector: finalQuery.selector,
+        name: finalQuery.name,
         logger: this.scenario.logger,
       },
     );
   }
 
-  public getByTitle(title: string) {
-    return new PlaywrightValue(this.playwright.page.getByTitle(title), {
-      name: `title=${title}`,
-      logger: this.scenario.logger,
-    });
+  public async exists(
+    selector: string | FindQuery,
+    ...subQueries: Array<SelectFilter | string | FindQuery>
+  ) {
+    const element = this.find(selector, ...subQueries);
+    await element.must.exist();
+    return element;
   }
 
-  public getByTestId(testId: string) {
-    return new PlaywrightValue(this.playwright.page.getByTestId(testId), {
-      name: `testId=${testId}`,
-      logger: this.scenario.logger,
-    });
-  }
-
-  public getByText(text: string, opts?: { exact?: boolean }) {
-    return new PlaywrightValue(this.playwright.page.getByText(text, opts), {
-      name: `text=${text}`,
-      logger: this.scenario.logger,
-    });
-  }
-
-  public getByRole(role: Role, opts: RoleOptions) {
-    return new PlaywrightValue(this.playwright.page.getByRole(role, opts), {
-      name: `role=${role}`,
-      logger: this.logger,
-    });
-  }
-
-  public getByXpath(selector: string, opts?: FindOpts) {
-    return new PlaywrightValue(
-      this.playwright.page.locator(`xpath=${selector}`, opts),
-      {
-        name: selector,
-        logger: this.scenario.logger,
-      },
-    );
-  }
-
-  public getByTag(tags: string | string[]) {
-    if (Array.isArray(tags)) {
-      return this.getByXpath('//' + tags.join(' | //')).as(
-        humanReadableList(
-          tags.map(tag => `<${tag}>`),
-          ',',
-          'or',
-        ),
-      );
-    }
-    return this.getByXpath(`//${tags}`).as(`<${tags}>`);
-  }
-
-  public getByAttribute(attributeName: string, value?: string) {
-    return value === undefined
-      ? this.getByXpath(`//*[@${attributeName}]`)
-      : this.getByXpath(`//*[@${attributeName}=${value}]`);
-  }
-
-  public async getClosest(
+  protected async getClosest(
     selector: string,
     to: PlaywrightValue,
     opts: {
@@ -188,44 +133,6 @@ export class PlaywrightContext extends Context implements ContextInterface {
       throw `Could not find any ${selector} close to ${to.name}`;
     }
     return elements[smallestIndex].as(name);
-  }
-
-  public exists(element: PlaywrightValue): Promise<PlaywrightValue>;
-  public exists(selector: string, opts?: FindOpts): Promise<PlaywrightValue>;
-  public async exists(
-    selector: string | PlaywrightValue,
-    opts?: FindOpts,
-  ): Promise<PlaywrightValue> {
-    const element = await this.findOverload(selector, opts);
-    await element.must.exist();
-    return element;
-  }
-
-  public visible(element: PlaywrightValue): Promise<PlaywrightValue>;
-  public visible(selector: string, opts?: FindOpts): Promise<PlaywrightValue>;
-  public async visible(
-    selector: string | PlaywrightValue,
-    opts?: FindOpts,
-  ): Promise<PlaywrightValue> {
-    const element = await this.findOverload(selector, opts);
-    await element.must.be.visible();
-    return element;
-  }
-
-  public hidden(element: PlaywrightValue): Promise<PlaywrightValue>;
-  public hidden(selector: string, opts?: FindOpts): Promise<PlaywrightValue>;
-  public async hidden(
-    selector: string | PlaywrightValue,
-    opts?: FindOpts,
-  ): Promise<PlaywrightValue> {
-    const element = await this.findOverload(selector, opts);
-    await element.must.be.hidden();
-    return element;
-  }
-
-  public async count(selector: string, opts?: FindOpts) {
-    const locator = this.find(selector, opts);
-    return locator.count();
   }
 
   public async title() {
@@ -279,12 +186,5 @@ export class PlaywrightContext extends Context implements ContextInterface {
     else if (this.persona.hasRemote) await element.mouse.click(opts);
     else if (this.persona.hasKeyboard) await element.keyboard.press('Enter');
     return element;
-  }
-
-  private async findOverload(
-    selector: string | PlaywrightValue,
-    opts?: FindOpts,
-  ): Promise<PlaywrightValue> {
-    return typeof selector == 'string' ? this.find(selector, opts) : selector;
   }
 }

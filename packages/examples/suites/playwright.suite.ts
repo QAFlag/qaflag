@@ -1,5 +1,12 @@
 import { Scenario, Suite } from '@qaflag/core';
-import { PlaywrightContext, PlaywrightScenario } from '@qaflag/playwright';
+import {
+  ariaLabel,
+  near,
+  PlaywrightContext,
+  PlaywrightScenario,
+  text,
+  visible,
+} from '@qaflag/playwright';
 
 export class GoogleSearch extends Suite({
   title: 'Test Google Search',
@@ -11,8 +18,9 @@ export class GoogleSearch extends Suite({
   })
   async queryForMyGithub(context: PlaywrightContext) {
     const searchTerm = 'Jason Byrne Github';
-    const button = await context.exists("text='Google Search' >> visible=true");
-    const textbox = await context.exists("[aria-label='Search']");
+    const button = await context.exists(text('Google Search'), visible);
+    const textbox = context.find('input', ariaLabel('Search'));
+    await textbox.must.exist();
     await textbox.must.be.visible();
     await textbox.must.not.be.hidden();
     await textbox.must.all.be.visible();
@@ -22,22 +30,9 @@ export class GoogleSearch extends Suite({
     await textbox.must.be.in.focus();
     await button.mouse.click();
     await context.waitForNavigation();
-    await context.exists("'Jason Byrne jasonbyrne - GitHub' >> visible=true");
+    await context.find("'Jason Byrne jasonbyrne - GitHub'", visible).exists();
+    context.find('input', near(').logo', 200));
     const value = await textbox.first.value();
     value.must.equal(searchTerm);
-  }
-
-  @Scenario({
-    uri: 'GET /',
-  })
-  async testHomepage(context: PlaywrightContext) {
-    const logo = await context.find('img').largest();
-    const altText = await logo.attribute('alt');
-    altText.must.equal('Google');
-    const count = await context.getByTag(['p', 'a']).count();
-    count.must.be.greaterThan(0);
-    const input = await context.getClosest('input', logo);
-    await input.must.exist();
-    context.debug(input);
   }
 }
