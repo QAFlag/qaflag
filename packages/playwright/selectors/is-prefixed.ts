@@ -36,7 +36,7 @@ export const extractPrefix = (selector: string) => {
 
 export const extractAttribute = (selector: string) => {
   const matches = selector.match(
-    /^([a-z][^ ]*)?@([^=]+)((=|\*=|^=|~=|$=|==)(.+))?$/,
+    /^([a-z\*][^ ]*)?@([^=]+)((=|\*=|^=|~=|$=|==|\|=)(.+))?$/,
   );
   if (!matches) return null;
   const quoted = extractText(matches[5] || '');

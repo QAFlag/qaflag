@@ -11,6 +11,7 @@ import { ClickOpts } from './pointer';
 import { WaitForNavigationOpts, WaitForUrlOpts } from './wait-for';
 import FindQuery from '../selectors/find-query';
 import SelectFilter from '../selectors/select-filter';
+import { StateSelector } from '../selectors';
 
 export type NavigationOpts =
   | {
@@ -66,14 +67,13 @@ export class PlaywrightContext extends Context implements ContextInterface {
   }
 
   public find(
-    selector: string | FindQuery | RegExp,
+    selector: string | FindQuery | RegExp | StateSelector,
     ...subQueries: Array<SelectFilter | string | RegExp | FindQuery>
   ): PlaywrightValue {
     const inputQuery = FindQuery.create(
       selector instanceof RegExp ? String(selector) : selector,
     );
     const finalQuery = inputQuery.apply(subQueries);
-    this.logger.debug(finalQuery.selector);
     return new PlaywrightValue(
       this.playwright.page.locator(finalQuery.selector),
       {
@@ -85,7 +85,7 @@ export class PlaywrightContext extends Context implements ContextInterface {
   }
 
   public async exists(
-    selector: string | FindQuery | RegExp,
+    selector: string | FindQuery | RegExp | StateSelector,
     ...subQueries: Array<SelectFilter | string | RegExp | FindQuery>
   ) {
     const element = this.find(selector, ...subQueries);

@@ -65,17 +65,17 @@ export class Mouse implements PointerInterface {
 
   public async click(opts?: ClickOpts) {
     this.locator.logger.action('CLICK', this.locator);
-    return this.locator.$.click(opts);
+    return this.locator.first.$.click(opts);
   }
 
   public async hover(opts?: HoverOpts) {
     this.locator.logger.action('HOVER', this.locator);
-    return this.locator.$.hover(opts);
+    return this.locator.first.$.hover(opts);
   }
 
   public async doubleClick(opts?: ClickOpts) {
     this.locator.logger.action('DCLICK', this.locator);
-    return this.locator.$.dblclick(opts);
+    return this.locator.first.$.dblclick(opts);
   }
 
   public async longPress(opts?: LongPressOpts) {
@@ -94,26 +94,26 @@ export class Mouse implements PointerInterface {
 
   public async dragTo(destination: PlaywrightValue, opts?: DragOpts) {
     this.locator.logger.action('DRAG', this.locator, destination.name);
-    return this.locator.$.dragTo(destination.$, opts);
+    return this.locator.first.$.dragTo(destination.$, opts);
   }
 
   public async selectText(opts?: PointerOpts) {
     this.locator.logger.action('SELECT', this.locator);
-    return this.locator.$.selectText(opts);
+    return this.locator.first.$.selectText(opts);
   }
 }
 
 export class Touch extends Mouse implements PointerInterface {
   public async click(opts?: TouchOpts) {
     this.locator.logger.action('TAP', this.locator);
-    return this.locator.$.tap(opts);
+    return this.locator.first.$.tap(opts);
   }
 
   public async doubleClick(opts?: DoubleTapOpts) {
     this.locator.logger.action('DTAP', this.locator);
     const page = this.locator.$.page();
-    await this.locator.$.tap(opts);
+    await this.locator.first.$.tap(opts);
     await page.waitForTimeout(opts?.delayBetweenMs || 300);
-    await this.locator.$.tap(opts);
+    await this.locator.first.$.tap(opts);
   }
 }

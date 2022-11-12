@@ -78,24 +78,21 @@ export class PlaywrightValue
     });
   }
 
-  public find(selector: string, opts?: FindOpts) {
-    return new PlaywrightValue(this.input.locator(selector, opts), {
+  public find(selector: string) {
+    return new PlaywrightValue(this.input.locator(selector), {
       ...this.opts,
       name: `${selector} in ${this.name}`,
     });
   }
 
   public async exists(): Promise<PlaywrightValue>;
-  public async exists(
-    selector?: string,
-    opts?: FindOpts,
-  ): Promise<PlaywrightValue>;
-  public async exists(selector?: string, opts?: FindOpts) {
+  public async exists(selector?: string): Promise<PlaywrightValue>;
+  public async exists(selector?: string) {
     if (selector === undefined) {
       this.must.exist();
       return this;
     }
-    const locator = this.find(selector, opts);
+    const locator = this.find(selector);
     await locator.must.exist();
     return locator;
   }

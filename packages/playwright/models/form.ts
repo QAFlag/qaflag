@@ -74,7 +74,7 @@ export class Form implements FormInterface {
 
   public async selectByText(text: string | RegExp, opts?: FormOpts) {
     const optionToSelect = await this.locator
-      .find('option', {
+      .locator('option', {
         hasText: text,
       })
       .textContent();

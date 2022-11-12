@@ -20,6 +20,7 @@ import {
   contains,
 } from './modifiers';
 import SelectFilter from './select-filter';
+import { StateSelector } from './state-selector';
 
 const prefixMapper: { [prefix: string]: SelectModifier } = {
   alt,
@@ -33,9 +34,13 @@ const prefixMapper: { [prefix: string]: SelectModifier } = {
 };
 
 export default class FindQuery {
-  public static create(input: string | FindQuery, name?: string) {
+  public static create(
+    input: string | FindQuery | StateSelector,
+    name?: string,
+  ) {
     // Already a find query? Leave it alone
     if (input instanceof FindQuery) return input;
+    if (input instanceof StateSelector) return input.toPrimarySelector();
     if (typeof name == 'string') return new FindQuery(input, name);
     // Look for quoted text
     const matchText = extractText(input);
@@ -80,9 +85,15 @@ export default class FindQuery {
 
   public next(input: FindQuery | string) {
     const query = FindQuery.create(input);
+    if (query.selector.match(/^[[:]/i)) {
+      return new FindQuery(
+        `${this.selector}${query.selector}`,
+        this.name + ' with ' + query.name,
+      );
+    }
     return new FindQuery(
-      `${this.selector}${query.selector}`,
-      this.name + ' with ' + query.name,
+      `${this.selector} ${query.selector}`,
+      this.name + ' ' + query.name,
     );
   }
 
