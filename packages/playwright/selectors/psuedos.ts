@@ -1,23 +1,44 @@
 import FindQuery from './find-query';
 import { StateSelector } from './state-selector';
 
-export const field = new StateSelector(
-  'is(input, select, option, textarea):not(input[type="hidden"])',
-  'form field',
+export const banner = new StateSelector(
+  'is([role="banner"], header)',
+  'banner',
 );
-export const button = new StateSelector(
-  'is(button, input[type="button"], input[type="submit"], input[type="reset"], a.button, [role="button"])',
-  'button',
+export const dialog = new StateSelector(
+  'is([role="dialog"], dialog, .modal-dialog, .modal, .dialog, [uk-modal])',
+  'dialog',
 );
+
+export const heading = new StateSelector(
+  'is(h1, h2, h3, h4, h5, h6, header, [role="heading"])',
+  'heading',
+);
+export const main = new StateSelector(
+  'is(.main, #main, main, [role="main"])',
+  'header',
+);
+
+export const nav = new StateSelector(
+  'is(.nav, #nav, nav, [role="navigation"], .navbar, .pure-menu, [uk-navbar])',
+  'header',
+);
+
 export const header = new StateSelector('is(h1, h2, h3, h4, h5, h6)', 'header');
 export const bold = new StateSelector(
   'is(h1, h2, h3, h4, h5, h6, b, strong)',
   'bold',
 );
-
 export const image = new StateSelector('is(img, svg)', 'image');
-
 export const link = new StateSelector('is(:any-link, [role="link"])', 'link');
+export const field = new StateSelector(
+  'is(input, select, option, textarea):not(input[type="hidden"])',
+  'form field',
+);
+export const button = new StateSelector(
+  'is(button, input[type="button"], input[type="submit"], input[type="reset"], .button, .btn, [role="button"], .pure-button, .uk-button)',
+  'button',
+);
 
 export const top = FindQuery.create('.qaFlagTop', 'top of page');
 export const left = FindQuery.create('.qaFlagLeft', 'left of page');
