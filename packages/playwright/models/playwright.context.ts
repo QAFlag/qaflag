@@ -66,12 +66,14 @@ export class PlaywrightContext extends Context implements ContextInterface {
   }
 
   public find(
-    selector: string | FindQuery,
-    ...subQueries: Array<SelectFilter | string | FindQuery>
+    selector: string | FindQuery | RegExp,
+    ...subQueries: Array<SelectFilter | string | RegExp | FindQuery>
   ): PlaywrightValue {
-    const inputQuery = FindQuery.create(selector);
+    const inputQuery = FindQuery.create(
+      selector instanceof RegExp ? String(selector) : selector,
+    );
     const finalQuery = inputQuery.apply(subQueries);
-    console.log(finalQuery.selector);
+    this.logger.debug(finalQuery.selector);
     return new PlaywrightValue(
       this.playwright.page.locator(finalQuery.selector),
       {
@@ -83,8 +85,8 @@ export class PlaywrightContext extends Context implements ContextInterface {
   }
 
   public async exists(
-    selector: string | FindQuery,
-    ...subQueries: Array<SelectFilter | string | FindQuery>
+    selector: string | FindQuery | RegExp,
+    ...subQueries: Array<SelectFilter | string | RegExp | FindQuery>
   ) {
     const element = this.find(selector, ...subQueries);
     await element.must.exist();

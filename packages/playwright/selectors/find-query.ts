@@ -87,9 +87,10 @@ export default class FindQuery {
   }
 
   public apply(
-    subQueries: Array<SelectFilter | string | FindQuery>,
+    subQueries: Array<SelectFilter | string | FindQuery | RegExp>,
   ): FindQuery {
     return subQueries.reduce((previous: FindQuery, current) => {
+      if (current instanceof RegExp) return this.next(String(current));
       if (typeof current == 'string' || current instanceof FindQuery) {
         return this.next(current);
       }
