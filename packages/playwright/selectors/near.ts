@@ -17,3 +17,6 @@ class NearFilter implements SelectFilter {
 
 export const near = (closeTo: string | FindQuery, maxDistance: number = 50) =>
   new NearFilter(FindQuery.create(closeTo), maxDistance);
+
+export const beside = (closeTo: string | FindQuery, maxDistance: number = 5) =>
+  new NearFilter(FindQuery.create(closeTo), maxDistance);

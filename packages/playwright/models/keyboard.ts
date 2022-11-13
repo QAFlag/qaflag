@@ -12,7 +12,7 @@ export class Keyboard implements KeyboardInterface {
 
   public async input(text: string, opts?: KeyboardOpts) {
     this.locator.logger.action('INPUT', this.locator, text);
-    return this.locator.$.type(text, opts);
+    return this.locator.first.$.type(text, opts);
   }
 
   public async inputMasked(text: string, opts?: KeyboardOpts) {
@@ -21,21 +21,21 @@ export class Keyboard implements KeyboardInterface {
       this.locator,
       ''.padStart(text.length, '*'),
     );
-    return this.locator.$.type(text, opts);
+    return this.locator.first.$.type(text, opts);
   }
 
   public async press(key: string, opts?: KeyboardOpts) {
     this.locator.logger.action('PRESS', this.locator, key);
-    return this.locator.$.press(key, opts);
+    return this.locator.first.$.press(key, opts);
   }
 
   public async down(key: string) {
     this.locator.logger.action('DOWN', this.locator, key);
-    return this.locator.$.page().keyboard.down(key);
+    return this.locator.first.$.page().keyboard.down(key);
   }
 
   public async up(key: string, opts?: KeyboardOpts) {
     this.locator.logger.action('UP', this.locator, key);
-    return this.locator.$.page().keyboard.up(key);
+    return this.locator.first.$.page().keyboard.up(key);
   }
 }
