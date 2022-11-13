@@ -11,8 +11,8 @@ import { startServer } from './webserver/server';
 import * as open from 'open';
 import { build } from './actions/build';
 import { generate } from './actions/generate/generate';
-import { printLines } from 'utils/print';
-import { exitError } from 'utils/exit';
+import { printLines } from './utils/print';
+import { exitError } from './utils/exit';
 
 // Initialize Project
 const project = new Project({
