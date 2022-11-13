@@ -36,3 +36,4 @@ export * from './utils/cookies';
 export * from './utils/to-type';
 export * from './utils/uri';
 export * from './utils/form';
+export * from './utils/as';

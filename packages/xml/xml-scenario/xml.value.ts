@@ -13,6 +13,10 @@ export class XmlValue extends ValueAbstract<CheerioElement> {
     return test(this, 'should');
   }
 
+  public get could(): Must {
+    return test(this, 'could');
+  }
+
   public get length() {
     return this.createNumber(this.$.length, { name: `Length of ${this.name}` });
   }

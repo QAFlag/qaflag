@@ -1,5 +1,4 @@
-import SelectFilter from './select-filter';
-import FindQuery from './find-query';
+import { SelectFilter, FindQuery } from './';
 
 class WithinSelector implements SelectFilter {
   constructor(public readonly input: FindQuery) {}

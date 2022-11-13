@@ -11,8 +11,13 @@ import { Keyboard } from './keyboard';
 import { Mouse, Touch } from './pointer';
 import { PlaywrightAssertion } from './playwright.assertion';
 import { FindOpts } from './playwright.context';
-import { PlaywrightMust } from '../types/playwrite-must';
-import { TimeoutOpts } from '../types/timeout-opts';
+import {
+  PrimarySelector,
+  SubQueries,
+  TimeoutOpts,
+  PlaywrightMust,
+} from '../types';
+import { FindQuery } from '../selectors';
 
 export class PlaywrightValue
   extends ValueAbstract<Locator>
@@ -23,6 +28,10 @@ export class PlaywrightValue
     protected opts: ValueOpts & { selector: string },
   ) {
     super(input, opts);
+  }
+
+  public get selector(): string {
+    return this.input['_selector'];
   }
 
   public get keyboard() {
@@ -47,6 +56,10 @@ export class PlaywrightValue
 
   public get should(): PlaywrightMust {
     return new PlaywrightAssertion(this, 'should');
+  }
+
+  public get could(): PlaywrightMust {
+    return new PlaywrightAssertion(this, 'could');
   }
 
   public get first() {
@@ -78,21 +91,43 @@ export class PlaywrightValue
     });
   }
 
-  public find(selector: string) {
-    return new PlaywrightValue(this.input.locator(selector), {
+  public find(selector: PrimarySelector, ...subQueries: SubQueries[]) {
+    const query = FindQuery.process(selector, ...subQueries);
+    return new PlaywrightValue(this.input.locator(query.selector), {
       ...this.opts,
       name: `${selector} in ${this.name}`,
     });
   }
 
-  public async exists(): Promise<PlaywrightValue>;
-  public async exists(selector?: string): Promise<PlaywrightValue>;
-  public async exists(selector?: string) {
+  public async visible(): Promise<PlaywrightValue>;
+  public async visible(
+    selector: PrimarySelector,
+    ...subQueries: SubQueries[]
+  ): Promise<PlaywrightValue>;
+  public async visible(
+    selector?: PrimarySelector,
+    ...subQueries: SubQueries[]
+  ) {
     if (selector === undefined) {
       this.must.exist();
       return this;
     }
-    const locator = this.find(selector);
+    const locator = this.find(selector, ...subQueries);
+    await locator.must.be.visible();
+    return locator;
+  }
+
+  public async exists(): Promise<PlaywrightValue>;
+  public async exists(
+    selector: PrimarySelector,
+    ...subQueries: SubQueries[]
+  ): Promise<PlaywrightValue>;
+  public async exists(selector?: PrimarySelector, ...subQueries: SubQueries[]) {
+    if (selector === undefined) {
+      this.must.exist();
+      return this;
+    }
+    const locator = this.find(selector, ...subQueries);
     await locator.must.exist();
     return locator;
   }
@@ -152,12 +187,6 @@ export class PlaywrightValue
         name: `Attribute ${name} of ${this.name}`,
       },
     );
-  }
-
-  public async value(opts?: TimeoutOpts) {
-    return this.createString(await this.input.inputValue(opts), {
-      name: `Value of ${this.name}`,
-    });
   }
 
   public async textContent(opts?: TimeoutOpts) {

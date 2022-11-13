@@ -6,10 +6,10 @@ export interface StringMust {
   match: StringMustMatch;
   not: StringMust;
   equal(value: any): TestResult<StringValue>;
-  exactly(value: string): TestResult<StringValue>;
-  contain(value: string | string[]): TestResult<StringValue>;
-  startWith(value: string | string[]): TestResult<StringValue>;
-  endWith(value: string | string[]): TestResult<StringValue>;
+  exactly(value: string | StringValue): TestResult<StringValue>;
+  contain(value: string | string[] | StringValue): TestResult<StringValue>;
+  startWith(value: string | string[] | StringValue): TestResult<StringValue>;
+  endWith(value: string | string[] | StringValue): TestResult<StringValue>;
 }
 
 interface StringMustMatch {
@@ -28,6 +28,7 @@ interface StringMustBe extends StringMustBeAn {
   onlyLetters(): TestResult<StringValue>;
   onlyNumbers(): TestResult<StringValue>;
   alphanumeric(): TestResult<StringValue>;
+  containedIn(value: string | string[] | StringValue): TestResult<StringValue>;
 }
 
 interface StringMustBeAn {

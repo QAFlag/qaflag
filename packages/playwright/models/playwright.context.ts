@@ -9,9 +9,8 @@ import { PlaywrightInstance } from './playwright.adapter';
 import { PlaywrightValue } from './playwright.value';
 import { ClickOpts } from './pointer';
 import { WaitForNavigationOpts, WaitForUrlOpts } from './wait-for';
-import FindQuery from '../selectors/find-query';
-import SelectFilter from '../selectors/select-filter';
-import { StateSelector } from '../selectors';
+import { FindQuery } from '../selectors';
+import { PrimarySelector, SubQueries } from '../types';
 
 export type NavigationOpts =
   | {
@@ -67,52 +66,37 @@ export class PlaywrightContext extends Context implements ContextInterface {
   }
 
   public find(
-    selector: string | FindQuery | RegExp | StateSelector,
-    ...subQueries: Array<SelectFilter | string | RegExp | FindQuery>
+    selector: PrimarySelector,
+    ...subQueries: SubQueries[]
   ): PlaywrightValue {
-    const inputQuery = FindQuery.create(
-      selector instanceof RegExp ? String(selector) : selector,
-    );
-    const finalQuery = inputQuery.apply(subQueries);
-    return new PlaywrightValue(
-      this.playwright.page.locator(finalQuery.selector),
-      {
-        selector: finalQuery.selector,
-        name: finalQuery.name,
-        logger: this.scenario.logger,
-      },
-    );
+    const query = FindQuery.process(selector, ...subQueries);
+    return new PlaywrightValue(this.playwright.page.locator(query.selector), {
+      selector: query.selector,
+      name: query.name,
+      logger: this.scenario.logger,
+    });
   }
 
-  public async exists(
-    selector: string | FindQuery | RegExp | StateSelector,
-    ...subQueries: Array<SelectFilter | string | RegExp | FindQuery>
-  ) {
+  public async exists(selector: PrimarySelector, ...subQueries: SubQueries[]) {
     const element = this.find(selector, ...subQueries);
     await element.must.exist();
     return element;
   }
 
-  public async waitFor(
-    selector: string | FindQuery | RegExp | StateSelector,
-    ...subQueries: Array<SelectFilter | string | RegExp | FindQuery>
-  ) {
+  public async waitFor(selector: PrimarySelector, ...subQueries: SubQueries[]) {
     const element = this.find(selector, ...subQueries);
     return element.waitFor();
   }
 
-  public async visible(
-    selector: string | FindQuery | RegExp | StateSelector,
-    ...subQueries: Array<SelectFilter | string | RegExp | FindQuery>
-  ) {
+  public async visible(selector: PrimarySelector, ...subQueries: SubQueries[]) {
     const element = this.find(selector, ...subQueries);
     await element.must.be.visible();
     return element;
   }
 
   public async scrollTo(
-    selector: string | FindQuery | RegExp | StateSelector,
-    ...subQueries: Array<SelectFilter | string | RegExp | FindQuery>
+    selector: PrimarySelector,
+    ...subQueries: SubQueries[]
   ) {
     const element = this.find(selector, ...subQueries);
     await element.must.be.visible();

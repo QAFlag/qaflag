@@ -1,5 +1,4 @@
-import SelectFilter from './select-filter';
-import FindQuery from './find-query';
+import { SelectFilter, FindQuery } from './';
 import { ordinal } from '@qaflag/core';
 
 class NthFilter implements SelectFilter {

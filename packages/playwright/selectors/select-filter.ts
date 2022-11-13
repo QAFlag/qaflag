@@ -1,5 +1,5 @@
-import FindQuery from './find-query';
+import { FindQuery } from './';
 
-export default interface SelectFilter {
+export interface SelectFilter {
   apply(previous: FindQuery): FindQuery;
 }

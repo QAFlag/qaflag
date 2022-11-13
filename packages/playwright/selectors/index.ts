@@ -15,3 +15,4 @@ export * from './not';
 export * from './and';
 export * from './psuedos';
 export * from './nth';
+export * from './is-prefixed';

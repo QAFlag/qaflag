@@ -26,6 +26,10 @@ export interface FormInterface {
   select(value: string | string[]): Promise<string[]>;
   input(text: string): Promise<void>;
   file(path: string | string[]): Promise<void>;
+  value():
+    | StringValue
+    | ArrayValue<string>
+    | Promise<StringValue | ArrayValue<string>>;
 }
 
 export interface KeyboardInterface {
@@ -56,10 +60,6 @@ export interface UiElementInterface<InputType>
   find(selector: string): UiElementInterface<InputType>;
   text(): StringValue | Promise<StringValue>;
   count(): NumericValue | Promise<NumericValue>;
-  value():
-    | StringValue
-    | ArrayValue<string>
-    | Promise<StringValue | ArrayValue<string>>;
   attribute(name: string): StringValue | Promise<StringValue>;
   tagName(): StringValue | Promise<StringValue>;
 }

@@ -157,7 +157,7 @@ export class PlaywrightAssertion extends TestBase {
   public async value(value: string, opts?: TimeoutOpts) {
     this.message.push(`value <${value}>`);
     return this.execute(async item => {
-      const elementValue = (await item.value(opts)).$;
+      const elementValue = (await item.form.value(opts)).$;
       return {
         pass: elementValue == value,
         actualValue: elementValue,

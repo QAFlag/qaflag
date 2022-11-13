@@ -2,7 +2,7 @@ import { ValueInterface } from '../value/value.interface';
 import validator from 'validator';
 import is from '@sindresorhus/is';
 import { humanReadableList } from '../utils/helpers';
-import { ArrayValue, NumericValue } from '../value/values';
+import { ArrayValue, NumericValue, StringValue } from '../value/values';
 import { mustShouldCould, TestBase, TestEvalEnum } from './test-base';
 import { Must } from './generic.interface';
 import { TestResult } from './result';
@@ -129,8 +129,9 @@ export class Test<ValueWrapper extends ValueInterface>
   }
 
   public exactly(value: any) {
-    this.message.push(`exactly ${value}`);
-    return this.execute(item => item === value);
+    const thatValue = value instanceof StringValue ? value.$ : value;
+    this.message.push(`exactly ${thatValue}`);
+    return this.execute(item => item === thatValue);
   }
 
   public include(value: any) {
@@ -140,7 +141,27 @@ export class Test<ValueWrapper extends ValueInterface>
     );
   }
 
-  public contain(thatValue: string | string[]) {
+  public containedIn(value: string | string[] | StringValue) {
+    const thatValue = value instanceof StringValue ? value.$ : value;
+    this.message.push(`contained in ${thatValue}`);
+    return this.execute(thisValue => {
+      if (typeof thisValue == 'string') {
+        return Array.isArray(thatValue)
+          ? thatValue.some(x => validator.contains(x, thisValue))
+          : validator.contains(thatValue, thisValue);
+      }
+      if (Array.isArray(thisValue)) {
+        return thisValue.some(x => thatValue.includes(x));
+      }
+      // Convert to string
+      return Array.isArray(thatValue)
+        ? thatValue.some(x => validator.contains(x, String(thisValue)))
+        : validator.contains(thatValue, String(thisValue));
+    });
+  }
+
+  public contain(value: string | string[] | StringValue) {
+    const thatValue = value instanceof StringValue ? value.$ : value;
     this.message.push(`contain ${thatValue}`);
     return this.execute(thisValue => {
       if (typeof thisValue == 'string') {
@@ -253,23 +274,25 @@ export class Test<ValueWrapper extends ValueInterface>
     );
   }
 
-  public startWith(value: string | string[]) {
-    this.message.push(`start with ${value}`);
+  public startWith(value: string | string[] | StringValue) {
+    const thatValue = value instanceof StringValue ? value.$ : value;
+    this.message.push(`start with ${thatValue}`);
     return this.execute(item => {
       const str = String(item);
-      return Array.isArray(value)
-        ? value.some(x => str.startsWith(x))
-        : str.startsWith(value);
+      return Array.isArray(thatValue)
+        ? thatValue.some(x => str.startsWith(x))
+        : str.startsWith(thatValue);
     });
   }
 
-  public endWith(value: string | string[]) {
-    this.message.push(`end with ${value}`);
+  public endWith(value: string | string[] | StringValue) {
+    const thatValue = value instanceof StringValue ? value.$ : value;
+    this.message.push(`end with ${thatValue}`);
     return this.execute(item => {
       const str = String(item);
-      return Array.isArray(value)
-        ? value.some(x => str.endsWith(x))
-        : str.endsWith(value);
+      return Array.isArray(thatValue)
+        ? thatValue.some(x => str.endsWith(x))
+        : str.endsWith(thatValue);
     });
   }
 

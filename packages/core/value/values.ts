@@ -37,6 +37,7 @@ export abstract class ValueAbstract<InputType>
 
   public abstract must: any;
   public abstract should: any;
+  public abstract could: any;
 
   public get type() {
     return new StringValue(toType(this.input), {
@@ -259,6 +260,10 @@ export class BooleanValue extends PrimitiveValueAbstract<boolean> {
   public get should(): BooleanMust {
     return test(this, 'should');
   }
+
+  public get could(): BooleanMust {
+    return test(this, 'could');
+  }
 }
 
 export class ArrayValue<T = any> extends PrimitiveValueAbstract<T[]> {
@@ -267,6 +272,10 @@ export class ArrayValue<T = any> extends PrimitiveValueAbstract<T[]> {
   }
 
   public get should(): ArrayMust {
+    return test(this, 'should');
+  }
+
+  public get could(): ArrayMust {
     return test(this, 'should');
   }
 
@@ -308,6 +317,10 @@ export class NumericValue extends PrimitiveValueAbstract<number> {
   public get should(): NumberMust {
     return test(this, 'should');
   }
+
+  public get could(): NumberMust {
+    return test(this, 'could');
+  }
 }
 
 export class StringValue extends PrimitiveValueAbstract<string> {
@@ -317,6 +330,10 @@ export class StringValue extends PrimitiveValueAbstract<string> {
 
   public get should(): StringMust {
     return test(this, 'should');
+  }
+
+  public get could(): StringMust {
+    return test(this, 'could');
   }
 
   public get trim() {
@@ -334,6 +351,10 @@ export class DateValue extends PrimitiveValueAbstract<Date> {
 
   public get should(): DateMust {
     return test(this, 'should');
+  }
+
+  public get could(): DateMust {
+    return test(this, 'could');
   }
 
   public get unixTime() {

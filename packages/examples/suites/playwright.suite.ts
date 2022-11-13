@@ -34,7 +34,7 @@ export class GoogleSearch extends Suite({
     await context.waitForNavigation();
     await context.find("'Jason Byrne jasonbyrne - GitHub'", visible).exists();
     context.exists(field, near('head'));
-    const value = await textbox.first.value();
+    const value = await textbox.first.form.value();
     value.must.equal(searchTerm);
   }
 }

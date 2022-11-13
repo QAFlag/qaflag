@@ -20,6 +20,10 @@ export class BoundingBoxValue extends ValueAbstract<BoundingBox> {
     return test(this, 'should');
   }
 
+  public get could(): Must {
+    return test(this, 'could');
+  }
+
   public get x() {
     return this.createNumber(this.input.x, {
       name: `X-Position of ${this.name}`,

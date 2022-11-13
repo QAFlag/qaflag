@@ -1,52 +1,63 @@
-import FindQuery from './find-query';
-import { StateSelector } from './state-selector';
+import { StateSelector, FindQuery } from './';
 
 export const banner = new StateSelector(
-  'is([role="banner"], header)',
+  'is([role="banner"], header):visible',
   'banner',
 );
 export const dialog = new StateSelector(
-  'is([role="dialog"], dialog, .modal-dialog, .modal, .dialog, [uk-modal])',
+  'is([role="dialog"], dialog, .modal-dialog, .modal, .dialog, [uk-modal]):visible',
   'dialog',
 );
 
 export const heading = new StateSelector(
-  'is(h1, h2, h3, h4, h5, h6, header, [role="heading"], thead, legend, hgroup)',
+  'is(h1, h2, h3, h4, h5, h6, header, [role="heading"], thead, legend, hgroup):visible',
   'heading',
 );
 export const main = new StateSelector(
-  'is(.main, #main, main, [role="main"])',
+  'is(.main, #main, main, [role="main"]):visible',
   'header',
 );
 
 export const nav = new StateSelector(
-  'is(.nav, #nav, nav, [role="navigation"], .navbar, .pure-menu, [uk-navbar])',
+  'is(.nav, #nav, nav, [role="navigation"], .navbar, .pure-menu, [uk-navbar]):visible',
   'header',
 );
 
-export const header = new StateSelector('is(h1, h2, h3, h4, h5, h6)', 'header');
+export const header = new StateSelector(
+  'is(h1, h2, h3, h4, h5, h6):visible',
+  'header',
+);
 export const bold = new StateSelector(
-  'is(h1, h2, h3, h4, h5, h6, b, strong, big, dd, mark)',
+  'is(h1, h2, h3, h4, h5, h6, b, strong, big, dd, mark):visible',
   'bold',
 );
-export const image = new StateSelector('is(img, svg, picture)', 'image');
-export const link = new StateSelector('is(:any-link, [role="link"])', 'link');
+export const image = new StateSelector(
+  'is(img, svg, picture):visible',
+  'image',
+);
+export const link = new StateSelector(
+  'is(:any-link, [role="link"]):visible',
+  'link',
+);
 export const field = new StateSelector(
-  'is(input, select, option, textarea):not(input[type="hidden"])',
+  'is(input, select, option, textarea):not(input[type="hidden"]):visible',
   'form field',
 );
 export const textbox = new StateSelector(
-  'is(input[type="text"], input[type="email"], input[type="tel"], input[type="search"], input[type="password"], input[type="url"])',
+  'is(input[type="text"], input[type="email"], input[type="tel"], input[type="search"], input[type="password"], input[type="url"]):visible',
   'textbox',
 );
-export const dropdown = new StateSelector('is(select)', 'dropdown');
+export const dropdown = new StateSelector('is(select):visible', 'dropdown');
 export const checkbox = new StateSelector(
-  'is(input[type="checkbox"])',
+  'is(input[type="checkbox"]):visible',
   'checkbox',
 );
-export const radio = new StateSelector('is(input[type="radio"])', 'radio box');
+export const radio = new StateSelector(
+  'is(input[type="radio"]):visible',
+  'radio box',
+);
 export const button = new StateSelector(
-  'is(button, input[type="button"], input[type="submit"], input[type="image"], input[type="reset"], .button, .btn, [role="button"], .pure-button, .uk-button)',
+  'is(button, input[type="button"], input[type="submit"], input[type="image"], input[type="reset"], .button, .btn, [role="button"], .pure-button, .uk-button):visible',
   'button',
 );
 

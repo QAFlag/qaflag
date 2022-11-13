@@ -1,5 +1,6 @@
 import { ArrayValue, FormInterface, StringValue } from '@qaflag/core';
 import { ElementHandle } from 'playwright';
+import { extractText } from '../selectors';
 import { TimeoutOpts } from '../types/timeout-opts';
 import { PagePosition } from './bounding-box.value';
 import { PlaywrightValue } from './playwright.value';
@@ -9,6 +10,12 @@ export interface DropdownOption {
   value: string;
   index: number;
   selected: boolean;
+}
+
+interface DropdownSelector {
+  value?: string | undefined;
+  label?: string | undefined;
+  index?: number | undefined;
 }
 
 export interface FormOpts {
@@ -80,8 +87,7 @@ export class Form implements FormInterface {
   public async options(
     opts?: TimeoutOpts,
   ): Promise<ArrayValue<DropdownOption>> {
-    const tagName = await this.locator.tagName();
-    if (tagName.$ == 'SELECT') {
+    if (await this.isTag('SELECT')) {
       const options = await this.locator.first.$.evaluate(
         (sel: HTMLSelectElement) => sel.options,
         opts,
@@ -114,40 +120,31 @@ export class Form implements FormInterface {
   }
 
   public async select(
-    value:
-      | number
-      | string
-      | string[]
-      | {
-          value?: string | undefined;
-          label?: string | undefined;
-          index?: number | undefined;
-        },
+    value: number | string | string[] | DropdownSelector,
     opts?: FormOpts,
   ) {
+    const selectThis = (() => {
+      if (typeof value == 'string') {
+        const text = extractText(value);
+        if (text) return { label: text.text };
+        return { value };
+      }
+      if (typeof value == 'number') return { index: value };
+      return value;
+    })();
     this.locator.logger.action('SELECT', this.locator, value.toString());
-    if (typeof value == 'number') {
-      return this.locator.first.$.selectOption(
-        {
-          index: value,
-        },
-        opts,
-      );
-    }
-    return this.locator.first.$.selectOption(value, opts);
-  }
-
-  public async selectByText(text: string | RegExp, opts?: FormOpts) {
-    const optionToSelect = await this.locator.first
-      .locator('option', {
-        hasText: text,
-      })
-      .textContent();
-    return this.select({ label: optionToSelect.$ }, opts);
+    return this.locator.first.$.selectOption(selectThis, opts);
   }
 
   public async file(files: InputFiles, opts?: FormOpts) {
     this.locator.logger.action('FILE', this.locator, files.toString());
     return this.locator.first.$.setInputFiles(files, opts);
+  }
+
+  private async isTag(
+    tag: 'SELECT' | 'INPUT' | 'BUTTON' | 'LABEL',
+  ): Promise<boolean> {
+    const tagName = await this.locator.tagName();
+    return tagName.$ == tag;
   }
 }

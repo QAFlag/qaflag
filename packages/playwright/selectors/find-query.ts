@@ -18,9 +18,10 @@ import {
   attr,
   matches,
   contains,
-} from './modifiers';
-import SelectFilter from './select-filter';
-import { StateSelector } from './state-selector';
+  SelectFilter,
+  StateSelector,
+} from './';
+import { PrimarySelector, SubQueries } from '../types';
 
 const prefixMapper: { [prefix: string]: SelectModifier } = {
   alt,
@@ -33,11 +34,21 @@ const prefixMapper: { [prefix: string]: SelectModifier } = {
   id,
 };
 
-export default class FindQuery {
+export class FindQuery {
+  public static process(
+    selector: PrimarySelector,
+    ...subQueries: SubQueries[]
+  ): FindQuery {
+    const inputQuery: FindQuery = FindQuery.create(
+      selector instanceof RegExp ? String(selector) : selector,
+    );
+    return inputQuery.apply(subQueries);
+  }
+
   public static create(
     input: string | FindQuery | StateSelector,
     name?: string,
-  ) {
+  ): FindQuery {
     // Already a find query? Leave it alone
     if (input instanceof FindQuery) return input;
     if (input instanceof StateSelector) return input.toPrimarySelector();

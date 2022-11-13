@@ -1,5 +1,4 @@
-import SelectFilter from './select-filter';
-import FindQuery from './find-query';
+import { FindQuery, SelectFilter } from './';
 
 class NearFilter implements SelectFilter {
   constructor(
@@ -9,7 +8,7 @@ class NearFilter implements SelectFilter {
 
   public apply(previous: FindQuery): FindQuery {
     return FindQuery.create(
-      `${previous.selector}:near(${this.input.selector}, ${this.maxDistance})`,
+      `${previous.selector}:near(${this.input.selector}, ${this.maxDistance}):visible`,
       `${previous.name} near ${this.input.name}`,
     );
   }

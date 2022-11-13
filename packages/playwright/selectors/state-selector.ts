@@ -1,5 +1,4 @@
-import SelectFilter from './select-filter';
-import FindQuery from './find-query';
+import { SelectFilter, FindQuery } from './';
 import { ucfirst } from '@qaflag/core';
 
 export class StateSelector implements SelectFilter {
