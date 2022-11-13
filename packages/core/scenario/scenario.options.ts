@@ -10,6 +10,7 @@ export interface ScenarioDecoratorOpts extends HttpRequestOptions {
   step?: number;
   persona?: PersonaInterface;
   statusCode?: number;
+  timeout?: number;
   schema?:
     | string
     | ClassConstructor<unknown>
