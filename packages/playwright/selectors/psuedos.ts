@@ -11,7 +11,7 @@ export const dialog = new StateSelector(
 );
 
 export const heading = new StateSelector(
-  'is(h1, h2, h3, h4, h5, h6, header, [role="heading"])',
+  'is(h1, h2, h3, h4, h5, h6, header, [role="heading"], thead, legend, hgroup)',
   'heading',
 );
 export const main = new StateSelector(
@@ -26,10 +26,10 @@ export const nav = new StateSelector(
 
 export const header = new StateSelector('is(h1, h2, h3, h4, h5, h6)', 'header');
 export const bold = new StateSelector(
-  'is(h1, h2, h3, h4, h5, h6, b, strong)',
+  'is(h1, h2, h3, h4, h5, h6, b, strong, big, dd, mark)',
   'bold',
 );
-export const image = new StateSelector('is(img, svg)', 'image');
+export const image = new StateSelector('is(img, svg, picture)', 'image');
 export const link = new StateSelector('is(:any-link, [role="link"])', 'link');
 export const field = new StateSelector(
   'is(input, select, option, textarea):not(input[type="hidden"])',
