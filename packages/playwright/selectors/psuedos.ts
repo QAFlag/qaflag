@@ -35,8 +35,18 @@ export const field = new StateSelector(
   'is(input, select, option, textarea):not(input[type="hidden"])',
   'form field',
 );
+export const textbox = new StateSelector(
+  'is(input[type="text"], input[type="email"], input[type="tel"], input[type="search"], input[type="password"], input[type="url"])',
+  'form field',
+);
+export const dropdown = new StateSelector('is(select)', 'dropdown');
+export const checkbox = new StateSelector(
+  'is(input[type="checkbox"])',
+  'checkbox',
+);
+export const radio = new StateSelector('is(input[type="radio"])', 'radio box');
 export const button = new StateSelector(
-  'is(button, input[type="button"], input[type="submit"], input[type="reset"], .button, .btn, [role="button"], .pure-button, .uk-button)',
+  'is(button, input[type="button"], input[type="submit"], input[type="image"], input[type="reset"], .button, .btn, [role="button"], .pure-button, .uk-button)',
   'button',
 );
 

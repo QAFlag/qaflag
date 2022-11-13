@@ -85,6 +85,8 @@ export class PlaywrightAdapter {
         : undefined,
     });
     await context.addCookies(request.getCookies());
+    context.setDefaultTimeout(1000);
+    context.setDefaultNavigationTimeout(10000);
     const page = await context.newPage();
     page.on('domcontentloaded', () => {
       page.addScriptTag({

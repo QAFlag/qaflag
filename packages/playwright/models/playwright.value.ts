@@ -194,11 +194,13 @@ export class PlaywrightValue
   }
 
   public async focus(opts?: TimeoutOpts) {
-    return this.input.focus(opts);
+    await this.input.focus(opts);
+    return this;
   }
 
   public async scrollTo(opts?: TimeoutOpts) {
-    return this.input.scrollIntoViewIfNeeded(opts);
+    await this.input.scrollIntoViewIfNeeded(opts);
+    return this;
   }
 
   public async parent() {
@@ -226,7 +228,8 @@ export class PlaywrightValue
     state?: 'attached' | 'detached' | 'visible' | 'hidden';
     timeout?: number;
   }) {
-    return this.input.waitFor(opts);
+    await this.input.waitFor(opts);
+    return this;
   }
 
   public async largest(): Promise<PlaywrightValue> {

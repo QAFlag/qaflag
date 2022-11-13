@@ -42,16 +42,16 @@ export class Form implements FormInterface {
       this.locator,
       isChecked ? 'Check' : 'Unechek',
     );
-    return this.locator.$.setChecked(isChecked, opts);
+    return this.locator.first.$.setChecked(isChecked, opts);
   }
 
   public async input(value: string, opts?: FormOpts) {
     this.locator.logger.action('FILL', this.locator, value);
-    return this.locator.$.fill(value, opts);
+    return this.locator.first.$.fill(value, opts);
   }
 
   public async value(opts?: TimeoutOpts) {
-    return new StringValue(await this.locator.$.inputValue(), {
+    return new StringValue(await this.locator.first.$.inputValue(), {
       logger: this.locator.logger,
       name: `Value of ${this.locator.name}`,
     });
@@ -69,11 +69,11 @@ export class Form implements FormInterface {
     opts?: FormOpts,
   ) {
     this.locator.logger.action('SELECT', this.locator, values.toString());
-    return this.locator.$.selectOption(values, opts);
+    return this.locator.first.$.selectOption(values, opts);
   }
 
   public async selectByText(text: string | RegExp, opts?: FormOpts) {
-    const optionToSelect = await this.locator
+    const optionToSelect = await this.locator.first
       .locator('option', {
         hasText: text,
       })
@@ -83,6 +83,6 @@ export class Form implements FormInterface {
 
   public async file(files: InputFiles, opts?: FormOpts) {
     this.locator.logger.action('FILE', this.locator, files.toString());
-    return this.locator.$.setInputFiles(files, opts);
+    return this.locator.first.$.setInputFiles(files, opts);
   }
 }

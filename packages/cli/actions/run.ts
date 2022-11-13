@@ -15,7 +15,14 @@ export const run = async (
   options: { [key: string]: string | boolean },
   command: Command,
 ) => {
-  if (options.build) await build(project);
+  if (options.build) {
+    try {
+      await build(project);
+    } catch (ex) {
+      printLines(['Error building tests.', '']);
+      exitError(ex);
+    }
+  }
   const suites = findSuites(project);
   const selections = (
     options.all

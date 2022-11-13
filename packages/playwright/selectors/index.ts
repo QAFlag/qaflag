@@ -14,3 +14,4 @@ export * from './left-of';
 export * from './not';
 export * from './and';
 export * from './psuedos';
+export * from './nth';

@@ -93,12 +93,30 @@ export class PlaywrightContext extends Context implements ContextInterface {
     return element;
   }
 
+  public async waitFor(
+    selector: string | FindQuery | RegExp | StateSelector,
+    ...subQueries: Array<SelectFilter | string | RegExp | FindQuery>
+  ) {
+    const element = this.find(selector, ...subQueries);
+    return element.waitFor();
+  }
+
   public async visible(
     selector: string | FindQuery | RegExp | StateSelector,
     ...subQueries: Array<SelectFilter | string | RegExp | FindQuery>
   ) {
     const element = this.find(selector, ...subQueries);
     await element.must.be.visible();
+    return element;
+  }
+
+  public async scrollTo(
+    selector: string | FindQuery | RegExp | StateSelector,
+    ...subQueries: Array<SelectFilter | string | RegExp | FindQuery>
+  ) {
+    const element = this.find(selector, ...subQueries);
+    await element.must.be.visible();
+    await element.scrollTo();
     return element;
   }
 

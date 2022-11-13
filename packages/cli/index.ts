@@ -11,6 +11,8 @@ import { startServer } from './webserver/server';
 import * as open from 'open';
 import { build } from './actions/build';
 import { generate } from './actions/generate/generate';
+import { printLines } from 'utils/print';
+import { exitError } from 'utils/exit';
 
 // Initialize Project
 const project = new Project({
@@ -82,7 +84,12 @@ program
   .alias('b')
   .description('Trailspile test suites from TypeScript to Javascript')
   .action(async (str, options) => {
-    await build(project);
+    try {
+      await build(project);
+    } catch (ex) {
+      printLines(['Error building tests.', '']);
+      exitError(ex);
+    }
   });
 
 program
