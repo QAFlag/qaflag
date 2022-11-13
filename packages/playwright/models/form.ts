@@ -132,7 +132,13 @@ export class Form implements FormInterface {
       if (typeof value == 'number') return { index: value };
       return value;
     })();
-    this.locator.logger.action('SELECT', this.locator, value.toString());
+    this.locator.logger.action(
+      'SELECT',
+      this.locator,
+      Array.isArray(selectThis)
+        ? selectThis.toString()
+        : selectThis.label || selectThis.value || `index ${selectThis.index}`,
+    );
     return this.locator.first.$.selectOption(selectThis, opts);
   }
 

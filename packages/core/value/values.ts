@@ -11,6 +11,7 @@ import { StringMust } from '../test/string.interface';
 import { BooleanMust } from '../test/boolean.interface';
 import { DateMust } from '../test/date.interface';
 import { ArrayMust } from '../test/array.interface';
+import { ordinal } from '../utils/helpers';
 
 export interface ValueOpts {
   name: string;
@@ -336,10 +337,60 @@ export class StringValue extends PrimitiveValueAbstract<string> {
     return test(this, 'could');
   }
 
+  public nthLine(n: number) {
+    const lines = this.$.split('\n');
+    return new StringValue(lines[n - 1], {
+      ...this.opts,
+      name: `${ordinal(n)} line of ${this.name}`,
+    });
+  }
+
+  public firstLine() {
+    const lines = this.$.split('\n');
+    return new StringValue(lines[0], {
+      ...this.opts,
+      name: `first line of ${this.name}`,
+    });
+  }
+
+  public lastLine() {
+    const lines = this.$.split('\n');
+    return new StringValue(lines[lines.length - 1], {
+      ...this.opts,
+      name: `last line of ${this.name}`,
+    });
+  }
+
+  public get lines(): StringValue[] {
+    const lines = this.$.split('\n');
+    return lines.map(
+      (line, i) =>
+        new StringValue(line, {
+          ...this.opts,
+          name: `${ordinal(i + 1)} line of ${this.name}`,
+        }),
+    );
+  }
+
+  public get lineCount(): NumericValue {
+    const lines = this.$.split('\n');
+    return new NumericValue(lines.length, {
+      ...this.opts,
+      name: `Number of lines in ${this.name}`,
+    });
+  }
+
   public get trim() {
     return new StringValue(this.$.trim(), {
       ...this.opts,
       name: `Trimmed ${this.name}`,
+    });
+  }
+
+  public get length(): NumericValue {
+    return new NumericValue(this.$.length, {
+      ...this.opts,
+      name: `Length of ${this.name}`,
     });
   }
 }
