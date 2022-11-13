@@ -1,11 +1,15 @@
 import SelectFilter from './select-filter';
 import FindQuery from './find-query';
+import { ucfirst } from '@qaflag/core';
 
 export class StateSelector implements SelectFilter {
   constructor(private readonly state: string, private readonly name?: string) {}
 
   public toPrimarySelector(): FindQuery {
-    return FindQuery.create(`:${this.state}`, `${this.name || this.state}`);
+    return FindQuery.create(
+      `:${this.state}`,
+      `${ucfirst(this.name || this.state)}`,
+    );
   }
 
   public apply(primarySelector: FindQuery): FindQuery {

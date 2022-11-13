@@ -37,7 +37,7 @@ export const field = new StateSelector(
 );
 export const textbox = new StateSelector(
   'is(input[type="text"], input[type="email"], input[type="tel"], input[type="search"], input[type="password"], input[type="url"])',
-  'form field',
+  'textbox',
 );
 export const dropdown = new StateSelector('is(select)', 'dropdown');
 export const checkbox = new StateSelector(

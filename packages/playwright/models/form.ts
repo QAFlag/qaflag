@@ -1,8 +1,15 @@
-import { FormInterface, StringValue } from '@qaflag/core';
+import { ArrayValue, FormInterface, StringValue } from '@qaflag/core';
 import { ElementHandle } from 'playwright';
 import { TimeoutOpts } from '../types/timeout-opts';
 import { PagePosition } from './bounding-box.value';
 import { PlaywrightValue } from './playwright.value';
+
+export interface DropdownOption {
+  text: string;
+  value: string;
+  index: number;
+  selected: boolean;
+}
 
 export interface FormOpts {
   force?: boolean | undefined;
@@ -50,15 +57,65 @@ export class Form implements FormInterface {
     return this.locator.first.$.fill(value, opts);
   }
 
+  public async text(opts?: TimeoutOpts) {
+    const tagName = await this.locator.tagName();
+    if (tagName.$ == 'SELECT') {
+      const value = await this.locator.first.$.evaluate(
+        (sel: HTMLSelectElement) =>
+          sel.options[sel.options.selectedIndex].textContent,
+        opts,
+      );
+      if (!value) throw `No text selected in ${this.locator.name}`;
+      return new StringValue(value, {
+        logger: this.locator.logger,
+        name: `Selected Text of ${this.locator.name}`,
+      });
+    }
+    return new StringValue(await this.locator.first.$.inputValue(opts), {
+      logger: this.locator.logger,
+      name: `Text of ${this.locator.name}`,
+    });
+  }
+
+  public async options(
+    opts?: TimeoutOpts,
+  ): Promise<ArrayValue<DropdownOption>> {
+    const tagName = await this.locator.tagName();
+    if (tagName.$ == 'SELECT') {
+      const options = await this.locator.first.$.evaluate(
+        (sel: HTMLSelectElement) => sel.options,
+        opts,
+      );
+      const dropdownOptions: DropdownOption[] = [];
+      for (let i = 0; i < options.length; i++) {
+        const option = options.item(i);
+        if (option) {
+          dropdownOptions.push({
+            text: option.text,
+            value: option.value,
+            index: option.index,
+            selected: option.selected,
+          });
+        }
+      }
+      return new ArrayValue(dropdownOptions, {
+        logger: this.locator.logger,
+        name: `Dropdown Options of ${this.locator.name}`,
+      });
+    }
+    throw `${this.locator.name} is not a dropdown, can't get options`;
+  }
+
   public async value(opts?: TimeoutOpts) {
-    return new StringValue(await this.locator.first.$.inputValue(), {
+    return new StringValue(await this.locator.first.$.inputValue(opts), {
       logger: this.locator.logger,
       name: `Value of ${this.locator.name}`,
     });
   }
 
   public async select(
-    values:
+    value:
+      | number
       | string
       | string[]
       | {
@@ -68,8 +125,16 @@ export class Form implements FormInterface {
         },
     opts?: FormOpts,
   ) {
-    this.locator.logger.action('SELECT', this.locator, values.toString());
-    return this.locator.first.$.selectOption(values, opts);
+    this.locator.logger.action('SELECT', this.locator, value.toString());
+    if (typeof value == 'number') {
+      return this.locator.first.$.selectOption(
+        {
+          index: value,
+        },
+        opts,
+      );
+    }
+    return this.locator.first.$.selectOption(value, opts);
   }
 
   public async selectByText(text: string | RegExp, opts?: FormOpts) {
@@ -78,7 +143,7 @@ export class Form implements FormInterface {
         hasText: text,
       })
       .textContent();
-    return this.select({ label: optionToSelect.$ });
+    return this.select({ label: optionToSelect.$ }, opts);
   }
 
   public async file(files: InputFiles, opts?: FormOpts) {

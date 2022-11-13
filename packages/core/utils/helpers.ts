@@ -65,3 +65,9 @@ export const ordinal = (n: number): string => {
   const v = n % 100;
   return n + (s[(v - 20) % 10] || s[v] || s[0]);
 };
+
+export const ucfirst = (str: string) =>
+  str
+    .split(' ')
+    .map(word => word.slice(0, 1).toUpperCase() + word.slice(1))
+    .join(' ');
