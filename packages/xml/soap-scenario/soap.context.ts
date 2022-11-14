@@ -32,7 +32,7 @@ export class SoapContext extends XmlContext<SoapScenario> {
     const bodyTag = prefix === null ? 'Body' : `${prefix}\\:Body`;
     const envelope = this.cheerio(envTag);
     return new XmlValue(envelope.children(bodyTag), {
-      logger: this.logger,
+      context: this,
       name: 'Body',
     });
   }

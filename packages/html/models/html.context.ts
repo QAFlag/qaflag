@@ -44,7 +44,7 @@ export class HtmlContext extends HttpContext {
     const results = this.cheerio(selector);
     return new HtmlValue(results, {
       name: selector,
-      logger: this.logger,
+      context: this,
     });
   }
 }

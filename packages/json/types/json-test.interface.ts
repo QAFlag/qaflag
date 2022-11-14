@@ -9,64 +9,69 @@ import {
   MustHaveSome,
   MustMatch,
   MustNot,
+  ValueInterface,
 } from '@qaflag/core';
 import { ClassConstructor } from 'class-transformer';
 import { ValidatorOptions } from 'class-validator';
 
-export interface JsonMust extends JsonMustNot {
-  not: JsonMustNot;
+export interface JsonMust<T extends ValueInterface> extends JsonMustNot<T> {
+  not: JsonMustNot<T>;
 }
 
-export interface JsonMustNot extends MustNot {
-  be: JsonMustBe;
-  have: JsonMustHave;
-  match: JsonMustMatch;
-  all: JsonMustAll;
+export interface JsonMustNot<T extends ValueInterface> extends MustNot<T> {
+  be: JsonMustBe<T>;
+  have: JsonMustHave<T>;
+  match: JsonMustMatch<T>;
+  all: JsonMustAll<T>;
 }
 
-export interface JsonMustMatch extends MustMatch {
-  dto<T>(
-    className: ClassConstructor<T>,
+export interface JsonMustMatch<T extends ValueInterface> extends MustMatch<T> {
+  dto<Y>(
+    className: ClassConstructor<Y>,
     opts?: ValidatorOptions,
   ): Promise<void>;
   jtd(name: string): Promise<void>;
   jsonSchema(name: string): Promise<void>;
 }
 
-export interface JsonMustHave extends MustHave {
-  all: JsonMustHaveAll;
-  some: JsonMustHaveSome;
-  any: JsonMustHaveAny;
-  none: JsonMustHaveNone;
+export interface JsonMustHave<T extends ValueInterface> extends MustHave<T> {
+  all: JsonMustHaveAll<T>;
+  some: JsonMustHaveSome<T>;
+  any: JsonMustHaveAny<T>;
+  none: JsonMustHaveNone<T>;
 }
 
-export interface JsonMustBe extends MustBe {
-  a: JsonMustBeAn;
-  an: JsonMustBeAn;
+export interface JsonMustBe<T extends ValueInterface> extends MustBe<T> {
+  a: JsonMustBeAn<T>;
+  an: JsonMustBeAn<T>;
 }
 
-export interface JsonMustBeAn extends MustBeAn {}
+export interface JsonMustBeAn<T extends ValueInterface> extends MustBeAn<T> {}
 
-export interface JsonMustAll extends MustAll {
-  be: JsonMustBe;
-  have: JsonMustHave;
-  match: JsonMustMatch;
-  not: JsonMustNot;
+export interface JsonMustAll<T extends ValueInterface> extends MustAll<T> {
+  be: JsonMustBe<T>;
+  have: JsonMustHave<T>;
+  match: JsonMustMatch<T>;
+  not: JsonMustNot<T>;
 }
 
-export interface JsonMustHaveAll extends MustHaveAll {
-  be: JsonMustBe;
-  not: JsonMustNot;
+export interface JsonMustHaveAll<T extends ValueInterface>
+  extends MustHaveAll<T> {
+  be: JsonMustBe<T>;
+  not: JsonMustNot<T>;
 }
 
-export interface JsonMustHaveSome extends MustHaveSome {
-  be: JsonMustBe;
+export interface JsonMustHaveSome<T extends ValueInterface>
+  extends MustHaveSome<T> {
+  be: JsonMustBe<T>;
 }
 
-export interface JsonMustHaveAny extends MustHaveAny {
-  be: JsonMustBe;
+export interface JsonMustHaveAny<T extends ValueInterface>
+  extends MustHaveAny<T> {
+  be: JsonMustBe<T>;
 }
 
-export interface JsonMustHaveNone extends MustHaveNone {
-  be: JsonMustBe;
+export interface JsonMustHaveNone<T extends ValueInterface>
+  extends MustHaveNone<T> {
+  be: JsonMustBe<T>;
 }

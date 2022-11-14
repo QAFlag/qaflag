@@ -5,20 +5,20 @@ import { JsonAssertion } from './json.assertion';
 import * as jmespath from 'jmespath';
 
 export class JsonValue extends ValueAbstract<JsonData> {
-  public get must(): JsonMust {
+  public get must(): JsonMust<typeof this> {
     return new JsonAssertion(this, 'must');
   }
 
-  public get should(): JsonMust {
+  public get should(): JsonMust<typeof this> {
     return new JsonAssertion(this, 'should');
   }
 
-  public get could(): JsonMust {
+  public get could(): JsonMust<typeof this> {
     return new JsonAssertion(this, 'could');
   }
 
   public find(selector: string) {
     const results: JsonData = jmespath.search(this.input, selector);
-    return new JsonValue(results, { name: selector, logger: this.logger });
+    return new JsonValue(results, { name: selector, context: this.context });
   }
 }

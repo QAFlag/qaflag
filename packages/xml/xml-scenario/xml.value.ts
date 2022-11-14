@@ -5,15 +5,15 @@ import * as cheerio from 'cheerio';
 export type CheerioElement = cheerio.Cheerio<cheerio.Node>;
 
 export class XmlValue extends ValueAbstract<CheerioElement> {
-  public get must(): Must {
+  public get must(): Must<typeof this> {
     return test(this, 'must');
   }
 
-  public get should(): Must {
+  public get should(): Must<typeof this> {
     return test(this, 'should');
   }
 
-  public get could(): Must {
+  public get could(): Must<typeof this> {
     return test(this, 'could');
   }
 
@@ -215,7 +215,7 @@ export class XmlValue extends ValueAbstract<CheerioElement> {
 
   protected createElement(element: CheerioElement, opts?: KeyValue) {
     return new XmlValue(element, {
-      logger: this.logger,
+      context: this.context,
       name: this.name,
       ...opts,
     });

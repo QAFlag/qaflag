@@ -29,9 +29,9 @@ const hasRequiredSoapFields = (res: SoapContext): boolean => {
   return true;
 };
 
-export const isSoapValid = (res: SoapContext) => {
-  return new BooleanValue(hasRequiredSoapFields(res), {
+export const isSoapValid = (context: SoapContext) => {
+  return new BooleanValue(hasRequiredSoapFields(context), {
     name: 'SOAP Document',
-    logger: res.logger,
+    context,
   });
 };

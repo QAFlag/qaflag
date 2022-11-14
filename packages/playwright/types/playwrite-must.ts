@@ -1,4 +1,7 @@
-type PlaywrightAssertionOutput = Promise<void>;
+import { TestResult } from '@qaflag/core';
+import { PlaywrightValue } from '../models/playwright.value';
+
+type PlaywrightAssertionOutput = Promise<TestResult<PlaywrightValue>>;
 
 export interface PlaywrightMust extends PlaywrightMustNot {
   not: PlaywrightMustNot;

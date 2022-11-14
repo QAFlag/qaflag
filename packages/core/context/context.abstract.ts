@@ -68,28 +68,28 @@ export abstract class Context implements ContextInterface {
   protected stringValue(input: string, name: string) {
     return new StringValue(input, {
       name,
-      logger: this.logger,
+      context: this,
     });
   }
 
   protected numericValue(input: number, name: string) {
     return new NumericValue(input, {
       name,
-      logger: this.logger,
+      context: this,
     });
   }
 
   protected booleanValue(input: boolean, name: string) {
     return new BooleanValue(input, {
       name,
-      logger: this.logger,
+      context: this,
     });
   }
 
   protected arrayValue<T>(input: T[], name: string) {
     return new ArrayValue(input, {
       name,
-      logger: this.logger,
+      context: this,
     });
   }
 }

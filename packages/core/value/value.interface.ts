@@ -1,10 +1,12 @@
 import { ArrayValue, BooleanValue, NumericValue, StringValue } from './values';
 import { LoggerInterface } from '../types/log-provider.interface';
-import { Must } from '../test/generic.interface';
+import { Must } from '../test/must.interface';
+import { ContextInterface } from '../context/context.interface';
 
 export interface ValueInterface<InputType = any> {
   $: InputType;
   name: string;
+  context: ContextInterface;
   logger: LoggerInterface;
   must: any;
   should: any;
@@ -17,8 +19,8 @@ export interface PrimitiveValueInterface<InputType = any>
   extends ValueInterface<InputType> {
   number: NumericValue;
   boolean: BooleanValue;
-  must: Must;
-  should: Must;
+  must: Must<typeof this>;
+  should: Must<typeof this>;
 }
 
 export interface FormInterface {

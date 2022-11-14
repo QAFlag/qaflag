@@ -40,7 +40,7 @@ export class PlaywrightContext extends Context implements ContextInterface {
   public get url() {
     return new StringValue(this.page.url(), {
       name: 'URL',
-      logger: this.logger,
+      context: this,
     });
   }
 
@@ -61,7 +61,7 @@ export class PlaywrightContext extends Context implements ContextInterface {
       ...opts,
       selector,
       name: selector,
-      logger: this.scenario.logger,
+      context: this,
     });
   }
 
@@ -69,11 +69,16 @@ export class PlaywrightContext extends Context implements ContextInterface {
     selector: PrimarySelector,
     ...subQueries: SubQueries[]
   ): PlaywrightValue {
+    if (typeof selector == 'string' && selector.startsWith('$')) {
+      const value = this.get(selector.substring(1));
+      if (value instanceof PlaywrightValue) return value;
+      throw `${selector} was not a valid alias in this context. Must be set as a PlaywrightValue.`;
+    }
     const query = FindQuery.process(selector, ...subQueries);
     return new PlaywrightValue(this.playwright.page.locator(query.selector), {
       selector: query.selector,
       name: query.name,
-      logger: this.scenario.logger,
+      context: this,
     });
   }
 

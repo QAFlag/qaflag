@@ -1,4 +1,5 @@
-import { mustShouldCould, TestBase } from '@qaflag/core';
+import { mustShouldCould, TestBase, TestResult } from '@qaflag/core';
+import { PlaywrightMust } from '../types';
 import { TimeoutOpts } from '../types/timeout-opts';
 import { PlaywrightValue } from './playwright.value';
 
@@ -12,20 +13,14 @@ export type AwaitedAssertion = (
 ) => Promise<AssertionResult> | AssertionResult;
 export type mustOrShould = 'must' | 'should';
 
-export class PlaywrightAssertion extends TestBase {
-  protected message: string[];
-  protected isNot: boolean = false;
-  protected evalType: 'standard' | 'every' | 'some' = 'standard';
-
-  protected input: PlaywrightValue;
-
+export class PlaywrightAssertion extends TestBase implements PlaywrightMust {
   constructor(
-    input: PlaywrightValue,
-    mustShouldCould: mustShouldCould,
-    isNot: boolean = false,
-    evalType: 'standard' | 'every' | 'some' = 'standard',
-    evalCount: number = 0,
-    message?: string[],
+    public readonly input: PlaywrightValue,
+    protected mustShouldCould: mustShouldCould,
+    protected isNot: boolean = false,
+    protected evalType: 'standard' | 'every' | 'some' = 'standard',
+    protected evalCount: number = 0,
+    protected message: string[] = [],
   ) {
     super(input, mustShouldCould, isNot, evalType, evalCount, message);
   }
@@ -63,6 +58,17 @@ export class PlaywrightAssertion extends TestBase {
         this.input.logger.log('info', `Actual Value: ${result.actualValue}`);
       }
     }
+    return new TestResult(this, result.pass, result.actualValue);
+  }
+
+  public async equal(element: PlaywrightValue) {
+    this.message.push('equal');
+    return this.execute(async input => {
+      return {
+        pass: this.input === element,
+        actualValue: element.name,
+      };
+    });
   }
 
   public async visible(opts?: TimeoutOpts) {

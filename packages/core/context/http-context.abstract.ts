@@ -15,7 +15,7 @@ export abstract class HttpContext extends Context implements ContextInterface {
   public get statusCode(): NumericValue {
     return new NumericValue(this.response.status.code, {
       name: 'HTTP Status Code',
-      logger: this.logger,
+      context: this,
     });
   }
 
@@ -25,14 +25,14 @@ export abstract class HttpContext extends Context implements ContextInterface {
     );
     return new StringValue(header ? header.value : '', {
       name: `HTTP Header: ${name}`,
-      logger: this.logger,
+      context: this,
     });
   }
 
   public get requestDuration() {
     return new NumericValue(this.response.duration, {
       name: 'Request Duration',
-      logger: this.logger,
+      context: this,
     });
   }
 }

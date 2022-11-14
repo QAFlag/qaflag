@@ -12,15 +12,15 @@ export interface BoundingBox extends PagePosition {
 }
 
 export class BoundingBoxValue extends ValueAbstract<BoundingBox> {
-  public get must(): Must {
+  public get must(): Must<typeof this> {
     return test(this, 'must');
   }
 
-  public get should(): Must {
+  public get should(): Must<typeof this> {
     return test(this, 'should');
   }
 
-  public get could(): Must {
+  public get could(): Must<typeof this> {
     return test(this, 'could');
   }
 

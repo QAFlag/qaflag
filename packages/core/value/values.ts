@@ -12,20 +12,25 @@ import { BooleanMust } from '../test/boolean.interface';
 import { DateMust } from '../test/date.interface';
 import { ArrayMust } from '../test/array.interface';
 import { ordinal } from '../utils/helpers';
+import { ContextInterface } from '../context/context.interface';
 
 export interface ValueOpts {
   name: string;
-  logger: LoggerInterface;
+  context: ContextInterface;
 }
 
 export abstract class ValueAbstract<InputType>
   implements ValueInterface<InputType>
 {
   protected _nameOverride: string | undefined = undefined;
-  public logger: LoggerInterface;
+  public readonly context: ContextInterface;
 
   constructor(protected input: InputType, protected opts: ValueOpts) {
-    this.logger = opts.logger;
+    this.context = opts.context;
+  }
+
+  public get logger(): LoggerInterface {
+    return this.context.logger;
   }
 
   public get $(): InputType {
@@ -53,8 +58,7 @@ export abstract class ValueAbstract<InputType>
   }
 
   public alias(name: string) {
-    // TODO: Save
-    return this;
+    return this.context.set(name, this);
   }
 
   public get number() {
@@ -133,7 +137,7 @@ export abstract class ValueAbstract<InputType>
 
   protected createGeneric(data: any, opts?: Partial<ValueOpts>) {
     return new GenericValue(data, {
-      logger: this.logger,
+      context: this.context,
       name: this.name,
       ...opts,
     });
@@ -141,7 +145,7 @@ export abstract class ValueAbstract<InputType>
 
   protected createString(str: string, opts?: Partial<ValueOpts>) {
     return new StringValue(str, {
-      logger: this.logger,
+      context: this.context,
       name: this.name,
       ...opts,
     });
@@ -149,7 +153,7 @@ export abstract class ValueAbstract<InputType>
 
   protected createNumber(num: number, opts?: Partial<ValueOpts>) {
     return new NumericValue(num, {
-      logger: this.logger,
+      context: this.context,
       name: this.name,
       ...opts,
     });
@@ -157,7 +161,7 @@ export abstract class ValueAbstract<InputType>
 
   protected createBoolean(bool: boolean, opts?: Partial<ValueOpts>) {
     return new BooleanValue(bool, {
-      logger: this.logger,
+      context: this.context,
       name: this.name,
       ...opts,
     });
@@ -165,7 +169,7 @@ export abstract class ValueAbstract<InputType>
 
   protected createArray<T>(data: T[], opts?: Partial<ValueOpts>) {
     return new ArrayValue<T>(data, {
-      logger: this.logger,
+      context: this.context,
       name: this.name,
       ...opts,
     });
@@ -183,7 +187,7 @@ export abstract class PrimitiveValueAbstract<InputType>
   public get length(): NumericValue {
     return new NumericValue(this.input['length'] ? this.input['length'] : 0, {
       name: `Length of ${this.name}`,
-      logger: this.logger,
+      context: this.context,
     });
   }
 
@@ -273,15 +277,15 @@ export class BooleanValue extends PrimitiveValueAbstract<boolean> {
 }
 
 export class ArrayValue<T = any> extends PrimitiveValueAbstract<T[]> {
-  public get must(): ArrayMust {
+  public get must(): ArrayMust<typeof this> {
     return test(this, 'must');
   }
 
-  public get should(): ArrayMust {
+  public get should(): ArrayMust<typeof this> {
     return test(this, 'should');
   }
 
-  public get could(): ArrayMust {
+  public get could(): ArrayMust<typeof this> {
     return test(this, 'should');
   }
 

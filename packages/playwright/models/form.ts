@@ -74,12 +74,12 @@ export class Form implements FormInterface {
       );
       if (!value) throw `No text selected in ${this.locator.name}`;
       return new StringValue(value, {
-        logger: this.locator.logger,
+        context: this.locator.context,
         name: `Selected Text of ${this.locator.name}`,
       });
     }
     return new StringValue(await this.locator.first.$.inputValue(opts), {
-      logger: this.locator.logger,
+      context: this.locator.context,
       name: `Text of ${this.locator.name}`,
     });
   }
@@ -105,7 +105,7 @@ export class Form implements FormInterface {
         }
       }
       return new ArrayValue(dropdownOptions, {
-        logger: this.locator.logger,
+        context: this.locator.context,
         name: `Dropdown Options of ${this.locator.name}`,
       });
     }
@@ -114,7 +114,7 @@ export class Form implements FormInterface {
 
   public async value(opts?: TimeoutOpts) {
     return new StringValue(await this.locator.first.$.inputValue(opts), {
-      logger: this.locator.logger,
+      context: this.locator.context,
       name: `Value of ${this.locator.name}`,
     });
   }

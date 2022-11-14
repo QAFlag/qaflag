@@ -72,7 +72,7 @@ export class HtmlValue
 
   protected createElement(element: CheerioElement, opts?: KeyValue) {
     return new HtmlValue(element, {
-      logger: this.logger,
+      context: this.context,
       name: this.name,
       ...opts,
     });

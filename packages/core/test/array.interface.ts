@@ -1,16 +1,17 @@
 import { NumberMustBe } from './number.interface';
-import { Must } from './generic.interface';
+import { Must } from './must.interface';
 import { TestResult } from './result';
 import { ArrayValue, NumericValue } from '../value/values';
+import { ValueInterface } from '../value/value.interface';
 
-export interface ArrayMust {
+export interface ArrayMust<T extends ValueInterface> {
   be: ArrayMustBe;
-  have: ArrayMustHave;
-  all: Must;
-  none: Must;
-  any: Must;
-  some: Must;
-  not: ArrayMust;
+  have: ArrayMustHave<T>;
+  all: Must<T>;
+  none: Must<T>;
+  any: Must<T>;
+  some: Must<T>;
+  not: ArrayMust<T>;
   equal(thatArray: unknown[]): TestResult<ArrayValue>;
   include(value: any): TestResult<ArrayValue>;
   contain(value: string | string[]): TestResult<ArrayValue>;
@@ -31,12 +32,12 @@ interface ArrayMustBeAn {
   ): TestResult<ArrayValue>;
 }
 
-interface ArrayMustHave {
+interface ArrayMustHave<T extends ValueInterface> {
   length: ArrayMustHaveLength;
-  some: Must;
-  any: Must;
-  none: Must;
-  all: Must;
+  some: Must<T>;
+  any: Must<T>;
+  none: Must<T>;
+  all: Must<T>;
 }
 
 interface ArrayMustHaveLength {

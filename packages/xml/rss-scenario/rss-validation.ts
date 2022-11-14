@@ -39,9 +39,9 @@ const rssHasRequiredFields = (res: RssContext): boolean => {
   return true;
 };
 
-export const isRssValid = (res: RssContext) => {
-  return new BooleanValue(rssHasRequiredFields(res), {
+export const isRssValid = (context: RssContext) => {
+  return new BooleanValue(rssHasRequiredFields(context), {
     name: 'RSS Document',
-    logger: res.logger,
+    context,
   });
 };

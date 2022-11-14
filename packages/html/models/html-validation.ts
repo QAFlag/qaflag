@@ -12,9 +12,9 @@ const htmlHasRequiredTags = (res: HtmlContext): boolean => {
   return true;
 };
 
-export const isHtmlValid = (res: HtmlContext) => {
-  return new BooleanValue(htmlHasRequiredTags(res), {
+export const isHtmlValid = (context: HtmlContext) => {
+  return new BooleanValue(htmlHasRequiredTags(context), {
     name: 'HTML Document',
-    logger: res.logger,
+    context,
   });
 };
