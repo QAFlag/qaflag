@@ -28,6 +28,18 @@ class ProximityFilter implements SelectFilter {
 }
 
 class NearFilter implements SelectFilter {
+  public static create(
+    element: string | FindQuery | PlaywrightValue,
+    maxDistance: number,
+  ) {
+    return new NearFilter(
+      FindQuery.create(
+        element instanceof PlaywrightValue ? element.selector : element,
+      ),
+      maxDistance,
+    );
+  }
+
   constructor(
     public readonly input: FindQuery,
     private readonly maxDistance: number = 50,
@@ -41,11 +53,15 @@ class NearFilter implements SelectFilter {
   }
 }
 
-export const near = (closeTo: string | FindQuery, maxDistance: number = 50) =>
-  new NearFilter(FindQuery.create(closeTo), maxDistance);
+export const near = (
+  element: string | FindQuery | PlaywrightValue,
+  maxDistance: number = 50,
+) => NearFilter.create(element, maxDistance);
 
-export const by = (closeTo: string | FindQuery, maxDistance: number = 3) =>
-  new NearFilter(FindQuery.create(closeTo), maxDistance);
+export const by = (
+  element: string | FindQuery | PlaywrightValue,
+  maxDistance: number = 3,
+) => NearFilter.create(element, maxDistance);
 
 export const above = (element: string | FindQuery | PlaywrightValue) =>
   ProximityFilter.create('above', element);
