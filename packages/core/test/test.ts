@@ -12,13 +12,15 @@ export type assertion = (data: unknown) => boolean;
 export class Test<ValueWrapper extends ValueInterface>
   implements TestInterface<ValueWrapper>
 {
+  protected message: string[] = [];
+
   constructor(
     public readonly input: ValueWrapper,
     protected mustShouldCould: mustShouldCould,
     protected isNot: boolean = false,
     protected evalType: TestEvalEnum = 'standard',
     protected evalCount: number = 0,
-    protected message: string[] = [],
+    message?: string[],
   ) {
     this.message = message || [input.name, mustShouldCould];
   }

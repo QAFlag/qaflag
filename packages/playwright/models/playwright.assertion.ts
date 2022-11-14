@@ -20,7 +20,7 @@ export class PlaywrightAssertion extends TestBase implements PlaywrightMust {
     protected isNot: boolean = false,
     protected evalType: 'standard' | 'every' | 'some' = 'standard',
     protected evalCount: number = 0,
-    protected message: string[] = [],
+    message?: string[],
   ) {
     super(input, mustShouldCould, isNot, evalType, evalCount, message);
   }
