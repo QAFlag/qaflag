@@ -354,7 +354,7 @@ export class StringValue extends PrimitiveValueAbstract<string> {
     });
   }
 
-  public firstLine() {
+  public get firstLine() {
     const lines = this.$.split('\n');
     return new StringValue(lines[0], {
       ...this.opts,
@@ -362,7 +362,7 @@ export class StringValue extends PrimitiveValueAbstract<string> {
     });
   }
 
-  public lastLine() {
+  public get lastLine() {
     const lines = this.$.split('\n');
     return new StringValue(lines[lines.length - 1], {
       ...this.opts,
