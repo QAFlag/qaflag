@@ -16,10 +16,9 @@ import {
 export class JasonByrneSuite extends Suite({
   title: 'Jason Byrne',
   type: PlaywrightScenario,
+  baseUrl: 'https://www.jasonbyrne.net',
 }) {
-  @Scenario({
-    uri: 'GET https://www.jasonbyrne.net',
-  })
+  @Scenario()
   async firstScenario(context: PlaywrightContext) {
     await context.exists(image, near(topLeft));
     await context.exists('"Who am I?"', visible);
@@ -34,6 +33,9 @@ export class JasonByrneSuite extends Suite({
     await context.exists('img', not('@alt="Foo'));
     await context.exists('@href', link);
     await context.exists('@href', link, first);
+    const images = await context.find('img').queryAll({ sort: ['top', 'ASC'] });
+    const urls = await Promise.all(images.map(img => img.attribute('src')));
+    context.debug(urls);
     const experience = await context.exists(
       'li',
       '*Experience*',

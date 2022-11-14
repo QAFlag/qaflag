@@ -5,6 +5,7 @@ import { findSuites } from '../utils/find-suites';
 import chalk = require('chalk');
 import { loadSuite } from '../utils/load-suite';
 import Project from '../models/project';
+import { titleize, formatUri } from '../utils/string';
 
 export const plan = async (project: Project) => {
   const suites = findSuites(project);
@@ -31,7 +32,9 @@ export const plan = async (project: Project) => {
   printLines([suite.title], { style: chalk.yellowBright });
   printLineBreak();
   suite.steps.forEach(step => {
-    printLines([`Step ${step.stepNumber}`]);
+    if (suite.steps.length > 1) {
+      printLines([`Step ${step.stepNumber}`]);
+    }
     printTable(
       [
         chalk.blueBright('Title'),
@@ -42,9 +45,9 @@ export const plan = async (project: Project) => {
       [26, 40, 60, 6],
       step.scenarios.map(scenario => {
         return [
-          scenario.title,
+          titleize(scenario.title),
           scenario.description,
-          scenario.uri,
+          formatUri(scenario.uri),
           scenario.statusCode ? String(scenario.statusCode) : '--',
         ];
       }),

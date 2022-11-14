@@ -2,7 +2,7 @@ import { ScenarioDecoratorOpts, ScenarioInitOpts } from './scenario.options';
 import { ScenarioDefinitions } from '../suite/suite.mixin';
 import { ScenarioInterface } from './scenario.interface';
 
-export function Scenario(opts: ScenarioDecoratorOpts) {
+export function Scenario(opts?: ScenarioDecoratorOpts) {
   return function (
     target: any,
     methodName: string | symbol,
@@ -11,9 +11,10 @@ export function Scenario(opts: ScenarioDecoratorOpts) {
     const originalMethod = descriptor.value;
     const scenario: ScenarioInitOpts = {
       ...opts,
+      uri: opts?.uri || 'GET /',
       key: methodName,
-      description: opts.description || '',
-      step: opts.step || 1,
+      description: opts?.description || '',
+      step: opts?.step || 1,
       next: async (scenario: ScenarioInterface) => {
         return originalMethod.apply(scenario.suite, [scenario.context]);
       },

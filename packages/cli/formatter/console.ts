@@ -52,11 +52,13 @@ export const outputSuiteToConsole = (
   );
 
   suite.steps.forEach(step => {
-    printLines(['', `Step ${step.stepNumber}`, ''], {
-      style: chalk.bgHex(theme.step.bgColor).hex(theme.step.textColor),
-      prefix: '  ',
-      alignment: 'center',
-    });
+    if (suite.steps.length > 1) {
+      printLines(['', `Step ${step.stepNumber}`, ''], {
+        style: chalk.bgHex(theme.step.bgColor).hex(theme.step.textColor),
+        prefix: '  ',
+        alignment: 'center',
+      });
+    }
     step.scenarios.forEach(scenario => {
       printLines(
         [

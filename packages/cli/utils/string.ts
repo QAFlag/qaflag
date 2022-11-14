@@ -13,3 +13,9 @@ export const humanize = (str: string) =>
 
 export const camelToSnakeCase = (str: string) =>
   str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+
+export const formatUri = (uri: string): string => {
+  const arr = uri.split(' ');
+  const method = arr.shift();
+  return `${method?.toUpperCase()} ${arr.join(' ')}`;
+};

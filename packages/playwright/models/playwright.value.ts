@@ -16,6 +16,9 @@ import {
   SubQueries,
   TimeoutOpts,
   PlaywrightMust,
+  BoundingBox,
+  PlaywrightValueSortBy,
+  OrderDirection,
 } from '../types';
 import { FindQuery } from '../selectors';
 
@@ -207,7 +210,7 @@ export class PlaywrightValue
     });
   }
 
-  public async boundingBox(opts?: TimeoutOpts) {
+  public async boundingBox(opts?: TimeoutOpts): Promise<BoundingBox | null> {
     const box = await this.input.boundingBox(opts);
     if (!box) return null;
     return {
@@ -239,7 +242,9 @@ export class PlaywrightValue
     });
   }
 
-  public async queryAll(): Promise<PlaywrightValue[]> {
+  public async queryAll(opts?: {
+    sort?: [by: PlaywrightValueSortBy, order: OrderDirection];
+  }): Promise<PlaywrightValue[]> {
     const count = await this.input.count();
     const locators: PlaywrightValue[] = [];
     for (let i = 0; i < count; i++) {
@@ -250,7 +255,7 @@ export class PlaywrightValue
         }),
       );
     }
-    return locators;
+    return opts?.sort ? this._sort(locators, opts.sort) : locators;
   }
 
   public async waitFor(opts?: {
@@ -303,5 +308,34 @@ export class PlaywrightValue
 
   public screenshot(opts: PageScreenshotOptions) {
     return this.input.screenshot(opts);
+  }
+
+  private async _sort(
+    elements: PlaywrightValue[],
+    sort: [by: PlaywrightValueSortBy, order: OrderDirection],
+  ) {
+    const by = sort[0];
+    const order = sort[1];
+    const boxes = await this._getBoundingBoxes(elements);
+    const fieldMap = {
+      size: 'area',
+      top: 'top',
+      left: 'left',
+      bottom: 'bottom',
+      right: 'right',
+    };
+    return elements.sort((a, b) => {
+      const indexA = elements.indexOf(a);
+      const indexB = elements.indexOf(b);
+      const valueA: number = boxes[indexA]?.[fieldMap[by]] || 0;
+      const valueB: number = boxes[indexB]?.[fieldMap[by]] || 0;
+      return order == 'ASC' ? valueA - valueB : valueB - valueA;
+    });
+  }
+
+  private async _getBoundingBoxes(
+    elements: PlaywrightValue[],
+  ): Promise<Array<BoundingBox | null>> {
+    return Promise.all(elements.map(element => element.boundingBox()));
   }
 }
