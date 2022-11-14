@@ -151,11 +151,11 @@ export function Suite(suiteOpts: SuiteOpts) {
       return this.store.set(key, value);
     }
 
-    public get(key: string): any {
-      return this.store.get(key);
+    public get<T = any>(key: string): T {
+      return this.store.get(key) as T;
     }
 
-    public push(key: string, value: any): any {
+    public push<T = any>(key: string, value: T): T[] {
       return this.store.push(key, value);
     }
 

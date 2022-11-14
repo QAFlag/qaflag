@@ -21,7 +21,7 @@ export interface ValueOpts {
 export abstract class ValueAbstract<InputType>
   implements ValueInterface<InputType>
 {
-  protected alias: string | undefined = undefined;
+  protected _nameOverride: string | undefined = undefined;
   public logger: LoggerInterface;
 
   constructor(protected input: InputType, protected opts: ValueOpts) {
@@ -33,7 +33,7 @@ export abstract class ValueAbstract<InputType>
   }
 
   public get name(): string {
-    return this.alias || this.opts.name;
+    return this._nameOverride || this.opts.name;
   }
 
   public abstract must: any;
@@ -48,7 +48,12 @@ export abstract class ValueAbstract<InputType>
   }
 
   public as(newName: string) {
-    this.alias = newName;
+    this._nameOverride = newName;
+    return this;
+  }
+
+  public alias(name: string) {
+    // TODO: Save
     return this;
   }
 

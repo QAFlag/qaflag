@@ -38,8 +38,8 @@ export interface SuiteInterface extends LogProvider {
   store: KvStore;
   baseUrl: string | undefined;
   set<T>(key: string, value: T): T;
-  get(key: string): any;
-  push(key: string, value: any): any;
+  get<T = any>(key: string): T;
+  push<T = any>(key: string, value: T): T[];
   __execute(): Promise<void>;
 }
 

@@ -20,11 +20,11 @@ export class KvStore {
     return value;
   }
 
-  public get(key: string) {
-    return this.#store[key];
+  public get<T = any>(key: string): T {
+    return this.#store[key] as T;
   }
 
-  public push(key: string, value: any): any[] {
+  public push<T = any>(key: string, value: T): T[] {
     const current = this.get(key);
     if (current == undefined) {
       this.set(key, [value]);

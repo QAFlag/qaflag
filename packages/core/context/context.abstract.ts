@@ -8,8 +8,11 @@ import {
   NumericValue,
   StringValue,
 } from '../value/values';
+import { KvStore } from '../models/kv-store';
 
 export abstract class Context implements ContextInterface {
+  public readonly store = new KvStore();
+
   constructor(public readonly scenario: ScenarioInterface) {}
 
   public get persona() {
@@ -40,11 +43,26 @@ export abstract class Context implements ContextInterface {
     this.logger.pass(content);
   }
 
-  public async group<T>(heading: string, tests: () => Promise<T>) {
+  public async group<T>(
+    heading: string,
+    tests: (context?: ContextInterface) => Promise<T>,
+  ) {
     this.logger.heading(heading);
-    const result = await tests();
+    const result = await tests(this);
     this.logger.lineBreak();
     return result;
+  }
+
+  public set<T>(key: string, value: T): T {
+    return this.store.set(key, value);
+  }
+
+  public get<T = any>(key: string): T {
+    return this.store.get(key) as T;
+  }
+
+  public push<T = any>(key: string, value: T): T[] {
+    return this.store.push(key, value);
   }
 
   protected stringValue(input: string, name: string) {

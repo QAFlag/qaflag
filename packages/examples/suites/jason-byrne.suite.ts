@@ -43,6 +43,10 @@ export class JasonByrneSuite extends Suite({
     );
     await experience.mouse.click();
     await context.waitForNavigation();
+    await context.group('Experience Page', this.testExperiencePage);
+  }
+
+  async testExperiencePage(context: PlaywrightContext) {
     await context.exists(image, near(topLeft));
     await context.exists('"Experience"', header);
     await context.exists('*Echelon*');
