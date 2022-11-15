@@ -12,11 +12,13 @@ import {
   topLeft,
   heading,
 } from '@qaflag/playwright';
+import { GuestUser } from '../personas/guest.persona';
 
 export class JasonByrneSuite extends Suite({
   title: 'Jason Byrne',
   type: PlaywrightScenario,
   baseUrl: 'https://www.jasonbyrne.net',
+  persona: new GuestUser(),
 }) {
   @Scenario()
   async firstScenario(context: PlaywrightContext) {
@@ -46,8 +48,10 @@ export class JasonByrneSuite extends Suite({
     await context.case(this.testExperiencePage);
   }
 
-  @Case()
-  async testExperiencePage(context: PlaywrightContext) {
+  @Case() async testExperiencePage(context: PlaywrightContext) {
+    const user = context.persona as GuestUser;
+    user.foo();
+    context.debug(this.title);
     await context.exists(image, near(topLeft));
     await context.exists(heading, '"Experience"');
     await context.exists('*Echelon*');
