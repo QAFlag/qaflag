@@ -51,6 +51,7 @@ export class JasonByrneSuite extends Suite({
     await context.exists(image, near(topLeft));
     await context.exists(heading, '"Experience"');
     await context.exists('*Echelon*');
+    context.debug(await context.find('body').getStyle('backgroundColor'));
     await context.pause(1000);
   }
 }

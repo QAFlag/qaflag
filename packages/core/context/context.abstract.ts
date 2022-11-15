@@ -62,7 +62,7 @@ export abstract class Context implements ContextInterface {
       this.logger.lineBreak();
     }
     this.logger.heading(title);
-    const result = await testCase(this);
+    const result = await testCase.call(this.scenario.suite, this);
     this.logger.lineBreak();
     return result as T;
   }

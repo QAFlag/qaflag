@@ -1,5 +1,7 @@
 import {
   NumericValue,
+  StringMapValue,
+  StringValue,
   UiElementInterface,
   ValueAbstract,
   ValueInterface,
@@ -308,6 +310,38 @@ export class PlaywrightValue
 
   public screenshot(opts: PageScreenshotOptions) {
     return this.input.screenshot(opts);
+  }
+
+  public getStyle(
+    opts?: TimeoutOpts,
+  ): Promise<StringMapValue<keyof CSSStyleDeclaration>>;
+  public getStyle(property: string, opts?: TimeoutOpts): Promise<StringValue>;
+  public async getStyle(
+    a?: string | TimeoutOpts,
+    b?: TimeoutOpts,
+  ): Promise<StringValue | StringMapValue<keyof CSSStyleDeclaration>> {
+    const property = typeof a == 'string' ? a : null;
+    const opts = typeof a == 'string' ? b : a;
+    const styleProperites = await this.first.input.evaluate(
+      sel => window.getComputedStyle(sel),
+      opts,
+    );
+    if (property) {
+      return new StringValue(styleProperites[property], {
+        name: `Style ${property} of ${this.name}`,
+        context: this.context,
+      });
+    }
+    const kv: Record<string, string> = {};
+    for (let key in styleProperites) {
+      if (isNaN(Number(key))) {
+        kv[key] = styleProperites[key];
+      }
+    }
+    return new StringMapValue(kv, {
+      name: `Style of ${this.name}`,
+      context: this.context,
+    });
   }
 
   private async _sort(

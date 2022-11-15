@@ -42,3 +42,4 @@ export * from './utils/as';
 export * from './test/result';
 export * from './test/result';
 export * from './utils/string';
+export * from './value/string-map';
