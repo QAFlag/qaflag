@@ -9,9 +9,13 @@ import {
   StringValue,
 } from '../value/values';
 import { KvStore } from '../models/kv-store';
+import { titleize } from '../utils/string';
+
+type TestCase<T = any> = (context?: ContextInterface) => Promise<T>;
 
 export abstract class Context implements ContextInterface {
   public readonly store = new KvStore();
+  private testCaseCount = 0;
 
   constructor(public readonly scenario: ScenarioInterface) {}
 
@@ -43,14 +47,24 @@ export abstract class Context implements ContextInterface {
     this.logger.pass(content);
   }
 
-  public async case<T>(
-    heading: string,
-    tests: (context?: ContextInterface) => Promise<T>,
-  ) {
-    this.logger.heading(heading);
-    const result = await tests(this);
+  public case<T = any>(title: string, testCase: TestCase<T>): Promise<T>;
+  public case<T = any>(testCase: TestCase<T>): Promise<T>;
+  public async case<T>(a: string | TestCase<T>, b?: TestCase<T>): Promise<T> {
+    this.testCaseCount++;
+    const testCase = (typeof a == 'string' ? b : a) || (() => {});
+    const title = (() => {
+      if (typeof a === 'string') return a;
+      if (b?.name) return titleize(b.name);
+      if (typeof a !== 'string' && a?.name) return titleize(a.name);
+      return `Test Case #${this.testCaseCount}`;
+    })();
+    if (!this.logger.lastLineIsBreak()) {
+      this.logger.lineBreak();
+    }
+    this.logger.heading(title);
+    const result = await testCase(this);
     this.logger.lineBreak();
-    return result;
+    return result as T;
   }
 
   public set<T>(key: string, value: T): T {

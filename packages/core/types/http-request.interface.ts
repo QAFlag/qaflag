@@ -17,7 +17,7 @@ import { ScenarioUri } from '../scenario/scenario.interface';
  * Options to instantiate a request
  */
 export interface HttpRequestOptions {
-  uri: ScenarioUri;
+  uri?: ScenarioUri;
   baseUrl?: string;
   bearerToken?: string;
   headers?: HttpHeaders;

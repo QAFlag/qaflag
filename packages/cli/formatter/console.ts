@@ -3,7 +3,7 @@ import chalk = require('chalk');
 import { LightTheme } from '../themes/light';
 import { DarkTheme } from '../themes/dark';
 import { pill, printLineBreak, printLines } from '../utils/print';
-import { titleize } from '../utils/string';
+import { titleize } from '@qaflag/core';
 
 export const outputSuiteToConsole = (
   suite: SuiteInterface,

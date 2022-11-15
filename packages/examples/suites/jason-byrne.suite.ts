@@ -1,4 +1,4 @@
-import { Scenario, Suite } from '@qaflag/core';
+import { Case, Scenario, Suite } from '@qaflag/core';
 import {
   near,
   PlaywrightContext,
@@ -43,9 +43,10 @@ export class JasonByrneSuite extends Suite({
     );
     await experience.mouse.click();
     await context.waitForNavigation();
-    await context.case('Experience Page', this.testExperiencePage);
+    await context.case(this.testExperiencePage);
   }
 
+  @Case()
   async testExperiencePage(context: PlaywrightContext) {
     await context.exists(image, near(topLeft));
     await context.exists(heading, '"Experience"');

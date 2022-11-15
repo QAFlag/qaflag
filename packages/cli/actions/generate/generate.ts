@@ -6,7 +6,7 @@ import { cwd } from 'process';
 import camelcase = require('camelcase');
 import { writeFile } from 'fs-extra';
 import { whichInstalled } from '../../utils/is-installed';
-import { titleize } from '../../utils/string';
+import { titleize } from '@qaflag/core';
 
 const getFilePath = (project: Project, name: string, suffix: string) => {
   return resolve(cwd(), project.settings.input.path, `${name}.${suffix}.ts`);

@@ -24,6 +24,16 @@ export class Logger implements LoggerInterface {
     return this.#messages.length;
   }
 
+  public get lastLine(): LogMessage {
+    return this.#messages[this.#messages.length - 1];
+  }
+
+  public lastLineIsBreak(): boolean {
+    return (
+      this.lastLine.type == 'lineBreak' || this.lastLine.text.trim().length == 0
+    );
+  }
+
   public start() {
     this.enforceNotStarted();
     this.#started = Date.now();

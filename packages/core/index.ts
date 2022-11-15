@@ -1,4 +1,5 @@
 export * from './scenario/scenario.decorator';
+export * from './case/case.decorator';
 export * from './decorators/after.decorator';
 export * from './decorators/before.decorator';
 export * from './context/context.abstract';
@@ -40,3 +41,4 @@ export * from './utils/form';
 export * from './utils/as';
 export * from './test/result';
 export * from './test/result';
+export * from './utils/string';

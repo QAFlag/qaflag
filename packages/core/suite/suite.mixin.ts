@@ -20,6 +20,7 @@ import { BeforeSymbol } from '../decorators/before.decorator';
 import { AfterSymbol } from '../decorators/after.decorator';
 
 export const ScenarioDefinitions = Symbol('ScenarioDefinitions');
+export const CaseDefinitions = Symbol('CaseDefinitions');
 
 export type SuiteOpts = {
   title: string;

@@ -25,7 +25,7 @@ export class HttpRequest implements HttpRequestInterface {
     public readonly opts: HttpRequestOptions,
     persona?: PersonaInterface,
   ) {
-    this.uri = opts.uri;
+    this.uri = opts.uri || 'GET /';
     this.#persona = persona;
   }
 
