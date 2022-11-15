@@ -9,6 +9,7 @@ export * from './has';
 export * from './proximity';
 export * from './not';
 export * from './and';
-export * from './psuedos';
+export * from './elements';
 export * from './nth';
 export * from './is-prefixed';
+export * from './aria';

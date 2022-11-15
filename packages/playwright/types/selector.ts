@@ -1,4 +1,4 @@
-import { StateSelector, FindQuery, SelectFilter } from '../selectors';
+import { FindQuery, SelectFilter, SelectPrimary } from '../selectors';
 
-export type PrimarySelector = string | FindQuery | RegExp | StateSelector;
+export type PrimarySelector = string | FindQuery | RegExp | SelectPrimary;
 export type SubQueries = string | FindQuery | RegExp | SelectFilter;

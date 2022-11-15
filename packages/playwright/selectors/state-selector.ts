@@ -1,7 +1,7 @@
-import { SelectFilter, FindQuery } from './';
+import { SelectFilter, FindQuery, SelectPrimary } from './';
 import { ucfirst } from '@qaflag/core';
 
-export class StateSelector implements SelectFilter {
+export class StateSelector implements SelectFilter, SelectPrimary {
   constructor(private readonly state: string, private readonly name?: string) {}
 
   public toPrimarySelector(): FindQuery {

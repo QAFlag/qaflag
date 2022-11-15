@@ -43,7 +43,7 @@ export abstract class Context implements ContextInterface {
     this.logger.pass(content);
   }
 
-  public async group<T>(
+  public async case<T>(
     heading: string,
     tests: (context?: ContextInterface) => Promise<T>,
   ) {

@@ -14,7 +14,7 @@ export interface ContextInterface extends LogProvider {
   heading(messages: string | string[]): void;
   info(messages: string | string[]): void;
   debug(messages: DebugContent | DebugContent[]): void;
-  group<T>(
+  case<T>(
     heading: string,
     tests: (context?: ContextInterface) => Promise<T>,
   ): any;

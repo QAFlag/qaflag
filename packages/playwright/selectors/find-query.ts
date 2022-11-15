@@ -6,10 +6,8 @@ import {
 } from './is-prefixed';
 import {
   alt,
-  SelectModifier,
   text,
   ariaLabel,
-  role,
   href,
   src,
   placeholder,
@@ -20,18 +18,24 @@ import {
   contains,
   SelectFilter,
   StateSelector,
+  SelectModifier,
+  SelectPrimary,
 } from './';
 import { PrimarySelector, SubQueries } from '../types';
+import { selectors } from 'playwright';
 
 const prefixMapper: { [prefix: string]: SelectModifier } = {
   alt,
   text: textPrefix,
   ariaLabel,
-  role,
   href,
   src,
   placeholder,
   id,
+};
+
+const isSelectPrimary = (selector: unknown): selector is SelectPrimary => {
+  return !!selectors['toPrimarySelector'];
 };
 
 export class FindQuery {
@@ -40,7 +44,11 @@ export class FindQuery {
     ...subQueries: SubQueries[]
   ): FindQuery {
     const inputQuery: FindQuery = FindQuery.create(
-      selector instanceof RegExp ? String(selector) : selector,
+      selector instanceof RegExp
+        ? String(selector)
+        : isSelectPrimary(selector)
+        ? selector.toPrimarySelector()
+        : selector,
     );
     return inputQuery.apply(subQueries);
   }

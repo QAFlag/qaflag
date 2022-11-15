@@ -1,4 +1,8 @@
-export type Role =
+import { ucfirst } from '@qaflag/core';
+import { FindQuery } from './find-query';
+import { SelectFilter, SelectPrimary } from './';
+
+export type AriaRole =
   | 'alert'
   | 'alertdialog'
   | 'application'
@@ -82,13 +86,22 @@ export type Role =
   | 'treegrid'
   | 'treeitem';
 
-export type RoleOptions = {
-  checked?: boolean;
-  disabled?: boolean;
-  expanded?: boolean;
-  includeHidden?: boolean;
-  level?: number;
-  name?: string | RegExp;
-  pressed?: boolean;
-  selected?: boolean;
-};
+export class RoleSelector implements SelectFilter, SelectPrimary {
+  constructor(public readonly role: AriaRole, private readonly name?: string) {}
+
+  public toPrimarySelector(): FindQuery {
+    return FindQuery.create(
+      `role=${this.role}`,
+      `${ucfirst(this.name || this.role)}`,
+    );
+  }
+
+  public apply(primarySelector: FindQuery): FindQuery {
+    return FindQuery.create(
+      `${primarySelector.selector} >> role=${this.role}`,
+      `${primarySelector.name} (${this.name || this.role})`,
+    );
+  }
+}
+
+export const role = (name: AriaRole): RoleSelector => new RoleSelector(name);

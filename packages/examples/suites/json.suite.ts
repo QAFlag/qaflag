@@ -23,7 +23,7 @@ export class UsersSuite extends Suite({
   @GetList()
   async getListOfUsers(context: JsonContext) {
     context.requestDuration.should.be.lessThan(100);
-    await context.group('Test List', async () => {
+    await context.case('Test List', async () => {
       const items = context.find('[*]');
       items.must.all.match.dto(UserDto);
       items.must.be.an.array();

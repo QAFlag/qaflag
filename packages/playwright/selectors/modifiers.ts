@@ -1,5 +1,4 @@
 import { escape } from '../utils/escape';
-import { Role } from '../types/role';
 import { FindQuery } from './';
 import { extractRegex, extractText } from './is-prefixed';
 
@@ -75,9 +74,6 @@ export const attr = (
   }
   return FindQuery.create(`[${name}]`, `[${name}]`);
 };
-
-export const role: SelectModifier = (value: Role): FindQuery =>
-  FindQuery.create(`[role="${value}"]`, `role "${value}"`);
 
 export const id: SelectModifier = (value: string): FindQuery =>
   FindQuery.create(`[id="${escape(value)}"]`, `id="${value}"`);

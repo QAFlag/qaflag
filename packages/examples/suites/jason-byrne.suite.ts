@@ -8,9 +8,9 @@ import {
   not,
   link,
   first,
-  header,
   image,
   topLeft,
+  heading,
 } from '@qaflag/playwright';
 
 export class JasonByrneSuite extends Suite({
@@ -43,12 +43,12 @@ export class JasonByrneSuite extends Suite({
     );
     await experience.mouse.click();
     await context.waitForNavigation();
-    await context.group('Experience Page', this.testExperiencePage);
+    await context.case('Experience Page', this.testExperiencePage);
   }
 
   async testExperiencePage(context: PlaywrightContext) {
     await context.exists(image, near(topLeft));
-    await context.exists('"Experience"', header);
+    await context.exists(heading, '"Experience"');
     await context.exists('*Echelon*');
     await context.pause(1000);
   }
