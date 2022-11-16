@@ -78,6 +78,14 @@ export class Mouse implements PointerInterface {
     return this.locator.first.$.dblclick(opts);
   }
 
+  public async tripleClick(opts?: ClickOpts) {
+    this.locator.logger.action('TCLICK', this.locator);
+    return this.locator.first.$.click({
+      ...opts,
+      clickCount: 3,
+    });
+  }
+
   public async longPress(opts?: LongPressOpts) {
     this.locator.logger.action('LONGPRESS', this.locator);
     const page = this.locator.$.page();

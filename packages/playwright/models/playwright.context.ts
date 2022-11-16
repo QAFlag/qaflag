@@ -214,4 +214,8 @@ export class PlaywrightContext extends Context implements ContextInterface {
     else if (this.persona.hasKeyboard) await element.keyboard.press('Enter');
     return element;
   }
+
+  public async resize(size: [width: number, height: number]) {
+    return this.page.setViewportSize({ width: size[0], height: size[1] });
+  }
 }

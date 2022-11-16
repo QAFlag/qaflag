@@ -100,42 +100,42 @@ export class Keyboard implements KeyboardInterface {
   }
 
   public async backspace(opts?: RepeatPress) {
-    return this.specialKeyPress('Backspace', opts);
+    return this.pressSpecial('Backspace', opts);
   }
 
   public async enter(opts?: RepeatPress) {
-    return this.specialKeyPress('Enter', opts);
+    return this.pressSpecial('Enter', opts);
   }
 
   public async delete(opts?: RepeatPress) {
-    return this.specialKeyPress('Delete', opts);
+    return this.pressSpecial('Delete', opts);
   }
 
   public async escape(opts?: RepeatPress) {
-    return this.specialKeyPress('Escape', opts);
+    return this.pressSpecial('Escape', opts);
   }
 
   public async tab(opts?: RepeatPress) {
-    return this.specialKeyPress('Tab', opts);
+    return this.pressSpecial('Tab', opts);
   }
 
   public async arrowDown(opts?: RepeatPress) {
-    return this.specialKeyPress('ArrowDown', opts);
+    return this.pressSpecial('ArrowDown', opts);
   }
 
   public async arrrowUp(opts?: RepeatPress) {
-    return this.specialKeyPress('ArrowUp', opts);
+    return this.pressSpecial('ArrowUp', opts);
   }
 
   public async arrowLeft(opts?: RepeatPress) {
-    return this.specialKeyPress('ArrowLeft', opts);
+    return this.pressSpecial('ArrowLeft', opts);
   }
 
   public async arrowRight(opts?: RepeatPress) {
-    return this.specialKeyPress('ArrowRight', opts);
+    return this.pressSpecial('ArrowRight', opts);
   }
 
-  public async specialKeyPress(key: SpecialKeys, opts?: RepeatPress) {
+  public async pressSpecial(key: SpecialKeys, opts?: RepeatPress) {
     const count = opts?.count || 1;
     for (let i = 0; i < count; i++) {
       await this.press(key);
