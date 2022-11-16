@@ -1,6 +1,7 @@
 import {
   Context,
   ContextInterface,
+  NumberMapValue,
   ScenarioInterface,
   StringValue,
 } from '@qaflag/core';
@@ -54,6 +55,16 @@ export class PlaywrightContext extends Context implements ContextInterface {
 
   public get browserContext() {
     return this.playwright.context;
+  }
+
+  public get viewportSize() {
+    return new NumberMapValue(
+      this.page.viewportSize() || { width: 0, height: 0 },
+      {
+        name: 'Viewport Size',
+        context: this,
+      },
+    );
   }
 
   public locator(selector: string, opts?: FindOpts): PlaywrightValue {
@@ -163,8 +174,7 @@ export class PlaywrightContext extends Context implements ContextInterface {
   }
 
   public async title() {
-    const title = await this.page.title();
-    return this.stringValue(title, 'Page Title');
+    return this.stringValue(await this.page.title(), 'Page Title');
   }
 
   public screenshot(opts: PageScreenshotOptions) {

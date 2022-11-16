@@ -1,3 +1,4 @@
+import { PrimarySelector } from '../types';
 import { SelectFilter, FindQuery } from './';
 
 class WithinSelector implements SelectFilter {
@@ -11,5 +12,5 @@ class WithinSelector implements SelectFilter {
   }
 }
 
-export const within = (selector: string | FindQuery) =>
+export const within = (selector: PrimarySelector) =>
   new WithinSelector(FindQuery.create(selector));

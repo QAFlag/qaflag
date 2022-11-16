@@ -6,12 +6,7 @@ class ProximityFilter implements SelectFilter {
     direction: string,
     element: string | FindQuery | PlaywrightValue,
   ) {
-    return new ProximityFilter(
-      direction,
-      FindQuery.create(
-        element instanceof PlaywrightValue ? element.selector : element,
-      ),
-    );
+    return new ProximityFilter(direction, FindQuery.create(element));
   }
 
   constructor(

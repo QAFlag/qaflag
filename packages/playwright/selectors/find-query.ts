@@ -53,14 +53,15 @@ export class FindQuery {
     return inputQuery.apply(subQueries);
   }
 
-  public static create(
-    input: string | FindQuery | StateSelector,
-    name?: string,
-  ): FindQuery {
+  public static create(input: PrimarySelector, name?: string): FindQuery {
     // Already a find query? Leave it alone
-    if (input instanceof FindQuery) return input;
-    if (input instanceof StateSelector) return input.toPrimarySelector();
-    if (typeof name == 'string') return new FindQuery(input, name);
+    if (typeof input !== 'string') {
+      if (input instanceof FindQuery) return input;
+      if (input instanceof StateSelector) return input.toPrimarySelector();
+      if (input instanceof RegExp) return new FindQuery(String(input), name);
+      if (isSelectPrimary(input)) return input.toPrimarySelector();
+      return new FindQuery(input.selector, input.name);
+    }
     // Look for quoted text
     const matchText = extractText(input);
     if (matchText) {
@@ -86,7 +87,7 @@ export class FindQuery {
       );
     }
     // Standard
-    return new FindQuery(input);
+    return new FindQuery(input, name);
   }
 
   private constructor(

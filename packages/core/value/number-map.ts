@@ -1,11 +1,11 @@
 import { test, Test } from '../test/test';
-import { StringValue, ValueAbstract, ValueOpts } from './values';
+import { NumericValue, ValueAbstract, ValueOpts } from './values';
 
-type StringMap<T> = Record<keyof T, string>;
+type NumberMap<T> = Record<keyof T, number>;
 
-export class StringMapValue<T> extends ValueAbstract<StringMap<T>> {
+export class NumberMapValue<T> extends ValueAbstract<NumberMap<T>> {
   constructor(
-    protected readonly input: StringMap<T>,
+    protected readonly input: NumberMap<T>,
     protected opts: ValueOpts,
   ) {
     super(input, opts);
@@ -24,7 +24,7 @@ export class StringMapValue<T> extends ValueAbstract<StringMap<T>> {
   }
 
   public find(key: keyof T) {
-    return new StringValue(this.input[key], {
+    return new NumericValue(this.input[key], {
       name: String(key),
       context: this.context,
     });
