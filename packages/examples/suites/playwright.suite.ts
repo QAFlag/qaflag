@@ -1,6 +1,6 @@
 import { Scenario, Suite } from '@qaflag/core';
 import {
-  ariaLabel,
+  attr,
   button,
   near,
   PlaywrightContext,
@@ -21,8 +21,8 @@ export class GoogleSearch extends Suite({
   async queryForMyGithub(context: PlaywrightContext) {
     const searchTerm = 'Jason Byrne Github';
     const searchButton = await context.visible(button, '"Google Search"');
-    const searchInput = context.find(textbox, ariaLabel('Search'));
-    context.exists(button, near('head'));
+    const searchInput = context.find(attr('aria-label', 'Search'));
+    await context.exists(button, near(top));
     await searchInput.must.exist();
     await searchInput.must.be.visible();
     await searchInput.must.not.be.hidden();

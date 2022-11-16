@@ -10,7 +10,7 @@ import { PlaywrightInstance } from './playwright.adapter';
 import { PlaywrightValue } from './playwright.value';
 import { ClickOpts } from './pointer';
 import { WaitForNavigationOpts, WaitForUrlOpts } from './wait-for';
-import { FindQuery } from '../selectors';
+import { FindQuery, LabelSelector, RoleSelector } from '../selectors';
 import { PrimarySelector, SubQueries } from '../types';
 
 export type NavigationOpts =
@@ -77,14 +77,41 @@ export class PlaywrightContext extends Context implements ContextInterface {
     });
   }
 
+  public find(role: RoleSelector): PlaywrightValue;
+  public find(label: LabelSelector): PlaywrightValue;
+  public find(aliasName: `$${string}`): PlaywrightValue;
   public find(
     selector: PrimarySelector,
+    ...subQueries: SubQueries[]
+  ): PlaywrightValue;
+  public find(
+    selector: PrimarySelector | RoleSelector | LabelSelector,
     ...subQueries: SubQueries[]
   ): PlaywrightValue {
     if (typeof selector == 'string' && selector.startsWith('$')) {
       const value = this.get(selector.substring(1));
       if (value instanceof PlaywrightValue) return value;
       throw `${selector} was not a valid alias in this context. Must be set as a PlaywrightValue.`;
+    }
+    if (selector instanceof RoleSelector) {
+      return new PlaywrightValue(
+        this.playwright.page.getByRole(selector.role, selector.filters),
+        {
+          selector: selector.selector,
+          name: selector.name,
+          context: this,
+        },
+      );
+    }
+    if (selector instanceof LabelSelector) {
+      return new PlaywrightValue(
+        this.playwright.page.getByLabel(selector.label, selector.filters),
+        {
+          selector: selector.selector,
+          name: selector.name,
+          context: this,
+        },
+      );
     }
     const query = FindQuery.process(selector, ...subQueries);
     return new PlaywrightValue(this.playwright.page.locator(query.selector), {

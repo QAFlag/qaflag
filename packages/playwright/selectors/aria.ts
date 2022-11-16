@@ -1,6 +1,4 @@
-import { ucfirst } from '@qaflag/core';
-import { FindQuery } from './find-query';
-import { SelectFilter, SelectPrimary } from './';
+import { humanReadableList } from '@qaflag/core';
 
 export type AriaRole =
   | 'alert'
@@ -86,22 +84,95 @@ export type AriaRole =
   | 'treegrid'
   | 'treeitem';
 
-export class RoleSelector implements SelectFilter, SelectPrimary {
-  constructor(public readonly role: AriaRole, private readonly name?: string) {}
+type RoleSelectorOptions = {
+  checked?: boolean;
+  disabled?: boolean;
+  expanded?: boolean;
+  includeHidden?: boolean;
+  level?: number;
+  name?: string | RegExp;
+  pressed?: boolean;
+  selected?: boolean;
+};
 
-  public toPrimarySelector(): FindQuery {
-    return FindQuery.create(
-      `role=${this.role}`,
-      `${ucfirst(this.name || this.role)}`,
-    );
+type LabelSelectorOptions = {
+  exact?: boolean;
+};
+
+export class RoleSelector {
+  constructor(
+    public readonly role: AriaRole,
+    private readonly opts?: RoleSelectorOptions,
+  ) {}
+
+  public get selector(): string {
+    return `role=${this.role}`;
   }
 
-  public apply(primarySelector: FindQuery): FindQuery {
-    return FindQuery.create(
-      `${primarySelector.selector} >> role=${this.role}`,
-      `${primarySelector.name} (${this.name || this.role})`,
-    );
+  public get name(): string {
+    const filterNames: string[] = [];
+    if (this.opts) {
+      Object.entries(this.opts).forEach(filter => {
+        filterNames.push(`${filter[0]}=${filter[1]}`);
+      });
+    }
+    return filterNames.length
+      ? `${this.role} (${humanReadableList(filterNames)})`
+      : this.role;
+  }
+
+  public get filters(): RoleSelectorOptions {
+    return this.opts || {};
   }
 }
 
-export const role = (name: AriaRole): RoleSelector => new RoleSelector(name);
+export class LabelSelector {
+  constructor(
+    public readonly label: string,
+    private readonly opts?: LabelSelectorOptions,
+  ) {}
+
+  public get selector(): string {
+    return `label=${this.name}`;
+  }
+
+  public get name(): string {
+    const filterNames: string[] = [];
+    if (this.opts) {
+      Object.entries(this.opts).forEach(filter => {
+        filterNames.push(`${filter[0]}=${filter[1]}`);
+      });
+    }
+    return filterNames.length
+      ? `${this.label} (${humanReadableList(filterNames)})`
+      : this.label;
+  }
+
+  public get filters(): LabelSelectorOptions {
+    return this.opts || {};
+  }
+}
+
+export const role = (
+  roleName: AriaRole,
+  filter?: string | RegExp | RoleSelectorOptions,
+): RoleSelector => {
+  if (!filter) return new RoleSelector(roleName);
+  const opts: RoleSelectorOptions | undefined = (() => {
+    if (typeof filter == 'string') return { name: filter };
+    if (filter instanceof RegExp) return { name: filter };
+    return filter;
+  })();
+  return new RoleSelector(roleName, opts);
+};
+
+export const label = (
+  labelName: string,
+  filter?: LabelSelectorOptions | boolean,
+): LabelSelector => {
+  const opts = (() => {
+    if (typeof filter == 'boolean') return { exact: filter };
+    return filter;
+  })();
+  return new LabelSelector(labelName, opts);
+};

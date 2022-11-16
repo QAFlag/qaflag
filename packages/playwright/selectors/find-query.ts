@@ -7,7 +7,6 @@ import {
 import {
   alt,
   text,
-  ariaLabel,
   href,
   src,
   placeholder,
@@ -27,7 +26,6 @@ import { selectors } from 'playwright';
 const prefixMapper: { [prefix: string]: SelectModifier } = {
   alt,
   text: textPrefix,
-  ariaLabel,
   href,
   src,
   placeholder,

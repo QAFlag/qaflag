@@ -30,27 +30,6 @@ export const matches = (pattern: string, flags = 'i'): FindQuery => {
   );
 };
 
-export const alt: SelectModifier = (value: string): FindQuery =>
-  FindQuery.create(`[alt="${value}"]`, `alt text "${value}"`);
-
-export const href: SelectModifier = (value: string): FindQuery =>
-  FindQuery.create(`[href="${escape(value)}"]`, `href="${value}"`);
-
-export const src: SelectModifier = (value: string): FindQuery =>
-  FindQuery.create(`[src="${escape(value)}"]`, `src="${value}"`);
-
-export const ariaLabel: SelectModifier = (value: string): FindQuery =>
-  FindQuery.create(`[aria-label="${escape(value)}"]`, `arial label "${value}"`);
-
-export const placeholder: SelectModifier = (value: string): FindQuery =>
-  FindQuery.create(
-    `[placeholder="${escape(value)}"]`,
-    `placeholder "${value}"`,
-  );
-
-export const title: SelectModifier = (value: string): FindQuery =>
-  FindQuery.create(`[title="${escape(value)}"]`, `title "${value}"`);
-
 export const attr = (
   name: string,
   value?: string,
@@ -75,5 +54,20 @@ export const attr = (
   return FindQuery.create(`[${name}]`, `[${name}]`);
 };
 
+export const alt: SelectModifier = (value: string): FindQuery =>
+  attr('alt', value);
+
+export const href: SelectModifier = (value: string): FindQuery =>
+  attr('href', value);
+
+export const src: SelectModifier = (value: string): FindQuery =>
+  attr('src', value);
+
+export const placeholder: SelectModifier = (value: string): FindQuery =>
+  attr('placeholder', value);
+
+export const title: SelectModifier = (value: string): FindQuery =>
+  attr('title', value);
+
 export const id: SelectModifier = (value: string): FindQuery =>
-  FindQuery.create(`[id="${escape(value)}"]`, `id="${value}"`);
+  attr('id', value);

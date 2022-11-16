@@ -15,7 +15,7 @@ export abstract class TestBase {
 
   constructor(
     protected readonly input: ValueInterface,
-    protected mustShouldCould: mustShouldCould,
+    protected readonly mustShouldCould: mustShouldCould,
     protected isNot: boolean = false,
     protected evalType: TestEvalEnum = 'standard',
     protected evalCount: number,

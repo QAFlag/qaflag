@@ -286,7 +286,7 @@ export class ArrayValue<T = any> extends PrimitiveValueAbstract<T[]> {
   }
 
   public get could(): ArrayMust<typeof this> {
-    return test(this, 'should');
+    return test(this, 'could');
   }
 
   public get first() {

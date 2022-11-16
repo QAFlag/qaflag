@@ -16,7 +16,7 @@ export class Test<ValueWrapper extends ValueInterface>
 
   constructor(
     public readonly input: ValueWrapper,
-    protected mustShouldCould: mustShouldCould,
+    protected readonly mustShouldCould: mustShouldCould,
     protected isNot: boolean = false,
     protected evalType: TestEvalEnum = 'standard',
     protected evalCount: number = 0,
