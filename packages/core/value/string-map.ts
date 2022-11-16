@@ -5,7 +5,7 @@ type StringMap<T> = Record<keyof T, string>;
 
 export class StringMapValue<T> extends ValueAbstract<StringMap<T>> {
   constructor(
-    protected readonly input: StringMap<T>,
+    protected readonly input: Record<keyof T, string>,
     protected opts: ValueOpts,
   ) {
     super(input, opts);

@@ -57,14 +57,15 @@ export class PlaywrightContext extends Context implements ContextInterface {
     return this.playwright.context;
   }
 
-  public get viewportSize() {
-    return new NumberMapValue(
-      this.page.viewportSize() || { width: 0, height: 0 },
-      {
-        name: 'Viewport Size',
-        context: this,
-      },
-    );
+  public get viewportSize(): NumberMapValue<{
+    width: number;
+    height: number;
+  }> {
+    const size = this.page.viewportSize();
+    return new NumberMapValue(size || { width: 0, height: 0 }, {
+      name: 'Viewport Size',
+      context: this,
+    });
   }
 
   public locator(selector: string, opts?: FindOpts): PlaywrightValue {
