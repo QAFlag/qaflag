@@ -18,8 +18,6 @@ export function Case(opts?: CaseDecoratorOpts) {
       title: titleize(String(methodName)),
       description: opts?.description,
     });
-
-    console.log(target);
     return descriptor;
   };
 }
