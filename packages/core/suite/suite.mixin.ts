@@ -18,6 +18,7 @@ import { PersonaInterface } from '../persona/persona.interface';
 import { DefaultUser } from '../persona/persona';
 import { BeforeSymbol } from '../decorators/before.decorator';
 import { AfterSymbol } from '../decorators/after.decorator';
+import { TestCase } from '../case/case';
 
 export const ScenarioDefinitions = Symbol('ScenarioDefinitions');
 export const CaseDefinitions = Symbol('CaseDefinitions');
@@ -37,6 +38,7 @@ export function Suite(suiteOpts: SuiteOpts) {
 
     public readonly events = new EventEmitter() as TypedEmitter<SuiteEvents>;
     public readonly scenarios: ScenarioInterface[] = [];
+    public readonly cases: TestCase[] = [];
     public readonly steps: SuiteStep[] = [];
     public readonly persona: PersonaInterface =
       suiteOpts.persona || new DefaultUser();
@@ -80,6 +82,14 @@ export function Suite(suiteOpts: SuiteOpts) {
             );
             this.scenarios.push(scenario);
           });
+      }
+      // Add Cases
+      const caseMethods: { [methodName: string]: TestCase } =
+        this[CaseDefinitions];
+      if (caseMethods) {
+        Object.values(caseMethods).forEach(testCase =>
+          this.cases.push(testCase),
+        );
       }
     }
 

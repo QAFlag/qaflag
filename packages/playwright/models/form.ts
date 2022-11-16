@@ -64,6 +64,11 @@ export class Form implements FormInterface {
     return this.locator.first.$.fill(value, opts);
   }
 
+  public async clear(opts?: FormOpts) {
+    this.locator.logger.action('CLEAR', this.locator);
+    return this.locator.first.$.fill('', opts);
+  }
+
   public async text(opts?: TimeoutOpts) {
     const tagName = await this.locator.tagName();
     if (tagName.$ == 'SELECT') {

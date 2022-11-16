@@ -31,27 +31,39 @@ export const plan = async (project: Project) => {
   printLineBreak();
   printLines([suite.title], { style: chalk.yellowBright });
   printLineBreak();
-  suite.steps.forEach(step => {
-    if (suite.steps.length > 1) {
-      printLines([`Step ${step.stepNumber}`]);
-    }
+  if (suite.steps.length && suite.scenarios.length) {
+    printLines(['SCENARIOS', '']);
+    suite.steps.forEach(step => {
+      if (suite.steps.length > 1) {
+        printLines([`Step ${step.stepNumber}`]);
+      }
+      printTable(
+        [
+          chalk.blueBright('Title'),
+          chalk.blueBright('Description'),
+          chalk.blueBright('URI'),
+          chalk.blueBright('Code'),
+        ],
+        [26, 40, 60, 6],
+        step.scenarios.map(scenario => {
+          return [
+            titleize(scenario.title),
+            scenario.description,
+            formatUri(scenario.uri),
+            scenario.statusCode ? String(scenario.statusCode) : '--',
+          ];
+        }),
+      );
+      printLineBreak();
+    });
+  }
+  if (suite.cases.length) {
+    printLines(['TEST CASES', '']);
     printTable(
-      [
-        chalk.blueBright('Title'),
-        chalk.blueBright('Description'),
-        chalk.blueBright('URI'),
-        chalk.blueBright('Code'),
-      ],
-      [26, 40, 60, 6],
-      step.scenarios.map(scenario => {
-        return [
-          titleize(scenario.title),
-          scenario.description,
-          formatUri(scenario.uri),
-          scenario.statusCode ? String(scenario.statusCode) : '--',
-        ];
-      }),
+      [chalk.blueBright('Title'), chalk.blueBright('Description')],
+      [40, 60],
+      suite.cases.map(testCase => [testCase.title, testCase.description || '']),
     );
     printLineBreak();
-  });
+  }
 };

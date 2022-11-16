@@ -71,3 +71,5 @@ export const ucfirst = (str: string) =>
     .split(' ')
     .map(word => word.slice(0, 1).toUpperCase() + word.slice(1))
     .join(' ');
+
+export const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));

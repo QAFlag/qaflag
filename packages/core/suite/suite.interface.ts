@@ -4,6 +4,7 @@ import { ScenarioInterface } from '../scenario/scenario.interface';
 import TypedEmitter from 'typed-emitter';
 import { KvStore } from '../models/kv-store';
 import { PersonaInterface } from '../persona/persona.interface';
+import { TestCase } from '../case/case';
 
 export interface SuiteStep {
   stepNumber: number;
@@ -30,6 +31,7 @@ export interface SuiteConstructor {
 export interface SuiteInterface extends LogProvider {
   title: string;
   steps: SuiteStep[];
+  cases: TestCase[];
   scenarios: ScenarioInterface[];
   events: TypedEmitter<SuiteEvents>;
   persona: PersonaInterface;

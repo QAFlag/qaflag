@@ -1,16 +1,25 @@
 import { CaseDefinitions } from '../suite/suite.mixin';
+import { titleize } from '../utils/string';
+import { TestCase } from './case';
 
-export function Case(opts?: { description?: string }) {
+export interface CaseDecoratorOpts {
+  description?: string;
+}
+
+export function Case(opts?: CaseDecoratorOpts) {
   return function (
     target: any,
     methodName: string | symbol,
     descriptor: PropertyDescriptor,
   ) {
     target[CaseDefinitions] = target[CaseDefinitions] || {};
-    target[CaseDefinitions][methodName] = {
-      name: methodName,
+    target[CaseDefinitions][methodName] = new TestCase({
+      key: String(methodName),
+      title: titleize(String(methodName)),
       description: opts?.description,
-    };
+    });
+
+    console.log(target);
     return descriptor;
   };
 }
