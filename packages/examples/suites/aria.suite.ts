@@ -38,7 +38,7 @@ export class AriaSuite extends Suite({
     const count = await context.find(role('checkbox', 'asdf')).count();
     count.must.equal(1);
     await context.find(role('switch')).must.be.checked();
-    await context.find(role('switch')).action.uncheck();
+    await context.find(role('switch')).action.check(false);
     await context.find(role('switch')).must.not.be.checked();
   }
 }
