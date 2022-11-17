@@ -50,7 +50,7 @@ export type GeoLocation = {
 };
 
 export type ColorScheme = 'light' | 'dark' | undefined;
-export type XY = [number, number];
+export type XY = [x: number, y: number];
 
 export type StorageOrigins = {
   origin: string;
@@ -90,7 +90,7 @@ export interface PersonaOperatingSystem {
 
 export interface PersonaQualities {
   // Attributes
-  gender: 'male' | 'female' | undefined;
+  gender: 'male' | 'female' | 'nonbinary' | undefined;
   age: number | undefined;
   occupation: string | undefined;
   timezone: string | undefined;

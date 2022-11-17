@@ -1,5 +1,9 @@
 import { After, Before, Scenario, Suite } from '@qaflag/core';
-import { PlaywrightContext, PlaywrightScenario } from '@qaflag/playwright';
+import {
+  PlaywrightContext,
+  PlaywrightScenario,
+  role,
+} from '@qaflag/playwright';
 import { Server } from 'minikin';
 import { initMinikin } from '../mocks/minikin';
 
@@ -31,5 +35,10 @@ export class AriaSuite extends Suite({
     await context.find('#fakeCheckbox2').must.be.checked();
     await context.find('#dropdown').must.have.value('bar');
     await context.find('#dropdown').must.have.selectedText('BAR');
+    const count = await context.find(role('checkbox', 'asdf')).count();
+    count.must.equal(1);
+    await context.find(role('switch')).must.be.checked();
+    await context.find(role('switch')).action.uncheck();
+    await context.find(role('switch')).must.not.be.checked();
   }
 }

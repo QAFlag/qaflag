@@ -4,6 +4,7 @@ import {
   NumberMapValue,
   ScenarioInterface,
   StringValue,
+  XY,
 } from '@qaflag/core';
 import { Locator, PageScreenshotOptions } from 'playwright';
 import { PlaywrightInstance } from './playwright.adapter';
@@ -193,5 +194,12 @@ export class PlaywrightContext extends Context implements ContextInterface {
 
   public async resize(size: [width: number, height: number]) {
     return this.page.setViewportSize({ width: size[0], height: size[1] });
+  }
+
+  public scroll(distanceY: number): Promise<void>;
+  public scroll(distance: XY): Promise<void>;
+  public async scroll(distance: XY | number) {
+    if (typeof distance == 'number') return this.page.mouse.wheel(0, distance);
+    return this.page.mouse.wheel(...distance);
   }
 }

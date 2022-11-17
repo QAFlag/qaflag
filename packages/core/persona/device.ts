@@ -8,7 +8,7 @@ import {
 } from './persona.interface';
 
 const defaultScreenSize: { [key in DeviceType]: [number, number] } = {
-  laptop: [1920, 1080],
+  laptop: [1280, 720],
   desktop: [1920, 1080],
   tv: [3840, 2160],
   phone: [926, 428],

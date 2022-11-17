@@ -1,7 +1,7 @@
 import { PersonaInitOptions } from './persona.interface';
 
 export const Demographic = (
-  gender: 'male' | 'female' | undefined,
+  gender: 'male' | 'female' | 'nonbinary' | undefined,
   age: number,
 ): PersonaInitOptions => ({
   gender,

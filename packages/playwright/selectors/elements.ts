@@ -65,18 +65,13 @@ export const dropdown = new StateSelector(
 );
 
 export const checkbox = new StateSelector(
-  'is(input[type="checkbox"], [role="checkbox"]):visible',
+  'is(input[type="checkbox"], [role="checkbox"], .checkbox):visible',
   'checkbox',
 );
 
 export const radio = new StateSelector(
-  'is(input[type="radio"], [role="radio"]):visible',
+  'is(input[type="radio"], [role="radio"], .radio):visible',
   'radio box',
-);
-
-export const radioGroup = new StateSelector(
-  'is([role="radiogroup"]):visible',
-  'radio group',
 );
 
 export const button = new StateSelector(

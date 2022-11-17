@@ -18,9 +18,10 @@
     </style>
   </head>
   <body>
-    <div>
+    <label>
       <input type="checkbox" value="1" checked id="realCheckbox" />
-    </div>
+      asdf
+    </label>
     <div
       role="checkbox"
       aria-checked="true"
@@ -39,5 +40,11 @@
         <option value="bar" selected>BAR</option>
       </select>
     </div>
+    <div
+      role="switch"
+      aria-checked="true"
+      id="fakeSwitch"
+      onclick="toggleAriaCheck(this)"
+    ></div>
   </body>
 </html>
