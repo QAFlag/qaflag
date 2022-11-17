@@ -161,7 +161,7 @@ export class PlaywrightAssertion extends TestBase implements PlaywrightMust {
   }
 
   public async value(value: string, opts?: TimeoutOpts) {
-    this.message.push(`value <${value}>`);
+    this.message.push(`value "${value}"`);
     return this.execute(async item => {
       const elementValue = (await item.form.value(opts)).$;
       return {
@@ -171,12 +171,56 @@ export class PlaywrightAssertion extends TestBase implements PlaywrightMust {
     });
   }
 
-  public async attribute(name: string, value: string, opts?: TimeoutOpts) {
+  public async selectedText(value: string, opts?: TimeoutOpts) {
+    this.message.push(`selected text "${value}"`);
+    return this.execute(async item => {
+      const elementValue = (await item.form.selectedText(opts)).$;
+      return {
+        pass: elementValue == value,
+        actualValue: elementValue,
+      };
+    });
+  }
+
+  public async selectedIndex(index: number, opts?: TimeoutOpts) {
+    this.message.push(`selected index "${index}"`);
+    return this.execute(async item => {
+      const elementValue = (await item.form.selectedIndex(opts)).$;
+      return {
+        pass: elementValue == index,
+        actualValue: String(elementValue),
+      };
+    });
+  }
+
+  public async text(value: string, opts?: TimeoutOpts) {
+    this.message.push(`text ${value}`);
+    return this.execute(async item => {
+      const elementText = (await item.text(opts)).$;
+      return {
+        pass: elementText == value,
+        actualValue: elementText,
+      };
+    });
+  }
+
+  public async attributeValue(name: string, value: string, opts?: TimeoutOpts) {
     this.message.push(`atribute <${name}>`);
     return this.execute(async item => {
-      const attributeValue = (await item.attribute(name, opts)).$;
+      const attributeValue = await this.input.$.getAttribute(name);
       return {
-        pass: attributeValue == value,
+        pass: attributeValue === value,
+        actualValue: attributeValue,
+      };
+    });
+  }
+
+  public async attribute(name: string, opts?: TimeoutOpts) {
+    this.message.push(`atribute <${name}>`);
+    return this.execute(async item => {
+      const attributeValue = await this.input.$.getAttribute(name);
+      return {
+        pass: attributeValue !== null,
         actualValue: attributeValue,
       };
     });

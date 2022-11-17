@@ -19,7 +19,11 @@ export interface PlaywrightMustHave {
   className(name: string): PlaywrightAssertionOutput;
   focus(): PlaywrightAssertionOutput;
   value(value: string): PlaywrightAssertionOutput;
-  attribute(name: string, value: string): PlaywrightAssertionOutput;
+  selectedText(text: string): PlaywrightAssertionOutput;
+  selectedIndex(index: number): PlaywrightAssertionOutput;
+  text(text: string): PlaywrightAssertionOutput;
+  attribute(name: string): PlaywrightAssertionOutput;
+  attributeValue(name: string, value: string): PlaywrightAssertionOutput;
   all: PlaywrightMust;
   some: PlaywrightMust;
   none: PlaywrightMust;

@@ -17,7 +17,8 @@
     "@qaflag/playwright": "^0.2.10",
     "@qaflag/xml": "^0.2.10",
     "class-transformer": "^0.5.1",
-    "class-validator": "^0.13.2"
+    "class-validator": "^0.13.2",
+    "minikin": "^2.1.8"
   },
   "devDependencies": {
     "husky": "^7.0.4"

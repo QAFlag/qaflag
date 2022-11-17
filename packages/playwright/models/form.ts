@@ -1,4 +1,10 @@
-import { ArrayValue, FormInterface, StringValue } from '@qaflag/core';
+import {
+  BooleanValue,
+  FormInterface,
+  NumericValue,
+  StringMapValue,
+  StringValue,
+} from '@qaflag/core';
 import { ElementHandle } from 'playwright';
 import { extractText } from '../selectors';
 import { TimeoutOpts } from '../types/timeout-opts';
@@ -48,79 +54,38 @@ export type InputFiles =
   | { name: string; mimeType: string; buffer: Buffer }[];
 
 export class Form implements FormInterface {
-  constructor(private locator: PlaywrightValue) {}
+  constructor(private input: PlaywrightValue) {}
 
-  public async check(isChecked: boolean = true, opts?: FormPointerOpts) {
-    this.locator.logger.action(
-      `TOGGLE`,
-      this.locator,
-      isChecked ? 'Check' : 'Unechek',
-    );
-    return this.locator.first.$.setChecked(isChecked, opts);
+  private get locator() {
+    return this.input.first.$;
   }
 
-  public async input(value: string, opts?: FormOpts) {
-    this.locator.logger.action('FILL', this.locator, value);
-    return this.locator.first.$.fill(value, opts);
-  }
-
-  public async clear(opts?: FormOpts) {
-    this.locator.logger.action('CLEAR', this.locator);
-    return this.locator.first.$.fill('', opts);
-  }
-
-  public async text(opts?: TimeoutOpts) {
-    const tagName = await this.locator.tagName();
-    if (tagName.$ == 'SELECT') {
-      const value = await this.locator.first.$.evaluate(
-        (sel: HTMLSelectElement) =>
-          sel.options[sel.options.selectedIndex].textContent,
-        opts,
-      );
-      if (!value) throw `No text selected in ${this.locator.name}`;
-      return new StringValue(value, {
-        context: this.locator.context,
-        name: `Selected Text of ${this.locator.name}`,
-      });
-    }
-    return new StringValue(await this.locator.first.$.inputValue(opts), {
-      context: this.locator.context,
-      name: `Text of ${this.locator.name}`,
+  public async isChecked(): Promise<BooleanValue> {
+    return new BooleanValue(await this.locator.isChecked(), {
+      name: `Is ${this.input.name} checked?`,
+      context: this.input.context,
     });
   }
 
-  public async options(
-    opts?: TimeoutOpts,
-  ): Promise<ArrayValue<DropdownOption>> {
-    if (await this.isTag('SELECT')) {
-      const options = await this.locator.first.$.evaluate(
-        (sel: HTMLSelectElement) => sel.options,
-        opts,
-      );
-      const dropdownOptions: DropdownOption[] = [];
-      for (let i = 0; i < options.length; i++) {
-        const option = options.item(i);
-        if (option) {
-          dropdownOptions.push({
-            text: option.text,
-            value: option.value,
-            index: option.index,
-            selected: option.selected,
-          });
-        }
-      }
-      return new ArrayValue(dropdownOptions, {
-        context: this.locator.context,
-        name: `Dropdown Options of ${this.locator.name}`,
-      });
-    }
-    throw `${this.locator.name} is not a dropdown, can't get options`;
+  public async check(isChecked: boolean = true, opts?: FormPointerOpts) {
+    this.input.logger.action(isChecked ? 'CHECK' : 'UNCHECK', this.input);
+    return this.locator.setChecked(isChecked, opts);
+  }
+
+  public async fill(value: string, opts?: FormOpts) {
+    this.input.logger.action('FILL', this.input, value);
+    return this.locator.fill(value, opts);
+  }
+
+  public async clear(opts?: FormOpts) {
+    this.input.logger.action('CLEAR', this.input);
+    return this.input.first.$.fill('', opts);
   }
 
   public async value(opts?: TimeoutOpts) {
-    return new StringValue(await this.locator.first.$.inputValue(opts), {
-      context: this.locator.context,
-      name: `Value of ${this.locator.name}`,
+    return new StringValue(await this.input.first.$.inputValue(opts), {
+      context: this.input.context,
+      name: `Value of ${this.input.name}`,
     });
   }
 
@@ -137,25 +102,73 @@ export class Form implements FormInterface {
       if (typeof value == 'number') return { index: value };
       return value;
     })();
-    this.locator.logger.action(
+    this.input.logger.action(
       'SELECT',
-      this.locator,
+      this.input,
       Array.isArray(selectThis)
         ? selectThis.toString()
         : selectThis.label || selectThis.value || `index ${selectThis.index}`,
     );
-    return this.locator.first.$.selectOption(selectThis, opts);
+    return this.input.first.$.selectOption(selectThis, opts);
+  }
+
+  public async selectedIndex(opts?: TimeoutOpts) {
+    const tagName = await this.input.tagName();
+    if (tagName.$ == 'SELECT') {
+      return new NumericValue(
+        await this.input.first.$.evaluate(
+          (sel: HTMLSelectElement) => sel.options.selectedIndex,
+          opts,
+        ),
+        {
+          name: `Selected Index of ${this.input.name}`,
+          context: this.input.context,
+        },
+      );
+    }
+    throw 'Not a <SELECT> element.';
+  }
+
+  public async selectedText(opts?: TimeoutOpts) {
+    const selected = await this.selectedOption(opts);
+    return new StringValue(selected.$.text, {
+      name: `Selected Text of ${this.input.name}`,
+      context: this.input.context,
+    });
+  }
+
+  public async selectedOption(opts?: TimeoutOpts) {
+    const tagName = await this.input.tagName();
+    if (tagName.$ == 'SELECT') {
+      const selected = await this.input.first.$.evaluate(
+        (sel: HTMLSelectElement) => {
+          const opt = sel.options[sel.options.selectedIndex];
+          return {
+            index: opt.index,
+            text: opt.text,
+            value: opt.value,
+          };
+        },
+        opts,
+      );
+      if (!selected) throw `Nothing selected in ${this.input.name}`;
+      return new StringMapValue(
+        {
+          index: String(selected.index),
+          text: selected.text,
+          value: selected.value,
+        },
+        {
+          context: this.input.context,
+          name: `Selected Option of ${this.input.name}`,
+        },
+      );
+    }
+    throw 'Not a <SELECT> element.';
   }
 
   public async file(files: InputFiles, opts?: FormOpts) {
-    this.locator.logger.action('FILE', this.locator, files.toString());
-    return this.locator.first.$.setInputFiles(files, opts);
-  }
-
-  private async isTag(
-    tag: 'SELECT' | 'INPUT' | 'BUTTON' | 'LABEL',
-  ): Promise<boolean> {
-    const tagName = await this.locator.tagName();
-    return tagName.$ == tag;
+    this.input.logger.action('FILE', this.input, files.toString());
+    return this.input.first.$.setInputFiles(files, opts);
   }
 }

@@ -26,7 +26,7 @@ export interface PrimitiveValueInterface<InputType = any>
 export interface FormInterface {
   check(isChecked: boolean): Promise<void>;
   select(value: string | string[]): Promise<string[]>;
-  input(text: string): Promise<void>;
+  fill(text: string): Promise<void>;
   file(path: string | string[]): Promise<void>;
   value():
     | StringValue

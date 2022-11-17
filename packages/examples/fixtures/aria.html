@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script>
+      function toggleAriaCheck(element) {
+        const state = element.getAttribute('aria-checked');
+        element.setAttribute(
+          'aria-checked',
+          state == 'true' ? 'false' : 'true',
+        );
+      }
+    </script>
+    <style>
+      div {
+        height: 32px;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <input type="checkbox" value="1" checked id="realCheckbox" />
+    </div>
+    <div
+      role="checkbox"
+      aria-checked="true"
+      id="fakeCheckbox"
+      onclick="toggleAriaCheck(this)"
+    ></div>
+    <div
+      role="checkbox"
+      aria-checked="false"
+      id="fakeCheckbox2"
+      onclick="toggleAriaCheck(this)"
+    ></div>
+    <div>
+      <select id="dropdown">
+        <option value="foo">FOO</option>
+        <option value="bar" selected>BAR</option>
+      </select>
+    </div>
+  </body>
+</html>

@@ -3,6 +3,16 @@ import { readFileSync } from 'fs';
 import path = require('path');
 
 const init = () => {
+  Mock.on('GET /aria', {
+    statusCode: 200,
+    data: async () => {
+      return readFileSync(
+        path.resolve(__dirname, '../../fixtures/users.json'),
+        'utf8',
+      );
+    },
+  });
+
   Mock.on('GET /users', {
     statusCode: 200,
     data: async () => {
