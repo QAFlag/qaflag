@@ -29,7 +29,7 @@ export class GoogleSearch extends Suite({
     await searchInput.must.all.be.visible();
     await searchInput.must.not.have.any.be.hidden();
     await searchInput.must.have.tagName('input');
-    await searchInput.keyboard.input(searchTerm);
+    await searchInput.keyboard.type(searchTerm);
     await searchInput.must.be.in.focus();
     await searchButton.mouse.click();
     await context.waitForNavigation();
@@ -43,7 +43,7 @@ export class GoogleSearch extends Suite({
     await newSearchBox.keyboard.delete();
     (await newSearchBox.first.form.value()).must.equal('');
     await context.pause(1000);
-    await newSearchBox.keyboard.input('foobar');
+    await newSearchBox.keyboard.type('foobar');
     await newSearchBox.form.clear();
     await context.pause(1000);
     await newSearchBox.keyboard.press('a');
