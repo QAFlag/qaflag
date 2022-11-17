@@ -9,7 +9,7 @@ import { ElementHandle } from 'playwright';
 import { extractText } from '../selectors';
 import { TimeoutOpts } from '../types/timeout-opts';
 import { PagePosition } from './bounding-box.value';
-import { PlaywrightValue } from './playwright.value';
+import { ValueDevice } from './value-device';
 
 export interface DropdownOption {
   text: string;
@@ -53,12 +53,7 @@ export type InputFiles =
   | { name: string; mimeType: string; buffer: Buffer }
   | { name: string; mimeType: string; buffer: Buffer }[];
 
-export class Form implements FormInterface {
-  constructor(private input: PlaywrightValue) {}
-
-  private get locator() {
-    return this.input.first.$;
-  }
+export class Form extends ValueDevice implements FormInterface {
 
   public async isChecked(): Promise<BooleanValue> {
     return new BooleanValue(await this.locator.isChecked(), {
@@ -68,23 +63,23 @@ export class Form implements FormInterface {
   }
 
   public async check(isChecked: boolean = true, opts?: FormPointerOpts) {
-    this.input.logger.action(isChecked ? 'CHECK' : 'UNCHECK', this.input);
+    this.logger.action(isChecked ? 'CHECK' : 'UNCHECK', this.input);
     return this.locator.setChecked(isChecked, opts);
   }
 
   public async fill(value: string, opts?: FormOpts) {
-    this.input.logger.action('FILL', this.input, value);
+    this.logger.action('FILL', this.input, value);
     return this.locator.fill(value, opts);
   }
 
   public async clear(opts?: FormOpts) {
-    this.input.logger.action('CLEAR', this.input);
-    return this.input.first.$.fill('', opts);
+    this.logger.action('CLEAR', this.input);
+    return this.locator.fill('', opts);
   }
 
   public async value(opts?: TimeoutOpts) {
-    return new StringValue(await this.input.first.$.inputValue(opts), {
-      context: this.input.context,
+    return new StringValue(await this.locator.inputValue(opts), {
+      context: this.context,
       name: `Value of ${this.input.name}`,
     });
   }
@@ -109,7 +104,7 @@ export class Form implements FormInterface {
         ? selectThis.toString()
         : selectThis.label || selectThis.value || `index ${selectThis.index}`,
     );
-    return this.input.first.$.selectOption(selectThis, opts);
+    return this.locator.selectOption(selectThis, opts);
   }
 
   public async selectedIndex(opts?: TimeoutOpts) {
@@ -122,7 +117,7 @@ export class Form implements FormInterface {
         ),
         {
           name: `Selected Index of ${this.input.name}`,
-          context: this.input.context,
+          context: this.context,
         },
       );
     }
@@ -133,7 +128,7 @@ export class Form implements FormInterface {
     const selected = await this.selectedOption(opts);
     return new StringValue(selected.$.text, {
       name: `Selected Text of ${this.input.name}`,
-      context: this.input.context,
+      context: this.context,
     });
   }
 
@@ -159,7 +154,7 @@ export class Form implements FormInterface {
           value: selected.value,
         },
         {
-          context: this.input.context,
+          context: this.context,
           name: `Selected Option of ${this.input.name}`,
         },
       );
@@ -168,7 +163,7 @@ export class Form implements FormInterface {
   }
 
   public async file(files: InputFiles, opts?: FormOpts) {
-    this.input.logger.action('FILE', this.input, files.toString());
-    return this.input.first.$.setInputFiles(files, opts);
+    this.logger.action('FILE', this.input, files.toString());
+    return this.locator.setInputFiles(files, opts);
   }
 }

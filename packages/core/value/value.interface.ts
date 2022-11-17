@@ -35,7 +35,8 @@ export interface FormInterface {
 }
 
 export interface KeyboardInterface {
-  input(text: string): Promise<void>;
+  type(text: string): Promise<void>;
+  typeMasked(text: string): Promise<void>;
   press(text: string): Promise<void>;
   down(text: string): Promise<void>;
   up(text: string): Promise<void>;

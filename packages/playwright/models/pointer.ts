@@ -1,6 +1,7 @@
 import { PointerInterface } from '@qaflag/core';
 import { PagePosition } from './bounding-box.value';
 import { PlaywrightValue } from './playwright.value';
+import { ValueDevice } from './value-device';
 
 export interface TouchOpts {
   force?: boolean | undefined;
@@ -60,68 +61,66 @@ export interface DragOpts {
   trial?: boolean | undefined;
 }
 
-export class Mouse implements PointerInterface {
-  constructor(protected locator: PlaywrightValue) {}
+export class Mouse extends ValueDevice implements PointerInterface {
 
   public async click(opts?: ClickOpts) {
-    this.locator.logger.action('CLICK', this.locator);
-    return this.locator.first.$.click(opts);
+    this.logger.action('CLICK', this.input);
+    return this.locator.click(opts);
   }
 
   public async hover(opts?: HoverOpts) {
-    this.locator.logger.action('HOVER', this.locator);
-    return this.locator.first.$.hover(opts);
+    this.logger.action('HOVER', this.input);
+    return this.locator.hover(opts);
   }
 
   public async doubleClick(opts?: ClickOpts) {
-    this.locator.logger.action('DCLICK', this.locator);
-    return this.locator.first.$.dblclick(opts);
+    this.logger.action('DCLICK', this.input);
+    return this.locator.dblclick(opts);
   }
 
   public async tripleClick(opts?: ClickOpts) {
-    this.locator.logger.action('TCLICK', this.locator);
-    return this.locator.first.$.click({
+    this.logger.action('TCLICK', this.input);
+    return this.locator.click({
       ...opts,
       clickCount: 3,
     });
   }
 
   public async longPress(opts?: LongPressOpts) {
-    this.locator.logger.action('LONGPRESS', this.locator);
-    const page = this.locator.$.page();
-    const boundingBox = await this.locator.$.boundingBox();
+    this.logger.action('LONGPRESS', this.input);
+    const boundingBox = await this.input.$.boundingBox();
     if (!boundingBox) return;
-    await page.mouse.move(
+    await this.page.mouse.move(
       boundingBox.x + boundingBox.width / 2,
       boundingBox.y + boundingBox.height / 2,
     );
-    await page.mouse.down({ button: opts?.button || 'left' });
-    await page.waitForTimeout(opts?.durationMs || 1000);
-    await page.mouse.up({ button: opts?.button || 'left' });
+    await this.page.mouse.down({ button: opts?.button || 'left' });
+    await this.page.waitForTimeout(opts?.durationMs || 1000);
+    await this.page.mouse.up({ button: opts?.button || 'left' });
   }
 
   public async dragTo(destination: PlaywrightValue, opts?: DragOpts) {
-    this.locator.logger.action('DRAG', this.locator, destination.name);
-    return this.locator.first.$.dragTo(destination.$, opts);
+    this.logger.action('DRAG', this.input, destination.name);
+    return this.locator.dragTo(destination.$, opts);
   }
 
   public async selectText(opts?: PointerOpts) {
-    this.locator.logger.action('SELECT', this.locator);
-    return this.locator.first.$.selectText(opts);
+    this.logger.action('SELECT', this.input);
+    return this.locator.selectText(opts);
   }
 }
 
 export class Touch extends Mouse implements PointerInterface {
   public async click(opts?: TouchOpts) {
-    this.locator.logger.action('TAP', this.locator);
-    return this.locator.first.$.tap(opts);
+    this.logger.action('TAP', this.input);
+    return this.locator.tap(opts);
   }
 
   public async doubleClick(opts?: DoubleTapOpts) {
-    this.locator.logger.action('DTAP', this.locator);
-    const page = this.locator.$.page();
-    await this.locator.first.$.tap(opts);
+    this.logger.action('DTAP', this.input);
+    const page = this.input.$.page();
+    await this.locator.tap(opts);
     await page.waitForTimeout(opts?.delayBetweenMs || 300);
-    await this.locator.first.$.tap(opts);
+    await this.locator.tap(opts);
   }
 }

@@ -1,5 +1,5 @@
 import { KeyboardInterface, sleep } from '@qaflag/core';
-import { PlaywrightValue } from './playwright.value';
+import { ValueDevice } from './value-device';
 
 export type KeyboardOpts = {
   delay?: number | undefined;
@@ -48,39 +48,38 @@ type PressedKeys =
   | string
   | [meta: MetaKeys, key: SpecialKeys | string];
 
-export class Keyboard implements KeyboardInterface {
-  constructor(private locator: PlaywrightValue) {}
+export class Keyboard extends ValueDevice implements KeyboardInterface {
 
-  public async input(text: string, opts?: KeyboardOpts) {
-    this.locator.logger.action('INPUT', this.locator, text);
-    return this.locator.first.$.type(text, opts);
+  public async type(text: string, opts?: KeyboardOpts) {
+    this.logger.action('INPUT', this.input, text);
+    return this.locator.type(text, opts);
   }
 
-  public async inputMasked(text: string, opts?: KeyboardOpts) {
-    this.locator.logger.action(
+  public async typeMasked(text: string, opts?: KeyboardOpts) {
+    this.logger.action(
       'INPUT',
-      this.locator,
+      this.input,
       ''.padStart(text.length, '*'),
     );
-    return this.locator.first.$.type(text, opts);
+    return this.locator.type(text, opts);
   }
 
   public async press(key: PressedKeys, opts?: KeyboardOpts) {
     const keyCode = Array.isArray(key) ? key.join('+') : key;
-    this.locator.logger.action('PRESS', this.locator, keyCode);
-    return this.locator.first.$.press(keyCode, opts);
+    this.logger.action('PRESS', this.input, keyCode);
+    return this.locator.press(keyCode, opts);
   }
 
   public async down(key: PressedKeys) {
     const keyCode = Array.isArray(key) ? key.join('+') : key;
-    this.locator.logger.action('DOWN', this.locator, keyCode);
-    return this.locator.first.$.page().keyboard.down(keyCode);
+    this.logger.action('DOWN', this.input, keyCode);
+    return this.page.keyboard.down(keyCode);
   }
 
   public async up(key: PressedKeys, opts?: KeyboardOpts) {
     const keyCode = Array.isArray(key) ? key.join('+') : key;
-    this.locator.logger.action('UP', this.locator, keyCode);
-    return this.locator.first.$.page().keyboard.up(keyCode);
+    this.logger.action('UP', this.input, keyCode);
+    return this.page.keyboard.up(keyCode);
   }
 
   public async selectAll() {

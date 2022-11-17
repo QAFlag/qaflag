@@ -23,6 +23,7 @@ import {
   OrderDirection,
 } from '../types';
 import { FindQuery } from '../selectors';
+import { Action } from './action';
 
 export class PlaywrightValue
   extends ValueAbstract<Locator>
@@ -35,8 +36,16 @@ export class PlaywrightValue
     super(input, opts);
   }
 
+  public get pointer() {
+     return (this.context.persona.hasTouch) ? this.touch : this.mouse;
+  }
+
   public get selector(): string {
     return this.input['_selector'];
+  }
+
+  public get action() {
+    return new Action(this);
   }
 
   public get keyboard() {
