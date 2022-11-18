@@ -317,6 +317,36 @@ export class ArrayValue<T = any> extends PrimitiveValueAbstract<T[]> {
       name: `Mapped ${this.name}`,
     });
   }
+
+  public filter(callback: (item: T) => boolean): ArrayValue<T> {
+    return new ArrayValue(this.$.filter(callback), {
+      ...this.opts,
+      name: `Filtered ${this.name}`,
+    });
+  }
+
+  public forEach(
+    callback: (item: GenericValue, i?: number) => void,
+  ): ArrayValue<T> {
+    this.$.forEach((input, i) => {
+      const opts = {
+        name: `${ordinal(i + 1)} item in ${this.name}`,
+        context: this.context,
+      };
+      callback(new GenericValue(input, opts), i);
+    });
+    return this;
+  }
+
+  public pluck(propertyName: string): GenericValue[] {
+    return this.$.map((item, i) => {
+      const opts = {
+        name: `${ordinal(i + 1)} item in ${this.name}`,
+        context: this.context,
+      };
+      return new GenericValue(item[propertyName], opts);
+    });
+  }
 }
 
 export class NumericValue extends PrimitiveValueAbstract<number> {

@@ -15,11 +15,16 @@ export interface MustNot<T extends ValueInterface> extends Assertions_Must<T> {
 
 export interface MustHave<T extends ValueInterface>
   extends Assertions_MustHave<T> {
+  a: MustHaveA<T>;
   all: MustHaveAll<T>;
   any: MustHaveAny<T>;
   length: NumberMust;
   none: MustHaveNone<T>;
   some: MustHaveSome<T>;
+}
+
+export interface MustHaveA<T extends ValueInterface> {
+  length: NumberMust;
 }
 
 export interface MustBe<T extends ValueInterface> extends Assertions_MustBe<T> {
