@@ -1,6 +1,6 @@
 {
   "name": "@qaflag/examples",
-  "version": "0.2.13",
+  "version": "0.2.14",
   "private": true,
   "description": "",
   "main": "dist/index.js",
@@ -11,11 +11,11 @@
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "dependencies": {
-    "@qaflag/core": "^0.2.13",
-    "@qaflag/hls": "^0.2.13",
-    "@qaflag/json": "^0.2.13",
-    "@qaflag/playwright": "^0.2.13",
-    "@qaflag/xml": "^0.2.13",
+    "@qaflag/core": "^0.2.14",
+    "@qaflag/hls": "^0.2.14",
+    "@qaflag/json": "^0.2.14",
+    "@qaflag/playwright": "^0.2.14",
+    "@qaflag/xml": "^0.2.14",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
     "minikin": "^2.1.8"
