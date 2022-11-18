@@ -98,6 +98,17 @@ export class PlaywrightAssertion extends TestBase implements PlaywrightMust {
     });
   }
 
+  public async unchecked(opts?: TimeoutOpts) {
+    this.message.push('unchecked');
+    return this.execute(async item => {
+      const isNotChecked = !(await item.$.isChecked(opts));
+      return {
+        pass: isNotChecked,
+        actualValue: isNotChecked ? 'unchecked' : 'checked',
+      };
+    });
+  }
+
   public async editable(opts?: TimeoutOpts) {
     this.message.push('editable');
     return this.execute(async item => {
@@ -204,6 +215,28 @@ export class PlaywrightAssertion extends TestBase implements PlaywrightMust {
     });
   }
 
+  public async containText(text: string, opts?: TimeoutOpts) {
+    this.message.push(`contain text ${text}`);
+    return this.execute(async item => {
+      const elementText = (await item.text(opts)).$;
+      return {
+        pass: elementText.includes(text),
+        actualValue: elementText,
+      };
+    });
+  }
+
+  public async empty(opts?: TimeoutOpts) {
+    this.message.push('empty');
+    return this.execute(async item => {
+      const elementText = (await item.text(opts)).$.trim();
+      return {
+        pass: elementText.length == 0,
+        actualValue: elementText,
+      };
+    });
+  }
+
   public async attributeValue(name: string, value: string, opts?: TimeoutOpts) {
     this.message.push(`atribute <${name}>`);
     return this.execute(async item => {
@@ -233,6 +266,17 @@ export class PlaywrightAssertion extends TestBase implements PlaywrightMust {
         node => document.activeElement === node,
       );
       return { pass: hasFocus };
+    });
+  }
+
+  public async style(property: string, value: string) {
+    this.message.push(`style ${property}=${value}`);
+    return this.execute(async item => {
+      const styleValue = (await item.getStyle(property)).$;
+      return {
+        pass: styleValue == value,
+        actualValue: styleValue,
+      };
     });
   }
 }

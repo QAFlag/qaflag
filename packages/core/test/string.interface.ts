@@ -1,10 +1,24 @@
 import { StringValue } from '../value/values';
+import { NumberMust } from './number.interface';
 import { TestResult } from './result';
 
-export interface StringMust {
+export interface StringMust extends Assertions_StringMust {
   be: StringMustBe;
-  match: StringMustMatch;
+  match: Assertions_StringMustMatch;
   not: StringMust;
+  have: Assertions_StringMustHave;
+}
+
+export interface StringMustBe extends Assertions_StringMustBe {
+  a: Assertions_StringMustBeAn;
+  an: Assertions_StringMustBeAn;
+}
+
+export interface StringMustHave {
+  length: NumberMust;
+}
+
+export interface Assertions_StringMust {
   equal(value: any): TestResult<StringValue>;
   exactly(value: string | StringValue): TestResult<StringValue>;
   contain(value: string | string[] | StringValue): TestResult<StringValue>;
@@ -12,13 +26,16 @@ export interface StringMust {
   endWith(value: string | string[] | StringValue): TestResult<StringValue>;
 }
 
-interface StringMustMatch {
+export interface Assertions_StringMustHave {
+  onlyLetters(): TestResult<StringValue>;
+  onlyNumbers(): TestResult<StringValue>;
+}
+
+export interface Assertions_StringMustMatch {
   regularExpression(value: RegExp): TestResult<StringValue>;
 }
 
-interface StringMustBe extends StringMustBeAn {
-  a: StringMustBeAn;
-  an: StringMustBeAn;
+export interface Assertions_StringMustBe extends Assertions_StringMustBeAn {
   equalTo(value: any): TestResult<StringValue>;
   like(value: any): TestResult<StringValue>;
   numeric(): TestResult<StringValue>;
@@ -31,7 +48,7 @@ interface StringMustBe extends StringMustBeAn {
   containedIn(value: string | string[] | StringValue): TestResult<StringValue>;
 }
 
-interface StringMustBeAn {
+export interface Assertions_StringMustBeAn {
   creditCard(): TestResult<StringValue>;
   email(): TestResult<StringValue>;
   numericString(): TestResult<StringValue>;

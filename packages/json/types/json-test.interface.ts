@@ -1,13 +1,13 @@
 import {
   MustAll,
   MustBe,
-  MustBeAn,
+  Assertions_MustBeAn,
   MustHave,
   MustHaveAll,
   MustHaveAny,
   MustHaveNone,
   MustHaveSome,
-  MustMatch,
+  Assertions_MustMatch,
   MustNot,
   ValueInterface,
 } from '@qaflag/core';
@@ -25,7 +25,8 @@ export interface JsonMustNot<T extends ValueInterface> extends MustNot<T> {
   all: JsonMustAll<T>;
 }
 
-export interface JsonMustMatch<T extends ValueInterface> extends MustMatch<T> {
+export interface JsonMustMatch<T extends ValueInterface>
+  extends Assertions_MustMatch<T> {
   dto<Y>(
     className: ClassConstructor<Y>,
     opts?: ValidatorOptions,
@@ -46,7 +47,8 @@ export interface JsonMustBe<T extends ValueInterface> extends MustBe<T> {
   an: JsonMustBeAn<T>;
 }
 
-export interface JsonMustBeAn<T extends ValueInterface> extends MustBeAn<T> {}
+export interface JsonMustBeAn<T extends ValueInterface>
+  extends Assertions_MustBeAn<T> {}
 
 export interface JsonMustAll<T extends ValueInterface> extends MustAll<T> {
   be: JsonMustBe<T>;

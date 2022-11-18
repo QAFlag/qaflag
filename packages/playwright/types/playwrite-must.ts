@@ -4,42 +4,56 @@ import { PlaywrightValue } from '../models/playwright.value';
 type PlaywrightAssertionOutput = Promise<TestResult<PlaywrightValue>>;
 
 export interface PlaywrightMust extends PlaywrightMustNot {
-  not: PlaywrightMustNot;
   all: PlaywrightMust;
+  not: PlaywrightMustNot;
 }
 
-export interface PlaywrightMustNot {
+export interface PlaywrightMustNot extends Assertions_PlaywrightMust {
   be: PlaywrightMustBe;
   have: PlaywrightMustHave;
-  exist(): PlaywrightAssertionOutput;
 }
 
-export interface PlaywrightMustHave {
-  tagName(name: string): PlaywrightAssertionOutput;
-  className(name: string): PlaywrightAssertionOutput;
+export interface PlaywrightMustHave extends Assertions_PlaywrightMustHave {
+  all: PlaywrightMust;
+  any: PlaywrightMust;
+  none: PlaywrightMust;
+  some: PlaywrightMust;
+}
+
+export interface PlaywrightMustBe extends Assertions_PlaywrightMustBe {
+  in: Assertions_PlaywrightMustBeIn;
+}
+
+export interface Assertions_PlaywrightMustBeIn {
   focus(): PlaywrightAssertionOutput;
-  value(value: string): PlaywrightAssertionOutput;
-  selectedText(text: string): PlaywrightAssertionOutput;
-  selectedIndex(index: number): PlaywrightAssertionOutput;
-  text(text: string): PlaywrightAssertionOutput;
+}
+
+export interface Assertions_PlaywrightMust {
+  exist(): PlaywrightAssertionOutput;
+  containText(text: string): PlaywrightAssertionOutput;
+}
+
+export interface Assertions_PlaywrightMustHave {
   attribute(name: string): PlaywrightAssertionOutput;
   attributeValue(name: string, value: string): PlaywrightAssertionOutput;
-  all: PlaywrightMust;
-  some: PlaywrightMust;
-  none: PlaywrightMust;
-  any: PlaywrightMust;
-}
-
-export interface PlaywrightMustBeIn {
+  className(name: string): PlaywrightAssertionOutput;
   focus(): PlaywrightAssertionOutput;
+  selectedIndex(index: number): PlaywrightAssertionOutput;
+  selectedText(text: string): PlaywrightAssertionOutput;
+  style(property: string, value: string): PlaywrightAssertionOutput;
+  tagName(name: string): PlaywrightAssertionOutput;
+  text(text: string): PlaywrightAssertionOutput;
+  value(value: string): PlaywrightAssertionOutput;
 }
 
-export interface PlaywrightMustBe {
-  in: PlaywrightMustBeIn;
-  visible(): PlaywrightAssertionOutput;
-  hidden(): PlaywrightAssertionOutput;
+export interface Assertions_PlaywrightMustBe {
   checked(): PlaywrightAssertionOutput;
-  enabled(): PlaywrightAssertionOutput;
   disabled(): PlaywrightAssertionOutput;
   editable(): PlaywrightAssertionOutput;
+  enabled(): PlaywrightAssertionOutput;
+  equal(element: PlaywrightValue): PlaywrightAssertionOutput;
+  hidden(): PlaywrightAssertionOutput;
+  unchecked(): PlaywrightAssertionOutput;
+  visible(): PlaywrightAssertionOutput;
+  empty(): PlaywrightAssertionOutput;
 }

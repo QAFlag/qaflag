@@ -1,14 +1,17 @@
 import { BooleanValue } from '../value/values';
 import { TestResult } from './result';
 
-export interface BooleanMust {
-  be: BooleanMustBe;
+export interface BooleanMust extends Assertions_BooleanMust {
+  be: Assertions_BooleanMustBe;
   not: BooleanMust;
-  equal(value: boolean): TestResult<BooleanValue>;
 }
 
-interface BooleanMustBe {
+export interface Assertions_BooleanMustBe {
   true(): TestResult<BooleanValue>;
   false(): TestResult<BooleanValue>;
   equalTo(value: boolean): TestResult<BooleanValue>;
+}
+
+export interface Assertions_BooleanMust {
+  equal(value: boolean): TestResult<BooleanValue>;
 }
