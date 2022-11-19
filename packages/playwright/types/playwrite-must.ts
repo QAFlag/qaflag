@@ -31,6 +31,10 @@ export interface Assertions_PlaywrightMustBeIn {
 export interface Assertions_PlaywrightMust {
   exist(): PlaywrightAssertionOutput;
   containText(text: string): PlaywrightAssertionOutput;
+  lookLike(
+    compareTo: Buffer,
+    allowableDiff?: number,
+  ): PlaywrightAssertionOutput;
 }
 
 export interface Assertions_PlaywrightMustHave {

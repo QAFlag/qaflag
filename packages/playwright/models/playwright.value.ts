@@ -24,8 +24,6 @@ import {
 } from '../types';
 import { FindQuery } from '../selectors';
 import { Action } from './action';
-import * as pixelmatch from 'pixelmatch';
-import { PNG } from 'pngjs';
 
 export class PlaywrightValue
   extends ValueAbstract<Locator>
@@ -321,24 +319,6 @@ export class PlaywrightValue
 
   public screenshot(opts?: PageScreenshotOptions) {
     return this.input.screenshot(opts);
-  }
-
-  public async screenshotDiff(compareFile: Buffer) {
-    const screenshot = await this.input.screenshot({ type: 'png' });
-    const png1 = PNG.sync.read(screenshot);
-    const png2 = PNG.sync.read(compareFile);
-    const diff = pixelmatch(
-      png1.data,
-      png2.data,
-      null,
-      png2.width,
-      png2.height,
-      {},
-    );
-    return new NumericValue(diff, {
-      name: `Screenshot Diff of ${this.name}`,
-      context: this.context,
-    });
   }
 
   public getStyle(

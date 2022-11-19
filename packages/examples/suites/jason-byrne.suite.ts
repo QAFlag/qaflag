@@ -48,8 +48,7 @@ export class JasonByrneSuite extends Suite({
     await context.case(this.testExperiencePage);
     const logo = context.find(image, near(topLeft));
     const ss = await logo.screenshot();
-    const diff = await logo.screenshotDiff(ss);
-    diff.must.be.lessThan(0.5);
+    await logo.must.lookLike(ss);
   }
 
   @Case() async testExperiencePage(context: PlaywrightContext) {
@@ -59,7 +58,9 @@ export class JasonByrneSuite extends Suite({
     await context.exists(image, near(topLeft));
     await context.exists(heading, '"Experience"');
     await context.exists('*Echelon*');
-    context.debug(await context.find('body').getStyle('backgroundColor'));
+    await context
+      .find('body')
+      .must.have.style('backgroundColor', 'rgb(13, 14, 27)');
     await context.pause(1000);
   }
 }

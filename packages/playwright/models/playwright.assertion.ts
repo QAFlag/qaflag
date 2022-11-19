@@ -2,6 +2,8 @@ import { mustShouldCould, TestBase, TestResult } from '@qaflag/core';
 import { PlaywrightMust } from '../types';
 import { TimeoutOpts } from '../types/timeout-opts';
 import { PlaywrightValue } from './playwright.value';
+import * as pixelmatch from 'pixelmatch';
+import { PNG } from 'pngjs';
 
 export type AssertionResult = {
   pass: boolean;
@@ -278,5 +280,43 @@ export class PlaywrightAssertion extends TestBase implements PlaywrightMust {
         actualValue: styleValue,
       };
     });
+  }
+
+  public async lookLike(
+    compareTo: Buffer,
+    allowablePercentDifference = 0,
+    opts?: { threshold?: number },
+  ) {
+    this.message.push('look like control image');
+    const screenshot = await this.input.screenshot({ type: 'png' });
+    const png1 = PNG.sync.read(screenshot);
+    const png2 = PNG.sync.read(compareTo);
+    const diff = pixelmatch(
+      png1.data,
+      png2.data,
+      null,
+      png2.width,
+      png2.height,
+      {
+        threshold: opts?.threshold,
+      },
+    );
+    const area = png2.width * png2.height;
+    const diffPercentage = (diff / area) * 100;
+    const isSameImage = diffPercentage <= allowablePercentDifference;
+    const pass = this.isNot ? !isSameImage : isSameImage;
+    if (this.needsResultOutput) {
+      this.input.logger.log(
+        pass ? 'pass' : this.isOptional ? 'optionalFail' : 'fail',
+        this.message.join(' '),
+      );
+      if (!pass) {
+        this.input.logger.log(
+          'info',
+          `Actual Difference: ${diffPercentage}%, ${diff} of ${area} pixels`,
+        );
+      }
+    }
+    return new TestResult(this, pass, diff);
   }
 }
