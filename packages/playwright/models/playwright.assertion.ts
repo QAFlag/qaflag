@@ -1,9 +1,11 @@
-import { mustShouldCould, TestBase, TestResult } from '@qaflag/core';
+import { mustShouldCould, sleep, TestBase, TestResult } from '@qaflag/core';
 import { PlaywrightMust } from '../types';
 import { TimeoutOpts } from '../types/timeout-opts';
 import { PlaywrightValue } from './playwright.value';
 import * as pixelmatch from 'pixelmatch';
 import { PNG } from 'pngjs';
+import * as fs from 'fs';
+import * as path from 'path';
 
 export type AssertionResult = {
   pass: boolean;
@@ -283,14 +285,34 @@ export class PlaywrightAssertion extends TestBase implements PlaywrightMust {
   }
 
   public async lookLike(
-    compareTo: Buffer,
+    compareTo: string | Buffer,
     allowablePercentDifference = 0,
     opts?: { threshold?: number },
   ) {
     this.message.push('look like control image');
     const screenshot = await this.input.screenshot({ type: 'png' });
+    const controlImage: Buffer = await (async () => {
+      if (compareTo instanceof Buffer) return compareTo;
+      if (compareTo.startsWith('@') && compareTo.length > 1) {
+        const filePath =
+          path.resolve(
+            this.input.suite.settings.screenshotPath,
+            compareTo.substring(1),
+          ) + '.png';
+        if (!fs.existsSync(filePath)) {
+          this.input.logger.log(
+            'info',
+            `Control file ${filePath} did not exist. Generating new control.`,
+          );
+          fs.createWriteStream(filePath).write(screenshot);
+          await sleep(1);
+        }
+        return fs.readFileSync(filePath);
+      }
+      return fs.readFileSync(compareTo);
+    })();
     const png1 = PNG.sync.read(screenshot);
-    const png2 = PNG.sync.read(compareTo);
+    const png2 = PNG.sync.read(controlImage);
     const diff = pixelmatch(
       png1.data,
       png2.data,

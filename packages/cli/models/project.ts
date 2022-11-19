@@ -1,6 +1,7 @@
 import path = require('path');
-import fs = require('fs');
-import { ProjectInterface } from '../types/project.interface';
+import * as fs from 'fs-extra';
+import { ProjectSettings } from '@qaflag/core';
+import { ensurePathsExist } from '../actions/init';
 
 interface ProjectOpts {
   configFile?: string;
@@ -11,7 +12,7 @@ type PackageConfig = { name: string };
 export default class Project {
   public readonly configPath: string;
   public readonly packagePath: string;
-  public readonly settings: ProjectInterface;
+  public readonly settings: ProjectSettings;
   public readonly package: PackageConfig;
 
   constructor(opts: ProjectOpts) {
@@ -20,7 +21,7 @@ export default class Project {
       opts.configFile || 'qaflag.json',
     );
     this.packagePath = path.resolve(process.cwd(), 'package.json');
-    const initial: Partial<ProjectInterface> = (() => {
+    const initial: Partial<ProjectSettings> = (() => {
       if (this.isConfigFile) {
         const fileContents = fs.readFileSync(this.configPath, 'utf8');
         return JSON.parse(fileContents);
@@ -47,15 +48,17 @@ export default class Project {
         'http://localhost:3000',
       theme: initial.theme || 'dark',
       tsConfigPath: initial.tsConfigPath || './qaflag.tsconfig.json',
+      screenshotPath: initial.screenshotPath || './screenshots',
       input: {
         path: initial.input?.path || './src',
         pattern: initial.input?.pattern || '**/*.suite.ts',
       },
       output: {
-        path: initial.output?.path || './qaflag/tests',
+        path: initial.output?.path || './tests',
         pattern: initial.output?.pattern || '**/*.suite.js',
       },
     };
+    ensurePathsExist(this.settings);
   }
 
   public get isConfigFile(): boolean {

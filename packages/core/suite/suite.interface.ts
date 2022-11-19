@@ -5,6 +5,7 @@ import TypedEmitter from 'typed-emitter';
 import { KvStore } from '../models/kv-store';
 import { PersonaInterface } from '../persona/persona.interface';
 import { TestCase } from '../case/case';
+import { ProjectSettings } from '../types/project-settings.interface';
 
 export interface SuiteStep {
   stepNumber: number;
@@ -20,12 +21,8 @@ export type SuiteEvents = {
   failed: () => void;
 };
 
-export type SuiteDefaults = {
-  baseUrl?: string;
-};
-
 export interface SuiteConstructor {
-  new (defaults?: SuiteDefaults): SuiteInterface;
+  new (settings: ProjectSettings): SuiteInterface;
 }
 
 export interface SuiteInterface extends LogProvider {
@@ -39,6 +36,7 @@ export interface SuiteInterface extends LogProvider {
   results: SuiteResults;
   store: KvStore;
   baseUrl: string | undefined;
+  settings: ProjectSettings;
   set<T>(key: string, value: T): T;
   get<T = any>(key: string): T;
   push<T = any>(key: string, value: T): T[];

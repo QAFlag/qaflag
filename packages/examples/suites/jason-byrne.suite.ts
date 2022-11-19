@@ -47,8 +47,7 @@ export class JasonByrneSuite extends Suite({
     await context.waitForNavigation();
     await context.case(this.testExperiencePage);
     const logo = context.find(image, near(topLeft));
-    const ss = await logo.screenshot();
-    await logo.must.lookLike(ss);
+    await logo.must.lookLike('@logo');
   }
 
   @Case() async testExperiencePage(context: PlaywrightContext) {

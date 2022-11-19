@@ -7,8 +7,9 @@ import {
 } from '../utils/print';
 import Project from '../models/project';
 import { addPackages } from '../utils/install';
-import { humanReadableList } from '@qaflag/core';
+import { humanReadableList, ProjectSettings } from '@qaflag/core';
 import { exitError } from '../utils/exit';
+import * as fs from 'fs-extra';
 
 export const init = async (project: Project) => {
   printHeader();
@@ -56,4 +57,10 @@ export const init = async (project: Project) => {
   } catch (ex) {
     return exitError(ex);
   }
+};
+
+export const ensurePathsExist = (settings: ProjectSettings) => {
+  fs.ensureDirSync(settings.input.path);
+  fs.ensureDirSync(settings.output.path);
+  fs.ensureDirSync(settings.screenshotPath);
 };

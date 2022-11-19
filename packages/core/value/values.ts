@@ -13,6 +13,8 @@ import { DateMust } from '../test/date.interface';
 import { ArrayMust } from '../test/array.interface';
 import { ordinal } from '../utils/helpers';
 import { ContextInterface } from '../context/context.interface';
+import { SuiteInterface } from '../suite/suite.interface';
+import { ScenarioInterface } from '../scenario/scenario.interface';
 
 export interface ValueOpts {
   name: string;
@@ -27,6 +29,14 @@ export abstract class ValueAbstract<InputType>
 
   constructor(protected readonly input: InputType, protected opts: ValueOpts) {
     this.context = opts.context;
+  }
+
+  public get scenario(): ScenarioInterface {
+    return this.context.scenario;
+  }
+
+  public get suite(): SuiteInterface {
+    return this.context.scenario.suite;
   }
 
   public get logger(): LoggerInterface {

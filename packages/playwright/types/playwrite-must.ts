@@ -32,7 +32,7 @@ export interface Assertions_PlaywrightMust {
   exist(): PlaywrightAssertionOutput;
   containText(text: string): PlaywrightAssertionOutput;
   lookLike(
-    compareTo: Buffer,
+    compareTo: Buffer | string,
     allowableDiff?: number,
   ): PlaywrightAssertionOutput;
 }

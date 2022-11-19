@@ -6,7 +6,6 @@ import { KvStore } from '../models/kv-store';
 import { Logger } from '../models/logger';
 import { ScenarioInterface } from '../scenario/scenario.interface';
 import {
-  SuiteDefaults,
   SuiteEvents,
   SuiteInterface,
   SuiteResults,
@@ -19,6 +18,7 @@ import { DefaultUser } from '../persona/persona';
 import { BeforeSymbol } from '../decorators/before.decorator';
 import { AfterSymbol } from '../decorators/after.decorator';
 import { TestCase } from '../case/case';
+import { ProjectSettings } from '../types/project-settings.interface';
 
 export const ScenarioDefinitions = Symbol('ScenarioDefinitions');
 export const CaseDefinitions = Symbol('CaseDefinitions');
@@ -58,8 +58,8 @@ export function Suite(suiteOpts: SuiteOpts) {
       return Object.entries<Function>(this[AfterSymbol] || {});
     }
 
-    constructor(public readonly defaultOpts: SuiteDefaults = {}) {
-      this.baseUrl = suiteOpts.baseUrl || defaultOpts.baseUrl;
+    constructor(public readonly settings: ProjectSettings) {
+      this.baseUrl = suiteOpts.baseUrl || settings.baseUrl;
       // Add scenarios to this instance
       const scenarioMethods: { [methodName: string]: ScenarioInitOpts } =
         this[ScenarioDefinitions];
