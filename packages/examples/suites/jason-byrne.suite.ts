@@ -46,6 +46,10 @@ export class JasonByrneSuite extends Suite({
     await experience.mouse.click();
     await context.waitForNavigation();
     await context.case(this.testExperiencePage);
+    const logo = context.find(image, near(topLeft));
+    const ss = await logo.screenshot();
+    const diff = await logo.screenshotDiff(ss);
+    diff.must.be.lessThan(0.5);
   }
 
   @Case() async testExperiencePage(context: PlaywrightContext) {
