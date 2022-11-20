@@ -1,6 +1,6 @@
 import { escape } from '../utils/escape';
 import { FindQuery } from './';
-import { ExtractedText, extractText } from './extract-text';
+import { extractText } from './extract-text';
 
 export type SelectModifier = (selector: string, opt?: string) => FindQuery;
 
@@ -33,14 +33,11 @@ export const matches = (pattern: string, flags = 'i'): FindQuery => {
   );
 };
 
-export const attr = (
-  name: string,
-  text?: string | ExtractedText,
-  tag?: string,
-): FindQuery => {
-  const equals = !text || typeof text == 'string' ? '=' : text.equalSign;
-  const value = !text || typeof text == 'string' ? text : text.value;
-  if (typeof text != 'string' && text?.type == 'custom') {
+export const attr = (name: string, text?: string, tag?: string): FindQuery => {
+  const extracted = text ? extractText(text) : null;
+  const equals = extracted?.equalSign || '=';
+  const value = extracted?.value || text;
+  if (extracted?.type == 'custom') {
     throw `Attribute selectors do not support custom regex: ${tag}@${name}${equals}${value}`;
   }
   if (tag !== undefined && value !== undefined) {
@@ -78,3 +75,12 @@ export const title: SelectModifier = (value: string): FindQuery =>
 
 export const id: SelectModifier = (value: string): FindQuery =>
   attr('id', value);
+
+export const prefixMapper: { [prefix: string]: SelectModifier } = {
+  alt,
+  text: textPrefix,
+  href,
+  src,
+  placeholder,
+  id,
+};

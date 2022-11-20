@@ -1,34 +1,17 @@
 import {
-  alt,
   text,
-  href,
-  src,
-  placeholder,
-  id,
-  textPrefix,
-  attr,
   matches,
   contains,
   SelectFilter,
   StateSelector,
-  SelectModifier,
   SelectPrimary,
 } from './';
 import { PrimarySelector, SubQueries } from '../types';
 import { selectors } from 'playwright';
 import { extractText } from './extract-text';
-import { extractAttribute } from './extract-attribute';
 import { extractPrefix } from './extract-prefix';
 import { extractElement } from './extract-element';
-
-const prefixMapper: { [prefix: string]: SelectModifier } = {
-  alt,
-  text: textPrefix,
-  href,
-  src,
-  placeholder,
-  id,
-};
+import { prefixMapper } from './modifiers';
 
 const isSelectPrimary = (selector: unknown): selector is SelectPrimary => {
   return !!selectors['toPrimarySelector'];
@@ -67,17 +50,10 @@ export class FindQuery {
     }
     // Prefixed
     const matchPrefix = extractPrefix(input);
-    if (matchPrefix && prefixMapper[matchPrefix.prefix]) {
-      return prefixMapper[matchPrefix.prefix](matchPrefix.selector);
-    }
-    // Attribute selector
-    const matchAttribute = extractAttribute(input);
-    if (matchAttribute) {
-      return attr(
-        matchAttribute.attribute,
-        matchAttribute.value || undefined,
-        matchAttribute.tag || undefined,
-      );
+    if (matchPrefix) {
+      if (prefixMapper[matchPrefix.prefix]) {
+        return prefixMapper[matchPrefix.prefix](matchPrefix.selector);
+      }
     }
     // Element/role matcher
     const matchElement = extractElement(input);
