@@ -1,4 +1,4 @@
-import { StateSelector } from './';
+import { StateSelector } from './state-selector';
 
 export const banner = new StateSelector(
   'is([role="banner"], header):visible',
@@ -40,21 +40,41 @@ export const link = new StateSelector(
 );
 
 export const textbox = new StateSelector(
-  'is([role="textbox"], input[type="text"], input[type="email"], input[type="tel"], input[type="search"], input[type="password"], input[type="url"]):visible',
+  'is([role="textbox"], input[type="text"], textarea, input[type="email"], input[type="tel"], input[type="search"], input[type="password"], input[type="url"]):visible',
   'textbox',
 );
 
-export const dateSelector = new StateSelector(
+export const dateInput = new StateSelector(
   'is([input[type="date"], input[type="datetime-local"], input[type="month"], input[type="time"], input[type="week"], input[type="dateime"]):visible',
   'date selector',
 );
 
-export const fileSelector = new StateSelector(
-  'is([input[type="file"]):visible',
+export const searchbox = new StateSelector(
+  'is(input[type="search"], [role="searchbox"])',
+  'spin button',
+);
+
+export const spinbutton = new StateSelector(
+  'is(input[type="number"], [role="spinbutton"])',
+  'spin button',
+);
+
+export const slider = new StateSelector(
+  'is(input[type="range"], [role="slider"])',
+  'spin button',
+);
+
+export const numberInput = new StateSelector(
+  'is(input[type="number"])',
+  'number input',
+);
+
+export const fileInput = new StateSelector(
+  'is(input[type="file"])',
   'file selector',
 );
 
-export const colorPicker = new StateSelector(
+export const colorInput = new StateSelector(
   'is([input[type="color"]):visible',
   'color selector',
 );
@@ -101,17 +121,3 @@ export const table = new StateSelector(
 
 export const row = new StateSelector('is(tr, [role="row"]):visible', 'table');
 export const cell = new StateSelector('is(td, [role="cell"]):visible', 'table');
-
-const psuedoMapper: { [psuedo: string]: StateSelector } = {
-  button,
-  link,
-  image,
-};
-
-export const extractPseudoPrefix = (selector: string) => {
-  const matches = selector.match(/^(:[a-z][^ ]+)/);
-  if (!matches) return null;
-  const pseudo = matches[1].substring(1);
-  if (psuedoMapper[pseudo]) return psuedoMapper[pseudo];
-  return null;
-};

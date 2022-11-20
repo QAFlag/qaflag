@@ -6,7 +6,7 @@ import {
   StringValue,
 } from '@qaflag/core';
 import { ElementHandle } from 'playwright';
-import { extractText } from '../selectors';
+import { extractText } from '../selectors/extract-text';
 import { TimeoutOpts } from '../types/timeout-opts';
 import { PagePosition } from './bounding-box.value';
 import { ValueDevice } from './value-device';
@@ -47,14 +47,19 @@ export type SelectOption =
   | ElementHandle<Node>[]
   | null;
 
+export type BufferUploadFile = {
+  name: string;
+  mimeType: string;
+  buffer: Buffer;
+};
+
 export type InputFiles =
   | string
   | string[]
-  | { name: string; mimeType: string; buffer: Buffer }
-  | { name: string; mimeType: string; buffer: Buffer }[];
+  | BufferUploadFile
+  | BufferUploadFile[];
 
 export class Form extends ValueDevice implements FormInterface {
-
   public async isChecked(): Promise<BooleanValue> {
     return new BooleanValue(await this.locator.isChecked(), {
       name: `Is ${this.input.name} checked?`,
@@ -163,7 +168,24 @@ export class Form extends ValueDevice implements FormInterface {
   }
 
   public async file(files: InputFiles, opts?: FormOpts) {
-    this.logger.action('FILE', this.input, files.toString());
-    return this.locator.setInputFiles(files, opts);
+    const fileNames: string[] = (() => {
+      if (typeof files === 'string') return [files];
+      if (Array.isArray(files)) {
+        return files.map((file: string | BufferUploadFile) =>
+          typeof file == 'string' ? file : file.name,
+        );
+      }
+      return [files.name];
+    })();
+
+    const [fileChooser] = await Promise.all([
+      this.context.page.waitForEvent('filechooser'),
+      this.input.action.click(),
+    ]);
+    if (fileNames.length > 1 && !fileChooser.isMultiple()) {
+      throw `${this.input.name} does not allow multiple files to be selected.`;
+    }
+    fileNames.forEach(file => this.logger.action('FILE', this.input, file));
+    return fileChooser.setFiles(files);
   }
 }

@@ -1,10 +1,4 @@
 import {
-  extractAttribute,
-  extractPrefix,
-  extractRegex,
-  extractText,
-} from './is-prefixed';
-import {
   alt,
   text,
   href,
@@ -22,6 +16,11 @@ import {
 } from './';
 import { PrimarySelector, SubQueries } from '../types';
 import { selectors } from 'playwright';
+import { extractText } from './extract-text';
+import { extractRegex } from './extract-regex';
+import { extractAttribute } from './extract-attribute';
+import { extractPrefix } from './extract-prefix';
+import { extractElement } from './extract-element';
 
 const prefixMapper: { [prefix: string]: SelectModifier } = {
   alt,
@@ -63,10 +62,10 @@ export class FindQuery {
     // Look for quoted text
     const matchText = extractText(input);
     if (matchText) {
-      if (matchText.type == '*') return contains(matchText.text);
-      return text(matchText.text);
+      if (matchText.exact) return text(matchText.text);
+      return contains(matchText.text);
     }
-    // Look for quoted text
+    // Look for regex patterh
     const matchRegex = extractRegex(input);
     if (matchRegex) return matches(matchRegex.pattern, matchRegex.flags);
     // Prefixed
@@ -84,6 +83,9 @@ export class FindQuery {
         matchAttribute.equality,
       );
     }
+    // Element/role matcher
+    const matchElement = extractElement(input);
+    if (matchElement) return matchElement.toPrimarySelector();
     // Standard
     return new FindQuery(input, name);
   }

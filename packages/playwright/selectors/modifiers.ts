@@ -1,6 +1,7 @@
 import { escape } from '../utils/escape';
 import { FindQuery } from './';
-import { extractRegex, extractText } from './is-prefixed';
+import { extractRegex } from './extract-regex';
+import { extractText } from './extract-text';
 
 export type SelectModifier = (selector: string, opt?: string) => FindQuery;
 

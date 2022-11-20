@@ -1,5 +1,7 @@
 import { After, Before, Scenario, Suite } from '@qaflag/core';
 import {
+  label,
+  placeholder,
   PlaywrightContext,
   PlaywrightScenario,
   role,
@@ -40,5 +42,12 @@ export class AriaSuite extends Suite({
     await context.find(role('switch')).must.be.checked();
     await context.find(role('switch')).action.check(false);
     await context.find(role('switch')).must.not.be.checked();
+    await context
+      .find(label('Upload'))
+      .form.file('./packages/examples/fixtures/logo.png');
+    await context
+      .find('=textbox', placeholder('URL'))
+      .must.have.value('https://www.qaflag.com');
+    await context.pause(5000);
   }
 }

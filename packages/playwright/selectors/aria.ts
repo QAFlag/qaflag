@@ -1,4 +1,5 @@
 import { humanReadableList } from '@qaflag/core';
+import { extractText } from './extract-text';
 
 export type AriaRole =
   | 'alert'
@@ -159,7 +160,11 @@ export const role = (
 ): RoleSelector => {
   if (!filter) return new RoleSelector(roleName);
   const opts: RoleSelectorOptions | undefined = (() => {
-    if (typeof filter == 'string') return { name: filter };
+    if (typeof filter == 'string') {
+      const text = extractText(filter);
+      if (text === null) return { name: filter };
+      return { name: text?.text, exact: text.exact };
+    }
     if (filter instanceof RegExp) return { name: filter };
     return filter;
   })();
@@ -170,9 +175,11 @@ export const label = (
   labelName: string,
   filter?: LabelSelectorOptions | boolean,
 ): LabelSelector => {
+  const text = extractText(labelName);
   const opts = (() => {
     if (typeof filter == 'boolean') return { exact: filter };
+    if (text) return { exact: text.exact };
     return filter;
   })();
-  return new LabelSelector(labelName, opts);
+  return new LabelSelector(text?.text || labelName, opts);
 };
