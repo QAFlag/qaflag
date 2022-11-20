@@ -6,8 +6,6 @@ import {
   visible,
   within,
   not,
-  link,
-  first,
   image,
   topLeft,
   heading,
