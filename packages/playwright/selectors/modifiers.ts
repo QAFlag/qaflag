@@ -4,9 +4,6 @@ import { extractText } from './extract-text';
 
 export type SelectModifier = (selector: string, opt?: string) => FindQuery;
 
-export const xpath: SelectModifier = (selector): FindQuery =>
-  FindQuery.create(`xpath=${selector}`, selector);
-
 export const text: SelectModifier = (value: string): FindQuery => {
   return FindQuery.create(`:text-is("${escape(value)}")`, `"${value}"`);
 };
@@ -15,15 +12,11 @@ export const contains: SelectModifier = (value: string): FindQuery => {
   return FindQuery.create(`:has-text("${escape(value)}")`, `"${value}"`);
 };
 
-export const textPrefix: SelectModifier = (value: string): FindQuery => {
+export const hasText: SelectModifier = (value: string): FindQuery => {
   const extracted = extractText(value);
-  if (extracted) {
-    if (extracted.pattern) {
-      return matches(String(extracted.value), extracted.flags);
-    }
-    return text(extracted.value);
-  }
-  return text(value);
+  if (extracted?.pattern) return matches(extracted.value, extracted.flags);
+  if (extracted?.type == 'exact') return text(extracted.value);
+  return contains(extracted?.value || value);
 };
 
 export const matches = (pattern: string, flags = 'i'): FindQuery => {
@@ -56,31 +49,4 @@ export const attr = (name: string, text?: string, tag?: string): FindQuery => {
     );
   }
   return FindQuery.create(`[${name}]`, `[${name}]`);
-};
-
-export const alt: SelectModifier = (value: string): FindQuery =>
-  attr('alt', value);
-
-export const href: SelectModifier = (value: string): FindQuery =>
-  attr('href', value);
-
-export const src: SelectModifier = (value: string): FindQuery =>
-  attr('src', value);
-
-export const placeholder: SelectModifier = (value: string): FindQuery =>
-  attr('placeholder', value);
-
-export const title: SelectModifier = (value: string): FindQuery =>
-  attr('title', value);
-
-export const id: SelectModifier = (value: string): FindQuery =>
-  attr('id', value);
-
-export const prefixMapper: { [prefix: string]: SelectModifier } = {
-  alt,
-  text: textPrefix,
-  href,
-  src,
-  placeholder,
-  id,
 };

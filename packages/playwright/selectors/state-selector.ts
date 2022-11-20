@@ -1,15 +1,7 @@
-import { SelectFilter, FindQuery, SelectPrimary } from './';
-import { ucfirst } from '@qaflag/core';
+import { SelectFilter, FindQuery } from './';
 
-export class StateSelector implements SelectFilter, SelectPrimary {
+export class StateSelector implements SelectFilter {
   constructor(private readonly state: string, private readonly name?: string) {}
-
-  public toPrimarySelector(): FindQuery {
-    return FindQuery.create(
-      `:${this.state}`,
-      `${ucfirst(this.name || this.state)}`,
-    );
-  }
 
   public apply(primarySelector: FindQuery): FindQuery {
     return FindQuery.create(
@@ -30,7 +22,6 @@ export const active = new StateSelector('active');
 export const focus = new StateSelector('focus');
 export const empty = new StateSelector('empty');
 export const checked = new StateSelector('checked');
-export const fullscreen = new StateSelector('fullscreen');
 export const indeterminate = new StateSelector('indeterminate');
 export const invalid = new StateSelector('invalid');
 export const lastChild = new StateSelector('last-child', 'last child');

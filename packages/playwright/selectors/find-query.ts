@@ -1,20 +1,14 @@
-import {
-  text,
-  matches,
-  contains,
-  SelectFilter,
-  StateSelector,
-  SelectPrimary,
-} from './';
+import { text, matches, contains, SelectFilter, SelectPrimary } from './';
 import { PrimarySelector, SubQueries } from '../types';
-import { selectors } from 'playwright';
 import { extractText } from './extract-text';
 import { extractPrefix } from './extract-prefix';
 import { extractElement } from './extract-element';
-import { prefixMapper } from './modifiers';
 
-const isSelectPrimary = (selector: unknown): selector is SelectPrimary => {
-  return !!selectors['toPrimarySelector'];
+const isSelectPrimary = (selector: any): selector is SelectPrimary => {
+  return (
+    typeof selector['toPrimarySelector'] == 'function' &&
+    typeof selector['apply'] == 'function'
+  );
 };
 
 export class FindQuery {
@@ -36,7 +30,6 @@ export class FindQuery {
     // Already a find query? Leave it alone
     if (typeof input !== 'string') {
       if (input instanceof FindQuery) return input;
-      if (input instanceof StateSelector) return input.toPrimarySelector();
       if (input instanceof RegExp) return new FindQuery(String(input), name);
       if (isSelectPrimary(input)) return input.toPrimarySelector();
       return new FindQuery(input.selector, input.name);
@@ -50,11 +43,7 @@ export class FindQuery {
     }
     // Prefixed
     const matchPrefix = extractPrefix(input);
-    if (matchPrefix) {
-      if (prefixMapper[matchPrefix.prefix]) {
-        return prefixMapper[matchPrefix.prefix](matchPrefix.selector);
-      }
-    }
+    if (matchPrefix?.modifier) return matchPrefix.modifier(matchPrefix.value);
     // Element/role matcher
     const matchElement = extractElement(input);
     if (matchElement) return matchElement.toPrimarySelector();

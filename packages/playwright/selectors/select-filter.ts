@@ -4,7 +4,6 @@ export interface SelectFilter {
   apply(previous: FindQuery): FindQuery;
 }
 
-export interface SelectPrimary {
+export interface SelectPrimary extends SelectFilter {
   toPrimarySelector(): FindQuery;
-  apply(previous: FindQuery): FindQuery;
 }

@@ -26,15 +26,10 @@ export class JasonByrneSuite extends Suite({
     await context.exists('"Who am I?"', visible);
     await context.exists('*About Me*', within('nav'));
     await context.exists(/connect/i, within('nav'));
-    await context.exists('a@target');
-    await context.exists('a@target="_blank"');
-    await context.exists('@alt');
-    await context.exists('@alt=Luna');
+    await context.exists('alt=*Luna*');
     await context.exists('aside', 'img');
-    await context.exists('img', '@alt=Luna');
-    await context.exists('img', not('@alt="Foo'));
-    await context.exists('@href', link);
-    await context.exists('@href', link, first);
+    await context.exists('img', 'alt=*Luna*');
+    await context.exists('img', not('alt="Foo"'));
     const images = await context.find('img').queryAll({ sort: ['top', 'ASC'] });
     const urls = await Promise.all(images.map(img => img.attribute('src')));
     context.debug(urls);

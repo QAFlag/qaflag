@@ -1,4 +1,3 @@
-import { StateSelector } from './state-selector';
 import {
   form,
   button,
@@ -24,9 +23,11 @@ import {
   main,
   nav,
   strong,
+  fullscreen,
+  ElementSelector,
 } from './elements';
 
-const psuedoMapper: { [psuedo: string]: StateSelector } = {
+const psuedoMapper: { [psuedo: string]: ElementSelector } = {
   form,
   button,
   dropdown,
@@ -51,9 +52,10 @@ const psuedoMapper: { [psuedo: string]: StateSelector } = {
   main,
   nav,
   strong,
+  fullscreen,
 };
 
-export const extractElement = (selector: string): StateSelector | null => {
+export const extractElement = (selector: string): ElementSelector | null => {
   const matches = selector.match(/^=([a-z]+)$/i);
   if (!matches) return null;
   if (psuedoMapper[matches[1]]) return psuedoMapper[matches[1]];
