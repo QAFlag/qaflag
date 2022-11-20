@@ -1,7 +1,6 @@
 import { escape } from '../utils/escape';
 import { FindQuery } from './';
-import { extractRegex } from './extract-regex';
-import { extractText } from './extract-text';
+import { ExtractedText, extractText } from './extract-text';
 
 export type SelectModifier = (selector: string, opt?: string) => FindQuery;
 
@@ -17,10 +16,13 @@ export const contains: SelectModifier = (value: string): FindQuery => {
 };
 
 export const textPrefix: SelectModifier = (value: string): FindQuery => {
-  const quoted = extractText(value);
-  if (quoted) return text(quoted.text);
-  const regex = extractRegex(value);
-  if (regex) return matches(regex.pattern, regex.flags);
+  const extracted = extractText(value);
+  if (extracted) {
+    if (extracted.pattern) {
+      return matches(String(extracted.value), extracted.flags);
+    }
+    return text(extracted.value);
+  }
   return text(value);
 };
 
@@ -33,10 +35,14 @@ export const matches = (pattern: string, flags = 'i'): FindQuery => {
 
 export const attr = (
   name: string,
-  value?: string,
+  text?: string | ExtractedText,
   tag?: string,
-  equals: string = '=',
 ): FindQuery => {
+  const equals = !text || typeof text == 'string' ? '=' : text.equalSign;
+  const value = !text || typeof text == 'string' ? text : text.value;
+  if (typeof text != 'string' && text?.type == 'custom') {
+    throw `Attribute selectors do not support custom regex: ${tag}@${name}${equals}${value}`;
+  }
   if (tag !== undefined && value !== undefined) {
     return FindQuery.create(
       `${tag}[${name}${equals}"${escape(value)}"]`,

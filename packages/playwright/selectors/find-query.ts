@@ -17,7 +17,6 @@ import {
 import { PrimarySelector, SubQueries } from '../types';
 import { selectors } from 'playwright';
 import { extractText } from './extract-text';
-import { extractRegex } from './extract-regex';
 import { extractAttribute } from './extract-attribute';
 import { extractPrefix } from './extract-prefix';
 import { extractElement } from './extract-element';
@@ -62,12 +61,10 @@ export class FindQuery {
     // Look for quoted text
     const matchText = extractText(input);
     if (matchText) {
-      if (matchText.exact) return text(matchText.text);
-      return contains(matchText.text);
+      if (matchText.pattern) return matches(matchText.value, matchText.flags);
+      if (matchText.type == 'exact') return text(matchText.value);
+      return contains(matchText.value);
     }
-    // Look for regex patterh
-    const matchRegex = extractRegex(input);
-    if (matchRegex) return matches(matchRegex.pattern, matchRegex.flags);
     // Prefixed
     const matchPrefix = extractPrefix(input);
     if (matchPrefix && prefixMapper[matchPrefix.prefix]) {
@@ -78,9 +75,8 @@ export class FindQuery {
     if (matchAttribute) {
       return attr(
         matchAttribute.attribute,
-        matchAttribute.value,
-        matchAttribute.tag,
-        matchAttribute.equality,
+        matchAttribute.value || undefined,
+        matchAttribute.tag || undefined,
       );
     }
     // Element/role matcher

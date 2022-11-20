@@ -103,7 +103,7 @@ type LabelSelectorOptions = {
 export class RoleSelector {
   constructor(
     public readonly role: AriaRole,
-    private readonly opts?: RoleSelectorOptions,
+    private readonly opts: RoleSelectorOptions = {},
   ) {}
 
   public get selector(): string {
@@ -129,8 +129,8 @@ export class RoleSelector {
 
 export class LabelSelector {
   constructor(
-    public readonly label: string,
-    private readonly opts?: LabelSelectorOptions,
+    public readonly label: string | RegExp,
+    private readonly opts: LabelSelectorOptions = {},
   ) {}
 
   public get selector(): string {
@@ -146,7 +146,7 @@ export class LabelSelector {
     }
     return filterNames.length
       ? `${this.label} (${humanReadableList(filterNames)})`
-      : this.label;
+      : String(this.label);
   }
 
   public get filters(): LabelSelectorOptions {
@@ -163,7 +163,7 @@ export const role = (
     if (typeof filter == 'string') {
       const text = extractText(filter);
       if (text === null) return { name: filter };
-      return { name: text?.text, exact: text.exact };
+      return { name: text?.pattern || text.value, exact: text.type == 'exact' };
     }
     if (filter instanceof RegExp) return { name: filter };
     return filter;
@@ -178,8 +178,8 @@ export const label = (
   const text = extractText(labelName);
   const opts = (() => {
     if (typeof filter == 'boolean') return { exact: filter };
-    if (text) return { exact: text.exact };
+    if (text) return { exact: text.type == 'exact' };
     return filter;
   })();
-  return new LabelSelector(text?.text || labelName, opts);
+  return new LabelSelector(text?.pattern || text?.value || labelName, opts);
 };

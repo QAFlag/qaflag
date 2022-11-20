@@ -96,7 +96,7 @@ export class Form extends ValueDevice implements FormInterface {
     const selectThis = (() => {
       if (typeof value == 'string') {
         const text = extractText(value);
-        if (text) return { label: text.text };
+        if (text) return { label: text.value };
         return { value };
       }
       if (typeof value == 'number') return { index: value };

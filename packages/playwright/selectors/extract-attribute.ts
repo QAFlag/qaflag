@@ -1,23 +1,28 @@
-import { extractText } from './extract-text';
+import { ExtractedText, extractText } from './extract-text';
 
-export const extractAttribute = (selector: string) => {
+export interface AttributeSelector {
+  tag: string | null;
+  attribute: string;
+  value: ExtractedText | string | null;
+}
+
+export const extractAttribute = (
+  selector: string,
+): AttributeSelector | null => {
   const matches = selector.match(
-    /^([a-z\*][^ ]*)?@([^=]+)((=|\*=|^=|~=|$=|==|\|=)(.+))?$/,
+    /^([a-z][a-z0-9-_]*)? ?@ ?([a-z][a-z0-9-_]*) ?=? ?(.*)?$/i,
   );
-  if (!matches) return null;
-  const quoted = extractText(matches[5] || '');
-  const value = quoted ? quoted.text : matches[5];
-  const equality = (() => {
-    const eq = matches[4];
-    if (!eq) return undefined;
-    if (eq == '==') return '=';
-    if (eq == '=' && !quoted) return '*=';
-    return eq;
-  })();
-  return {
-    tag: matches[1],
-    attribute: matches[2],
-    equality,
-    value,
-  };
+  if (matches) {
+    const tag = matches[1] || null;
+    const attribute = matches[2] || null;
+    const value = matches[3] || null;
+    if (attribute) {
+      return {
+        tag,
+        attribute,
+        value: value ? extractText(value) || value : null,
+      };
+    }
+  }
+  return null;
 };
