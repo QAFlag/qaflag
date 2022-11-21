@@ -186,6 +186,56 @@ export class PlaywrightAssertion extends TestBase implements PlaywrightMust {
     });
   }
 
+  public async valid() {
+    this.message.push(`valid"`);
+    return this.execute(async item => {
+      const isValid = await item.input.evaluate((element: HTMLInputElement) =>
+        element.checkValidity(),
+      );
+      return {
+        pass: isValid,
+        actualValue: isValid ? 'valid' : 'invalid',
+      };
+    });
+  }
+
+  public async required() {
+    this.message.push(`required"`);
+    return this.execute(async item => {
+      const isRequired = await item.input.evaluate(
+        (element: HTMLInputElement) =>
+          element.ariaRequired == 'true' || element.required,
+      );
+      return {
+        pass: isRequired,
+        actualValue: isRequired ? 'required' : 'optional',
+      };
+    });
+  }
+
+  public async tabIndex(n?: number) {
+    this.message.push(n === undefined ? 'tab index' : `tab index of ${n}`);
+    return this.execute(async item => {
+      const tabIndex = await item.input.evaluate(node => node.tabIndex);
+      return {
+        pass: n === undefined ? tabIndex >= 0 : tabIndex == n,
+        actualValue: String(tabIndex),
+      };
+    });
+  }
+
+  public async focusable() {
+    this.message.push(`focusable`);
+    return this.execute(async item => {
+      const tabIndex = await item.input.evaluate(node => node.tabIndex);
+      return {
+        pass: tabIndex >= 0,
+        actualValue:
+          tabIndex >= 0 ? 'able to receive' : 'not able to receive focus',
+      };
+    });
+  }
+
   public async selectedText(value: string, opts?: TimeoutOpts) {
     this.message.push(`selected text "${value}"`);
     return this.execute(async item => {

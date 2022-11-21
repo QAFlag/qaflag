@@ -32,6 +32,7 @@ const prefixMapper: { [prefix: string]: SelectModifier } = {
   src,
   placeholder,
   id,
+  title,
 };
 
 export const extractPrefix = (selector: string): SelectorPrefix | null => {

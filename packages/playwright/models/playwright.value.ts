@@ -24,13 +24,14 @@ import {
 } from '../types';
 import { FindQuery } from '../selectors';
 import { Action } from './action';
+import { ImageElement } from './image';
 
 export class PlaywrightValue
   extends ValueAbstract<Locator>
   implements ValueInterface<Locator>, UiElementInterface<Locator>
 {
   constructor(
-    input: Locator,
+    public readonly input: Locator,
     protected opts: ValueOpts & { selector: string },
   ) {
     super(input, opts);
@@ -62,6 +63,10 @@ export class PlaywrightValue
 
   public get form() {
     return new Form(this);
+  }
+
+  public get image() {
+    return new ImageElement(this);
   }
 
   public get must(): PlaywrightMust {

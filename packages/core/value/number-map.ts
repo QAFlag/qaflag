@@ -5,7 +5,7 @@ type NumberMap<T> = Record<keyof T, number>;
 
 export class NumberMapValue<T> extends ValueAbstract<NumberMap<T>> {
   constructor(
-    protected readonly input: Record<keyof T, number>,
+    public readonly input: Record<keyof T, number>,
     protected opts: ValueOpts,
   ) {
     super(input, opts);

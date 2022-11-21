@@ -27,7 +27,7 @@ export abstract class ValueAbstract<InputType>
   protected _nameOverride: string | undefined = undefined;
   public readonly context: ContextInterface;
 
-  constructor(protected readonly input: InputType, protected opts: ValueOpts) {
+  constructor(public readonly input: InputType, protected opts: ValueOpts) {
     this.context = opts.context;
   }
 

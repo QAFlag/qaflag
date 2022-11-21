@@ -47,6 +47,7 @@ export interface Assertions_PlaywrightMustHave {
   selectedIndex(index: number): PlaywrightAssertionOutput;
   selectedText(text: string): PlaywrightAssertionOutput;
   style(property: string, value: string): PlaywrightAssertionOutput;
+  tabIndex(n?: number): PlaywrightAssertionOutput;
   tagName(name: string): PlaywrightAssertionOutput;
   text(text: string): PlaywrightAssertionOutput;
   value(value: string): PlaywrightAssertionOutput;
@@ -56,10 +57,13 @@ export interface Assertions_PlaywrightMustBe {
   checked(): PlaywrightAssertionOutput;
   disabled(): PlaywrightAssertionOutput;
   editable(): PlaywrightAssertionOutput;
+  empty(): PlaywrightAssertionOutput;
   enabled(): PlaywrightAssertionOutput;
   equal(element: PlaywrightValue): PlaywrightAssertionOutput;
+  focusable(): PlaywrightAssertionOutput;
   hidden(): PlaywrightAssertionOutput;
+  required(): PlaywrightAssertionOutput;
   unchecked(): PlaywrightAssertionOutput;
+  valid(): PlaywrightAssertionOutput;
   visible(): PlaywrightAssertionOutput;
-  empty(): PlaywrightAssertionOutput;
 }

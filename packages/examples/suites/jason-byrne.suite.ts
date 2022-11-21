@@ -27,7 +27,8 @@ export class JasonByrneSuite extends Suite({
     await context.exists('alt=*Luna*');
     await context.exists('aside', 'img');
     await context.exists('img', 'alt=*Luna*');
-    await context.exists('img', not('alt="Foo"'));
+    const luna = await context.exists('img', not('alt="Foo"'));
+    context.debug(await luna.image.natrualSize());
     const images = await context.find('img').queryAll({ sort: ['top', 'ASC'] });
     const urls = await Promise.all(images.map(img => img.attribute('src')));
     context.debug(urls);
