@@ -1,10 +1,7 @@
-import { KeyValue, UiElementInterface } from '@qaflag/core';
+import { KeyValue } from '@qaflag/core';
 import { CheerioElement, XmlValue } from '@qaflag/xml';
 
-export class HtmlValue
-  extends XmlValue
-  implements UiElementInterface<CheerioElement>
-{
+export class HtmlValue extends XmlValue {
   public find(selector: string) {
     const results = this.$.find(selector);
     return this.createElement(results, {

@@ -2,7 +2,6 @@ import {
   NumericValue,
   StringMapValue,
   StringValue,
-  UiElementInterface,
   ValueAbstract,
   ValueInterface,
   ValueOpts,
@@ -23,12 +22,11 @@ import {
   OrderDirection,
 } from '../types';
 import { FindQuery } from '../selectors';
-import { Action } from './action';
 import { ImageElement } from './image';
 
 export class PlaywrightValue
   extends ValueAbstract<Locator>
-  implements ValueInterface<Locator>, UiElementInterface<Locator>
+  implements ValueInterface<Locator>
 {
   constructor(
     public readonly input: Locator,
@@ -43,10 +41,6 @@ export class PlaywrightValue
 
   public get selector(): string {
     return this.input['_selector'];
-  }
-
-  public get action() {
-    return new Action(this);
   }
 
   public get keyboard() {

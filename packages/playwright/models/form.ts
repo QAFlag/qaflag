@@ -1,13 +1,11 @@
 import {
   BooleanValue,
-  FormInterface,
   NumericValue,
   StringMapValue,
   StringValue,
   HHmm_24,
   YYYYMMDD,
 } from '@qaflag/core';
-import { ElementHandle } from 'playwright';
 import { extractText } from '../selectors/extract-text';
 import { ValueDevice } from './value-device';
 
@@ -17,24 +15,6 @@ export interface DropdownOption {
   index: number;
   selected: boolean;
 }
-
-interface DropdownSelector {
-  value?: string | undefined;
-  label?: string | undefined;
-  index?: number | undefined;
-}
-
-export type SelectOption =
-  | string
-  | ElementHandle<Node>
-  | string[]
-  | {
-      value?: string | undefined;
-      label?: string | undefined;
-      index?: number | undefined;
-    }
-  | ElementHandle<Node>[]
-  | null;
 
 export type BufferUploadFile = {
   name: string;
@@ -48,7 +28,7 @@ export type InputFiles =
   | BufferUploadFile
   | BufferUploadFile[];
 
-export class Form extends ValueDevice implements FormInterface {
+export class Form extends ValueDevice {
   public async isChecked(): Promise<BooleanValue> {
     return new BooleanValue(await this.locator.isChecked(), {
       name: `Is ${this.input.name} checked?`,
@@ -58,7 +38,8 @@ export class Form extends ValueDevice implements FormInterface {
 
   public async check(isChecked: boolean = true) {
     this.logger.action(isChecked ? 'CHECK' : 'UNCHECK', this.input);
-    return this.locator.setChecked(isChecked);
+    await this.locator.setChecked(isChecked);
+    return this.input;
   }
 
   public async fill(value: string) {
@@ -88,9 +69,7 @@ export class Form extends ValueDevice implements FormInterface {
     });
   }
 
-  public async chooseOption(
-    value: number | string | string[] | DropdownSelector,
-  ) {
+  public async chooseOption(value: number | string | string[]) {
     const selectThis = (() => {
       if (typeof value == 'string') {
         const text = extractText(value);
@@ -176,7 +155,7 @@ export class Form extends ValueDevice implements FormInterface {
 
     const [fileChooser] = await Promise.all([
       this.context.page.waitForEvent('filechooser'),
-      this.input.action.click(),
+      this.input.pointer.click(),
     ]);
     if (fileNames.length > 1 && !fileChooser.isMultiple()) {
       throw `${this.input.name} does not allow multiple files to be selected.`;

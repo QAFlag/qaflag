@@ -1,4 +1,3 @@
-import { PointerInterface } from '@qaflag/core';
 import { PagePosition } from './bounding-box.value';
 import { PlaywrightValue } from './playwright.value';
 import { ValueDevice } from './value-device';
@@ -61,8 +60,7 @@ export interface DragOpts {
   trial?: boolean | undefined;
 }
 
-export class Mouse extends ValueDevice implements PointerInterface {
-
+export class Mouse extends ValueDevice {
   public async click(opts?: ClickOpts) {
     this.logger.action('CLICK', this.input);
     return this.locator.click(opts);
@@ -110,7 +108,7 @@ export class Mouse extends ValueDevice implements PointerInterface {
   }
 }
 
-export class Touch extends Mouse implements PointerInterface {
+export class Touch extends Mouse {
   public async click(opts?: TouchOpts) {
     this.logger.action('TAP', this.input);
     return this.locator.tap(opts);

@@ -1,4 +1,4 @@
-import { KeyboardInterface, sleep } from '@qaflag/core';
+import { sleep } from '@qaflag/core';
 import { ValueDevice } from './value-device';
 
 export type KeyboardOpts = {
@@ -48,19 +48,14 @@ type PressedKeys =
   | string
   | [meta: MetaKeys, key: SpecialKeys | string];
 
-export class Keyboard extends ValueDevice implements KeyboardInterface {
-
+export class Keyboard extends ValueDevice {
   public async type(text: string, opts?: KeyboardOpts) {
     this.logger.action('INPUT', this.input, text);
     return this.locator.type(text, opts);
   }
 
   public async typeMasked(text: string, opts?: KeyboardOpts) {
-    this.logger.action(
-      'INPUT',
-      this.input,
-      ''.padStart(text.length, '*'),
-    );
+    this.logger.action('INPUT', this.input, ''.padStart(text.length, '*'));
     return this.locator.type(text, opts);
   }
 
