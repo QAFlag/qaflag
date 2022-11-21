@@ -41,5 +41,8 @@ export class AriaSuite extends Suite({
     await context.role('switch').must.be.checked();
     await context.role('switch').action.check(false);
     await context.role('switch').must.not.be.checked();
+    await context.role('textbox', 'some-label').must.have.value('me');
+    await context.role('textbox', '*some-label*').must.have.value('me');
+    await context.role('button', '*Add*').exists();
   }
 }

@@ -65,7 +65,7 @@ export const textbox = new ElementSelector(
 );
 
 export const dateInput = new ElementSelector(
-  'is(input[type="date", input[type="datetime-local"], input[type="month"], input[type="time"], input[type="week"], input[type="dateime"]):visible',
+  'is(input[type="date"], input[type="datetime-local"], input[type="month"], input[type="time"], input[type="week"], input[type="dateime"]):visible',
   'date selector',
 );
 

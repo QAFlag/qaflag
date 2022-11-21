@@ -143,7 +143,7 @@ export class PlaywrightValue
   ): Promise<PlaywrightValue>;
   public async exists(selector?: PrimarySelector, ...subQueries: SubQueries[]) {
     if (selector === undefined) {
-      this.must.exist();
+      await this.must.exist();
       return this;
     }
     const locator = this.find(selector, ...subQueries);
