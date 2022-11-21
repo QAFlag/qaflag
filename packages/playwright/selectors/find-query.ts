@@ -37,7 +37,7 @@ export class FindQuery {
     // Look for quoted text
     const matchText = extractText(input);
     if (matchText) {
-      if (matchText.pattern) return matches(matchText.value, matchText.flags);
+      if (matchText.pattern) return matches(matchText.value, matchText.flag);
       if (matchText.type == 'exact') return text(matchText.value);
       return contains(matchText.value);
     }

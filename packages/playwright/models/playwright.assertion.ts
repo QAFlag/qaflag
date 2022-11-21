@@ -284,6 +284,17 @@ export class PlaywrightAssertion extends TestBase implements PlaywrightMust {
     });
   }
 
+  public async count(amount: number) {
+    this.message.push(`count of ${amount}`);
+    return this.execute(async item => {
+      const count = (await item.count()).$;
+      return {
+        pass: count === amount,
+        actualValue: String(count),
+      };
+    });
+  }
+
   public async lookLike(
     compareTo: string | Buffer,
     allowablePercentDifference = 0,

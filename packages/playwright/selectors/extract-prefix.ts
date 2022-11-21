@@ -35,7 +35,7 @@ const prefixMapper: { [prefix: string]: SelectModifier } = {
 };
 
 export const extractPrefix = (selector: string): SelectorPrefix | null => {
-  const matches = selector.match(/^([a-z]+)=(.+)$/i);
+  const matches = selector.match(/^([a-z]+) ?= ?(.+)$/i);
   if (!matches) return null;
   const prefix = matches[1];
   const value = matches[2];

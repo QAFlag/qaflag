@@ -45,8 +45,7 @@ export class AriaSuite extends Suite({
       .find(label('Upload'))
       .form.file('./packages/examples/fixtures/logo.png');
     await context
-      .find('=textbox', "placeholder='URL'")
+      .find('=textbox', "placeholder='url'")
       .must.have.value('https://www.qaflag.com');
-    await context.pause(5000);
   }
 }

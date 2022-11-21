@@ -14,7 +14,7 @@ export const contains: SelectModifier = (value: string): FindQuery => {
 
 export const hasText: SelectModifier = (value: string): FindQuery => {
   const extracted = extractText(value);
-  if (extracted?.pattern) return matches(extracted.value, extracted.flags);
+  if (extracted?.pattern) return matches(extracted.value, extracted.flag);
   if (extracted?.type == 'exact') return text(extracted.value);
   return contains(extracted?.value || value);
 };
@@ -30,12 +30,13 @@ export const attr = (name: string, text?: string, tag?: string): FindQuery => {
   const extracted = text ? extractText(text) : null;
   const equals = extracted?.equalSign || '=';
   const value = extracted?.value || text;
+  const flag = extracted?.flag == 'i' ? 'i' : '';
   if (extracted?.type == 'custom') {
     throw `Attribute selectors do not support custom regex: ${tag}@${name}${equals}${value}`;
   }
   if (tag !== undefined && value !== undefined) {
     return FindQuery.create(
-      `${tag}[${name}${equals}"${escape(value)}"]`,
+      `${tag}[${name}${equals}"${escape(value)}"${flag}]`,
       `${tag}@${name}${equals}"${value}"`,
     );
   }
@@ -44,7 +45,7 @@ export const attr = (name: string, text?: string, tag?: string): FindQuery => {
   }
   if (value !== undefined) {
     return FindQuery.create(
-      `[${name}${equals}"${escape(value)}"]`,
+      `[${name}${equals}"${escape(value)}"${flag}]`,
       `${name}${equals}"${value}"`,
     );
   }

@@ -31,6 +31,7 @@ export interface Assertions_PlaywrightMustBeIn {
 export interface Assertions_PlaywrightMust {
   exist(): PlaywrightAssertionOutput;
   containText(text: string): PlaywrightAssertionOutput;
+  count(amount: number): PlaywrightAssertionOutput;
   lookLike(
     compareTo: Buffer | string,
     allowableDiff?: number,
@@ -41,6 +42,7 @@ export interface Assertions_PlaywrightMustHave {
   attribute(name: string): PlaywrightAssertionOutput;
   attributeValue(name: string, value: string): PlaywrightAssertionOutput;
   className(name: string): PlaywrightAssertionOutput;
+  count(amount: number): PlaywrightAssertionOutput;
   focus(): PlaywrightAssertionOutput;
   selectedIndex(index: number): PlaywrightAssertionOutput;
   selectedText(text: string): PlaywrightAssertionOutput;

@@ -9,7 +9,7 @@ export interface ExtractedText {
   value: string;
   pattern: RegExp | null;
   type: ExtractedTextType;
-  flags: string;
+  flag: string;
   equalSign: string;
 }
 
@@ -23,17 +23,17 @@ const EqualSignMap: { [key in ExtractedTextType]: string } = {
 
 export const extractText = (selector: string): ExtractedText | null => {
   const match =
-    selector.match(/^(')(.*)(')$/) || // Exact: single quote
-    selector.match(/^(")(.*)(")$/) || // Exact: double-quote
-    selector.match(/^(\*)(.*)(\*)$/) || // Contains: *....*
-    selector.match(/^(\*)(.*)(\$)([a-z]+)$/) || // Ends with: *....$
-    selector.match(/^(\/)(.*)(\/)([a-z]+)?$/) || // Custom regex: /..../
-    selector.match(/^(\^)(.*)(\*)([a-z]+)$/); // Starts with: ^....*
+    selector.match(/^(')(.*)(') ?([is])?$/) || // Exact: single quote
+    selector.match(/^(")(.*)(") ?([is])?$/) || // Exact: double-quote
+    selector.match(/^(\*)(.*)(\*) ?([is])?$/) || // Contains: *....*
+    selector.match(/^(\*)(.*)(\$) ?([is])?$/) || // Ends with: *....$
+    selector.match(/^(\/)(.*)(\/) ?([is])?$/) || // Custom regex: /..../
+    selector.match(/^(\^)(.*)(\*) ?([is])?$/); // Starts with: ^....*
   if (!match) return null;
   const firstQuote = match[1];
   const value = match[2];
   const lastQuote = match[3];
-  const flags = match[4] || 'i';
+  const flag = match[4] || 'i';
   const type = (() => {
     if (['"', "'"].includes(firstQuote)) return 'exact';
     if (firstQuote == '/') return 'custom';
@@ -43,15 +43,15 @@ export const extractText = (selector: string): ExtractedText | null => {
   })();
   const pattern = (() => {
     if (['contains', 'exact'].includes(type)) return null;
-    if (type == 'startsWith') return new RegExp(`^${value}`, flags);
-    if (type == 'endsWith') return new RegExp(`${value}$`, flags);
-    return new RegExp(value, flags);
+    if (type == 'startsWith') return new RegExp(`^${value}`, flag);
+    if (type == 'endsWith') return new RegExp(`${value}$`, flag);
+    return new RegExp(value, flag);
   })();
   return {
     value,
     pattern,
     type,
-    flags,
+    flag,
     equalSign: EqualSignMap[type],
   };
 };

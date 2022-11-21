@@ -156,30 +156,25 @@ export class LabelSelector {
 
 export const role = (
   roleName: AriaRole,
-  filter?: string | RegExp | RoleSelectorOptions,
+  label?: string | RegExp,
 ): RoleSelector => {
-  if (!filter) return new RoleSelector(roleName);
+  if (!label) return new RoleSelector(roleName);
   const opts: RoleSelectorOptions | undefined = (() => {
-    if (typeof filter == 'string') {
-      const text = extractText(filter);
-      if (text === null) return { name: filter };
+    if (typeof label == 'string') {
+      const text = extractText(label);
+      if (text === null) return { name: label };
       return { name: text?.pattern || text.value, exact: text.type == 'exact' };
     }
-    if (filter instanceof RegExp) return { name: filter };
-    return filter;
+    return { name: label };
   })();
   return new RoleSelector(roleName, opts);
 };
 
-export const label = (
-  labelName: string,
-  filter?: LabelSelectorOptions | boolean,
-): LabelSelector => {
+export const label = (labelName: string): LabelSelector => {
   const text = extractText(labelName);
   const opts = (() => {
-    if (typeof filter == 'boolean') return { exact: filter };
     if (text) return { exact: text.type == 'exact' };
-    return filter;
+    return {};
   })();
   return new LabelSelector(text?.pattern || text?.value || labelName, opts);
 };
