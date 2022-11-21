@@ -167,18 +167,18 @@ export class PlaywrightAssertion extends TestBase implements PlaywrightMust {
     });
   }
 
-  public async tagName(name: string, opts?: TimeoutOpts) {
+  public async tagName(name: string) {
     this.message.push(`tag <${name.toUpperCase()}>`);
     return this.execute(async item => {
-      const tagName = (await item.tagName(opts)).$.toUpperCase();
+      const tagName = (await item.tagName()).$.toUpperCase();
       return { pass: tagName == name.toUpperCase(), actualValue: tagName };
     });
   }
 
-  public async value(value: string, opts?: TimeoutOpts) {
+  public async value(value: string) {
     this.message.push(`value "${value}"`);
     return this.execute(async item => {
-      const elementValue = (await item.form.value(opts)).$;
+      const elementValue = (await item.form.value()).$;
       return {
         pass: elementValue == value,
         actualValue: elementValue,
@@ -236,10 +236,10 @@ export class PlaywrightAssertion extends TestBase implements PlaywrightMust {
     });
   }
 
-  public async selectedText(value: string, opts?: TimeoutOpts) {
+  public async selectedText(value: string) {
     this.message.push(`selected text "${value}"`);
     return this.execute(async item => {
-      const elementValue = (await item.form.selectedText(opts)).$;
+      const elementValue = (await item.form.selectedText()).$;
       return {
         pass: elementValue == value,
         actualValue: elementValue,
@@ -247,10 +247,10 @@ export class PlaywrightAssertion extends TestBase implements PlaywrightMust {
     });
   }
 
-  public async selectedIndex(index: number, opts?: TimeoutOpts) {
+  public async selectedIndex(index: number) {
     this.message.push(`selected index "${index}"`);
     return this.execute(async item => {
-      const elementValue = (await item.form.selectedIndex(opts)).$;
+      const elementValue = (await item.form.selectedIndex()).$;
       return {
         pass: elementValue == index,
         actualValue: String(elementValue),

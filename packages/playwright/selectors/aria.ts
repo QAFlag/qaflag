@@ -170,8 +170,8 @@ export const role = (
   return new RoleSelector(roleName, opts);
 };
 
-export const label = (labelName: string): LabelSelector => {
-  const text = extractText(labelName);
+export const label = (labelName: string | RegExp): LabelSelector => {
+  const text = typeof labelName == 'string' ? extractText(labelName) : null;
   const opts = (() => {
     if (text) return { exact: text.type == 'exact' };
     return {};

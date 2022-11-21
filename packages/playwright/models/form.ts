@@ -4,11 +4,11 @@ import {
   NumericValue,
   StringMapValue,
   StringValue,
+  HHmm_24,
+  YYYYMMDD,
 } from '@qaflag/core';
 import { ElementHandle } from 'playwright';
 import { extractText } from '../selectors/extract-text';
-import { TimeoutOpts } from '../types/timeout-opts';
-import { PagePosition } from './bounding-box.value';
 import { ValueDevice } from './value-device';
 
 export interface DropdownOption {
@@ -22,17 +22,6 @@ interface DropdownSelector {
   value?: string | undefined;
   label?: string | undefined;
   index?: number | undefined;
-}
-
-export interface FormOpts {
-  force?: boolean | undefined;
-  noWaitAfter?: boolean | undefined;
-  timeout?: number | undefined;
-}
-
-export interface FormPointerOpts extends FormOpts {
-  position?: PagePosition | undefined;
-  trial?: boolean | undefined;
 }
 
 export type SelectOption =
@@ -67,31 +56,40 @@ export class Form extends ValueDevice implements FormInterface {
     });
   }
 
-  public async check(isChecked: boolean = true, opts?: FormPointerOpts) {
+  public async check(isChecked: boolean = true) {
     this.logger.action(isChecked ? 'CHECK' : 'UNCHECK', this.input);
-    return this.locator.setChecked(isChecked, opts);
+    return this.locator.setChecked(isChecked);
   }
 
-  public async fill(value: string, opts?: FormOpts) {
+  public async fill(value: string) {
     this.logger.action('FILL', this.input, value);
-    return this.locator.fill(value, opts);
+    return this.locator.fill(value);
   }
 
-  public async clear(opts?: FormOpts) {
+  public async chooseDate(value: YYYYMMDD) {
+    this.logger.action('DATE', this.input, value);
+    return this.locator.fill(value);
+  }
+
+  public async chooseTime(value: HHmm_24) {
+    this.logger.action('TIME', this.input, value);
+    return this.locator.fill(value);
+  }
+
+  public async clear() {
     this.logger.action('CLEAR', this.input);
-    return this.locator.fill('', opts);
+    return this.locator.fill('');
   }
 
-  public async value(opts?: TimeoutOpts) {
-    return new StringValue(await this.locator.inputValue(opts), {
+  public async value() {
+    return new StringValue(await this.locator.inputValue(), {
       context: this.context,
       name: `Value of ${this.input.name}`,
     });
   }
 
-  public async select(
+  public async chooseOption(
     value: number | string | string[] | DropdownSelector,
-    opts?: FormOpts,
   ) {
     const selectThis = (() => {
       if (typeof value == 'string') {
@@ -109,16 +107,15 @@ export class Form extends ValueDevice implements FormInterface {
         ? selectThis.toString()
         : selectThis.label || selectThis.value || `index ${selectThis.index}`,
     );
-    return this.locator.selectOption(selectThis, opts);
+    return this.locator.selectOption(selectThis);
   }
 
-  public async selectedIndex(opts?: TimeoutOpts) {
+  public async selectedIndex() {
     const tagName = await this.input.tagName();
     if (tagName.$ == 'SELECT') {
       return new NumericValue(
         await this.input.first.$.evaluate(
           (sel: HTMLSelectElement) => sel.options.selectedIndex,
-          opts,
         ),
         {
           name: `Selected Index of ${this.input.name}`,
@@ -129,15 +126,15 @@ export class Form extends ValueDevice implements FormInterface {
     throw 'Not a <SELECT> element.';
   }
 
-  public async selectedText(opts?: TimeoutOpts) {
-    const selected = await this.selectedOption(opts);
+  public async selectedText() {
+    const selected = await this.selectedOption();
     return new StringValue(selected.$.text, {
       name: `Selected Text of ${this.input.name}`,
       context: this.context,
     });
   }
 
-  public async selectedOption(opts?: TimeoutOpts) {
+  public async selectedOption() {
     const tagName = await this.input.tagName();
     if (tagName.$ == 'SELECT') {
       const selected = await this.input.first.$.evaluate(
@@ -149,7 +146,6 @@ export class Form extends ValueDevice implements FormInterface {
             value: opt.value,
           };
         },
-        opts,
       );
       if (!selected) throw `Nothing selected in ${this.input.name}`;
       return new StringMapValue(
@@ -167,7 +163,7 @@ export class Form extends ValueDevice implements FormInterface {
     throw 'Not a <SELECT> element.';
   }
 
-  public async file(files: InputFiles, opts?: FormOpts) {
+  public async chooseFile(files: InputFiles) {
     const fileNames: string[] = (() => {
       if (typeof files === 'string') return [files];
       if (Array.isArray(files)) {

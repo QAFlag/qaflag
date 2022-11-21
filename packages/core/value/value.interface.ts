@@ -2,6 +2,7 @@ import { ArrayValue, BooleanValue, NumericValue, StringValue } from './values';
 import { LoggerInterface } from '../types/log-provider.interface';
 import { Must } from '../test/must.interface';
 import { ContextInterface } from '../context/context.interface';
+import { HHmm_24, YYYYMMDD } from '../types/date';
 
 export interface ValueInterface<InputType = any> {
   $: InputType;
@@ -25,9 +26,11 @@ export interface PrimitiveValueInterface<InputType = any>
 
 export interface FormInterface {
   check(isChecked: boolean): Promise<void>;
-  select(value: string | string[]): Promise<string[]>;
   fill(text: string): Promise<void>;
-  file(path: string | string[]): Promise<void>;
+  chooseDate(value: YYYYMMDD): Promise<void>;
+  chooseTime(value: HHmm_24): Promise<void>;
+  chooseOption(value: string | string[]): Promise<string[]>;
+  chooseFile(path: string | string[]): Promise<void>;
   value():
     | StringValue
     | ArrayValue<string>

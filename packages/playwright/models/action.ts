@@ -21,10 +21,10 @@ export class Action extends ValueDevice {
     return this.input;
   }
 
-  public async selectOption(option: number | string | string[]) {
+  public async chooseOption(option: number | string | string[]) {
     await this.input.scrollTo();
     await this.input.focus();
-    await this.form.select(option);
+    await this.form.chooseOption(option);
     return this.input;
   }
 

@@ -45,3 +45,4 @@ export * from './utils/string';
 export * from './value/string-map';
 export * from './value/number-map';
 export * from './types/project-settings.interface';
+export * from './types/date';

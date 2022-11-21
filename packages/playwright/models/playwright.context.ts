@@ -10,7 +10,14 @@ import { Locator, PageScreenshotOptions } from 'playwright';
 import { PlaywrightInstance } from './playwright.adapter';
 import { PlaywrightValue } from './playwright.value';
 import { WaitForNavigationOpts, WaitForUrlOpts } from './wait-for';
-import { FindQuery, LabelSelector, RoleSelector } from '../selectors';
+import {
+  AriaRole,
+  FindQuery,
+  label,
+  LabelSelector,
+  role,
+  RoleSelector,
+} from '../selectors';
 import { PrimarySelector, SubQueries } from '../types';
 
 export type NavigationOpts =
@@ -121,6 +128,17 @@ export class PlaywrightContext extends Context implements ContextInterface {
     });
   }
 
+  public role(
+    roleName: AriaRole,
+    labelName?: string | RegExp,
+  ): PlaywrightValue {
+    return this.find(role(roleName, labelName));
+  }
+
+  public label(labelName: string | RegExp): PlaywrightValue {
+    return this.find(label(labelName));
+  }
+
   public async exists(selector: PrimarySelector, ...subQueries: SubQueries[]) {
     const element = this.find(selector, ...subQueries);
     await element.must.exist();
@@ -135,16 +153,6 @@ export class PlaywrightContext extends Context implements ContextInterface {
   public async visible(selector: PrimarySelector, ...subQueries: SubQueries[]) {
     const element = this.find(selector, ...subQueries);
     await element.must.be.visible();
-    return element;
-  }
-
-  public async scrollTo(
-    selector: PrimarySelector,
-    ...subQueries: SubQueries[]
-  ) {
-    const element = this.find(selector, ...subQueries);
-    await element.must.be.visible();
-    await element.scrollTo();
     return element;
   }
 
@@ -201,5 +209,26 @@ export class PlaywrightContext extends Context implements ContextInterface {
   public async scroll(distance: XY | number) {
     if (typeof distance == 'number') return this.page.mouse.wheel(0, distance);
     return this.page.mouse.wheel(...distance);
+  }
+
+  public async scrollTo(
+    selector: PrimarySelector,
+    ...subQueries: SubQueries[]
+  ) {
+    const element = this.find(selector, ...subQueries);
+    await element.must.be.visible();
+    await element.scrollTo();
+    return element;
+  }
+
+  public scrollToTop(): Promise<void> {
+    return this.page.evaluate(() => window.scrollTo(0, 0));
+  }
+
+  public scrollToBottom(): Promise<void> {
+    return this.page.evaluate(() => {
+      const y = document.body.scrollHeight;
+      window.scrollTo(0, y);
+    });
   }
 }
