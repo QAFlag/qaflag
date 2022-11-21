@@ -31,15 +31,15 @@ export class AriaSuite extends Suite({
     await context.find('#fakeCheckbox2').must.be.checked();
     await context.find('#dropdown').must.have.value('bar');
     await context.find('#dropdown').must.have.selectedText('BAR');
-    await context.role('checkbox', 'asdf').must.have.count(1);
-    await context.role('switch').must.be.checked();
-    await context.role('switch').action.check(false);
-    await context.role('switch').must.not.be.checked();
     await context
       .label('Upload')
       .form.chooseFile('./packages/examples/fixtures/logo.png');
     await context
       .find('=textbox', "placeholder='url'")
       .must.have.value('https://www.qaflag.com');
+    await context.role('checkbox', 'asdf').must.have.count(1);
+    await context.role('switch').must.be.checked();
+    await context.role('switch').action.check(false);
+    await context.role('switch').must.not.be.checked();
   }
 }
