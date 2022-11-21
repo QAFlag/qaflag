@@ -44,22 +44,26 @@ export class Form extends ValueDevice {
 
   public async fill(value: string) {
     this.logger.action('FILL', this.input, value);
-    return this.locator.fill(value);
+    await this.locator.fill(value);
+    return this.input;
   }
 
   public async chooseDate(value: YYYYMMDD) {
     this.logger.action('DATE', this.input, value);
-    return this.locator.fill(value);
+    await this.locator.fill(value);
+    return this.input;
   }
 
   public async chooseTime(value: HHmm_24) {
     this.logger.action('TIME', this.input, value);
-    return this.locator.fill(value);
+    await this.locator.fill(value);
+    return this.input;
   }
 
   public async clear() {
     this.logger.action('CLEAR', this.input);
-    return this.locator.fill('');
+    await this.locator.fill('');
+    return this.input;
   }
 
   public async value() {
@@ -86,7 +90,8 @@ export class Form extends ValueDevice {
         ? selectThis.toString()
         : selectThis.label || selectThis.value || `index ${selectThis.index}`,
     );
-    return this.locator.selectOption(selectThis);
+    await this.locator.selectOption(selectThis);
+    return this.input;
   }
 
   public async selectedIndex() {
@@ -161,6 +166,7 @@ export class Form extends ValueDevice {
       throw `${this.input.name} does not allow multiple files to be selected.`;
     }
     fileNames.forEach(file => this.logger.action('FILE', this.input, file));
-    return fileChooser.setFiles(files);
+    await fileChooser.setFiles(files);
+    return this.input;
   }
 }

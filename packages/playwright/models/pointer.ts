@@ -63,25 +63,29 @@ export interface DragOpts {
 export class Mouse extends ValueDevice {
   public async click(opts?: ClickOpts) {
     this.logger.action('CLICK', this.input);
-    return this.locator.click(opts);
+    await this.locator.click(opts);
+    return this.input;
   }
 
   public async hover(opts?: HoverOpts) {
     this.logger.action('HOVER', this.input);
-    return this.locator.hover(opts);
+    await this.locator.hover(opts);
+    return this.input;
   }
 
   public async doubleClick(opts?: ClickOpts) {
     this.logger.action('DCLICK', this.input);
-    return this.locator.dblclick(opts);
+    await this.locator.dblclick(opts);
+    return this.input;
   }
 
   public async tripleClick(opts?: ClickOpts) {
     this.logger.action('TCLICK', this.input);
-    return this.locator.click({
+    await this.locator.click({
       ...opts,
       clickCount: 3,
     });
+    return this.input;
   }
 
   public async longPress(opts?: LongPressOpts) {
@@ -95,23 +99,27 @@ export class Mouse extends ValueDevice {
     await this.page.mouse.down({ button: opts?.button || 'left' });
     await this.page.waitForTimeout(opts?.durationMs || 1000);
     await this.page.mouse.up({ button: opts?.button || 'left' });
+    return this.input;
   }
 
   public async dragTo(destination: PlaywrightValue, opts?: DragOpts) {
     this.logger.action('DRAG', this.input, destination.name);
-    return this.locator.dragTo(destination.$, opts);
+    await this.locator.dragTo(destination.$, opts);
+    return this.input;
   }
 
   public async selectText(opts?: PointerOpts) {
     this.logger.action('SELECT', this.input);
-    return this.locator.selectText(opts);
+    await this.locator.selectText(opts);
+    return this.input;
   }
 }
 
 export class Touch extends Mouse {
   public async click(opts?: TouchOpts) {
     this.logger.action('TAP', this.input);
-    return this.locator.tap(opts);
+    await this.locator.tap(opts);
+    return this.input;
   }
 
   public async doubleClick(opts?: DoubleTapOpts) {
@@ -120,5 +128,6 @@ export class Touch extends Mouse {
     await this.locator.tap(opts);
     await page.waitForTimeout(opts?.delayBetweenMs || 300);
     await this.locator.tap(opts);
+    return this.input;
   }
 }

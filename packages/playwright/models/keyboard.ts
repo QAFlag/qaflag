@@ -51,30 +51,35 @@ type PressedKeys =
 export class Keyboard extends ValueDevice {
   public async type(text: string, opts?: KeyboardOpts) {
     this.logger.action('INPUT', this.input, text);
-    return this.locator.type(text, opts);
+    await this.locator.type(text, opts);
+    return this.input;
   }
 
   public async typeMasked(text: string, opts?: KeyboardOpts) {
     this.logger.action('INPUT', this.input, ''.padStart(text.length, '*'));
-    return this.locator.type(text, opts);
+    await this.locator.type(text, opts);
+    return this.input;
   }
 
   public async press(key: PressedKeys, opts?: KeyboardOpts) {
     const keyCode = Array.isArray(key) ? key.join('+') : key;
     this.logger.action('PRESS', this.input, keyCode);
-    return this.locator.press(keyCode, opts);
+    await this.locator.press(keyCode, opts);
+    return this.input;
   }
 
   public async down(key: PressedKeys) {
     const keyCode = Array.isArray(key) ? key.join('+') : key;
     this.logger.action('DOWN', this.input, keyCode);
-    return this.page.keyboard.down(keyCode);
+    await this.page.keyboard.down(keyCode);
+    return this.input;
   }
 
   public async up(key: PressedKeys, opts?: KeyboardOpts) {
     const keyCode = Array.isArray(key) ? key.join('+') : key;
     this.logger.action('UP', this.input, keyCode);
-    return this.page.keyboard.up(keyCode);
+    await this.page.keyboard.up(keyCode);
+    return this.input;
   }
 
   public async selectAll() {
@@ -135,6 +140,6 @@ export class Keyboard extends ValueDevice {
       await this.press(key);
       await sleep(opts?.delayMs || 10);
     }
-    return this;
+    return this.input;
   }
 }
