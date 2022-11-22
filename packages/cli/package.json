@@ -1,6 +1,6 @@
 {
   "name": "@qaflag/cli",
-  "version": "0.3.10",
+  "version": "0.3.13",
   "description": "QA Flag CLI",
   "files": [
     "dist/",
