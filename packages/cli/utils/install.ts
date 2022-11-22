@@ -30,10 +30,10 @@ export const addPackages = (packages: string[]) => {
     return shell(`npm i --save-dev ${packages.join(' ')}`);
   }
   if (which === 'yarn') {
-    return shell(`yarn add ${packages.join(' ')} --D`);
+    return shell(`yarn add ${packages.join(' ')} -D`);
   }
   if (which === 'pnpm') {
-    return shell(`pnpm add --D ${packages.join(' ')}`);
+    return shell(`pnpm add -D ${packages.join(' ')}`);
   }
   exitError(
     'No package manager detected for this project. Run this command in the root of your project, where the package.json is located.',
