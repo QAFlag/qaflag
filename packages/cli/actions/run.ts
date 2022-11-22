@@ -19,7 +19,7 @@ export const run = async (
     try {
       await build(project);
     } catch (ex) {
-      printLines(['Error building tests.', '']);
+      printLines(['Error building tests.']);
       exitError(ex);
     }
   }

@@ -13,6 +13,12 @@ export type AxiosRequest = AxiosRequestConfig<HttpBody> & {
   jar?: CookieJar;
 };
 
+declare module 'axios' {
+  interface AxiosRequestConfig {
+    jar?: CookieJar;
+  }
+}
+
 export const fetchWithAxios = async (
   req: HttpRequestInterface,
 ): Promise<HttpResponse<HttpBody, AxiosRequest>> => {

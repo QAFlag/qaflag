@@ -1,6 +1,6 @@
 import chalk = require('chalk');
 import { ConsoleOutput } from '../models/console-output';
-import { printLineBreak } from './print';
+import { printLineBreak, printLines } from './print';
 
 export const exitSuccess = (message?: string) => {
   printLineBreak();
@@ -13,11 +13,7 @@ export const exitSuccess = (message?: string) => {
 
 export const exitError = (message?: string) => {
   if (message) {
-    printLineBreak();
-    new ConsoleOutput(message, {
-      style: chalk.bgWhite.red,
-    });
-    printLineBreak();
+    printLines(['', message, '']);
   }
   process.exit(1);
 };

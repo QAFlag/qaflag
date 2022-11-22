@@ -88,8 +88,8 @@ program
       await build(project);
       printLines(['', 'Done.', '']);
     } catch (ex) {
-      printLines(['Error building tests.', '', ex]);
-      exitError();
+      printLines(['Error building tests.', '']);
+      exitError(ex);
     }
   });
 
