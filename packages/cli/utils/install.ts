@@ -1,7 +1,5 @@
-import { existsSync, outputFile } from 'fs-extra';
+import { existsSync } from 'fs-extra';
 import path = require('path');
-import { exitError } from './exit';
-import { printLines } from './print';
 import { shell } from './shell';
 
 export const hasYarn = (cwd = process.cwd()) => {
