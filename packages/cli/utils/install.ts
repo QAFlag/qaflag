@@ -1,6 +1,7 @@
-import { existsSync } from 'fs-extra';
+import { existsSync, outputFile } from 'fs-extra';
 import path = require('path');
 import { exitError } from './exit';
+import { printLines } from './print';
 import { shell } from './shell';
 
 export const hasYarn = (cwd = process.cwd()) => {
@@ -24,18 +25,40 @@ export const whichPackageManager = (
   return null;
 };
 
-export const addPackages = (packages: string[]) => {
+export const addPackages = async (packages: string[]): Promise<string[]> => {
   const which = whichPackageManager();
-  if (which === 'npm') {
-    return shell(`npm i --save-dev ${packages.join(' ')}`);
+  const out: string[] = [];
+  const installer = (() => {
+    if (which === 'npm') {
+      return {
+        packageManager: 'npm',
+        command: `npm i --save-dev ${packages.join(' ')}`,
+      };
+    }
+    if (which === 'yarn') {
+      return {
+        packageManager: 'yarn',
+        command: `yarn add ${packages.join(' ')} -D`,
+      };
+    }
+    if (which === 'pnpm') {
+      return {
+        packageManager: 'pnpm',
+        command: `pnpm add -D ${packages.join(' ')}`,
+      };
+    }
+  })();
+  if (!installer) {
+    out.push(
+      'No package manager detected for this project. Run this command in the root of your project, where the package.json is located.',
+    );
+  } else {
+    out.push(`Found ${installer}`, installer.command, '');
+    try {
+      out.push(await shell(installer.command));
+    } catch (ex) {
+      out.push(ex);
+    }
   }
-  if (which === 'yarn') {
-    return shell(`yarn add ${packages.join(' ')} -D`);
-  }
-  if (which === 'pnpm') {
-    return shell(`pnpm add -D ${packages.join(' ')}`);
-  }
-  exitError(
-    'No package manager detected for this project. Run this command in the root of your project, where the package.json is located.',
-  );
+  return out;
 };

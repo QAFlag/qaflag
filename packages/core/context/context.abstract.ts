@@ -11,7 +11,7 @@ import {
 import { KvStore } from '../models/kv-store';
 import { titleize } from '../utils/string';
 
-type TestCase<T = any> = (context?: ContextInterface) => Promise<T>;
+type TestCase<T = any> = (context: ContextInterface) => Promise<T>;
 
 export abstract class Context implements ContextInterface {
   public readonly store = new KvStore();
@@ -47,9 +47,12 @@ export abstract class Context implements ContextInterface {
     this.logger.pass(content);
   }
 
-  public case<T = any>(title: string, testCase: TestCase<T>): Promise<T>;
+  public case<T = any>(title: string, testCase: () => Promise<T>): Promise<T>;
   public case<T = any>(testCase: TestCase<T>): Promise<T>;
-  public async case<T>(a: string | TestCase<T>, b?: TestCase<T>): Promise<T> {
+  public async case<T>(
+    a: string | TestCase<T>,
+    b?: () => Promise<T>,
+  ): Promise<T> {
     this.testCaseCount++;
     const testCase = (typeof a == 'string' ? b : a) || (() => {});
     const title = (() => {

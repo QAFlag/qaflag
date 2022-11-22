@@ -57,7 +57,11 @@ export const init = async (project: Project) => {
     },
   ]);
   try {
-    await addPackages(['@qaflag/core', ...responses.types]);
+    const packagesOutput = await addPackages([
+      '@qaflag/core',
+      ...responses.types,
+    ]);
+    printLines(['', ...packagesOutput, '']);
     project.settings.baseUrl = responses.baseUrl;
     project.settings.input.path = responses.src;
     project.settings.output.path = responses.dist;
