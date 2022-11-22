@@ -51,7 +51,12 @@ export const addPackages = async (packages: string[]): Promise<string[]> => {
       'No package manager detected for this project. Run this command in the root of your project, where the package.json is located.',
     );
   } else {
-    out.push(`Found ${installer}`, installer.command, '');
+    out.push(
+      `Installing dependencies with ${installer.packageManager}...`,
+      '',
+      installer.command,
+      '',
+    );
     try {
       out.push(await shell(installer.command));
     } catch (ex) {
