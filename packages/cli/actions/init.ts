@@ -28,6 +28,21 @@ export const init = async (project: Project) => {
       initial: './src',
     },
     {
+      type: 'text',
+      name: 'dist',
+      message: `Output folder for the transpiled suites`,
+      initial: './dist',
+    },
+    {
+      type: 'select',
+      name: 'theme',
+      message: 'Which theme do you prefer?',
+      choices: [
+        { title: 'Dark', value: 'dark' },
+        { title: 'Light', value: 'light' },
+      ],
+    },
+    {
       type: 'multiselect',
       name: 'types',
       message: 'Pick the test types for this project',
@@ -45,6 +60,8 @@ export const init = async (project: Project) => {
     await addPackages(['@qaflag/core', ...responses.types]);
     project.settings.baseUrl = responses.baseUrl;
     project.settings.input.path = responses.src;
+    project.settings.output.path = responses.dist;
+    project.settings.theme = responses.theme;
     project.write();
     printLineBreak();
     printList([
