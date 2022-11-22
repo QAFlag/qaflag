@@ -146,3 +146,35 @@ export const cell = new ElementSelector(
 );
 
 export const fullscreen = new ElementSelector('fullscreen');
+
+const makeMap = <T extends Record<string, ElementSelector>>(map: T): T => map;
+const selectorMap = makeMap({
+  banner,
+  dialog,
+  heading,
+  main,
+  nav,
+  strong,
+  image,
+  link,
+  textbox,
+  dateInput,
+  searchbox,
+  spinbutton,
+  slider,
+  numberInput,
+  fileInput,
+  colorInput,
+  dropdown,
+  checkbox,
+  radio,
+  button,
+  form,
+  region,
+  listItem,
+  table,
+  row,
+  cell,
+  fullscreen,
+});
+export type ElementSelector_Type = keyof typeof selectorMap;

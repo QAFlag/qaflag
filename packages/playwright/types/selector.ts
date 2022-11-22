@@ -2,8 +2,8 @@ import { PlaywrightValue } from '../models/playwright.value';
 import { FindQuery, SelectFilter, SelectPrimary } from '../selectors';
 
 export type PrimarySelector =
-  | string
   | FindQuery
+  | string
   | RegExp
   | SelectPrimary
   | PlaywrightValue;

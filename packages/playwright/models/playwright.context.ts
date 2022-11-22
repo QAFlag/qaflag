@@ -19,6 +19,11 @@ import {
   RoleSelector,
 } from '../selectors';
 import { PrimarySelector, SubQueries } from '../types';
+import {
+  QuoteSelector,
+  QAFlag_Alias,
+  ElementSelector_Prefix,
+} from '../selectors/selector-formats';
 
 export type NavigationOpts =
   | {
@@ -86,7 +91,15 @@ export class PlaywrightContext extends Context implements ContextInterface {
 
   public find(role: RoleSelector): PlaywrightValue;
   public find(label: LabelSelector): PlaywrightValue;
-  public find(aliasName: `$${string}`): PlaywrightValue;
+  public find(aliasName: QAFlag_Alias): PlaywrightValue;
+  public find(
+    elementType: ElementSelector_Prefix,
+    ...subQueries: SubQueries[]
+  ): PlaywrightValue;
+  public find(
+    quotedText: QuoteSelector,
+    ...subQueries: SubQueries[]
+  ): PlaywrightValue;
   public find(
     selector: PrimarySelector,
     ...subQueries: SubQueries[]

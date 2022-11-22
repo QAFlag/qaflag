@@ -25,7 +25,8 @@ export const title: SelectModifier = (value: string): FindQuery =>
 export const id: SelectModifier = (value: string): FindQuery =>
   attr('id', value);
 
-const prefixMapper: { [prefix: string]: SelectModifier } = {
+const makeMap = <T extends Record<string, SelectModifier>>(map: T): T => map;
+const AttributePrefixes = makeMap({
   alt,
   text: hasText,
   href,
@@ -33,7 +34,8 @@ const prefixMapper: { [prefix: string]: SelectModifier } = {
   placeholder,
   id,
   title,
-};
+});
+export type AttributePrefix = keyof typeof AttributePrefixes;
 
 export const extractPrefix = (selector: string): SelectorPrefix | null => {
   const matches = selector.match(/^([a-z]+) ?= ?(.+)$/i);
@@ -43,6 +45,6 @@ export const extractPrefix = (selector: string): SelectorPrefix | null => {
   return {
     prefix,
     value,
-    modifier: prefixMapper[prefix] || null,
+    modifier: AttributePrefixes[prefix] || null,
   };
 };
