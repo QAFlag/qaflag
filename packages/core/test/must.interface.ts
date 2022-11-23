@@ -62,7 +62,7 @@ export interface MustHaveNone<T extends ValueInterface>
 }
 
 export interface Assertions_Must<T extends ValueInterface> {
-  contain(value: string | string[]): TestResult<T>;
+  contain(value: any | any[] | ValueInterface): TestResult<T>;
   endWith(value: string | string[]): TestResult<T>;
   equal(value: any): TestResult<T>;
   exist(): TestResult<T>;
@@ -92,6 +92,7 @@ export interface Assertions_MustBe<T extends ValueInterface>
   before(date: string | Date): TestResult<T>;
   between(valueA: number, valueB: number): TestResult<T>;
   closeTo(value: number, within?: number): TestResult<T>;
+  containedIn(value: string | any[] | ValueInterface): TestResult<T>;
   divisibleBy(value: number): TestResult<T>;
   empty(): TestResult<T>;
   equalTo(value: any): TestResult<T>;
@@ -99,6 +100,7 @@ export interface Assertions_MustBe<T extends ValueInterface>
   false(): TestResult<T>;
   greaterThan(value: number): TestResult<T>;
   greaterThanOrEquals(value: number): TestResult<T>;
+  inArray(value: any[]): TestResult<T>;
   inTheFuture(): TestResult<T>;
   inThePast(): TestResult<T>;
   lessThan(value: number): TestResult<T>;

@@ -26,7 +26,13 @@ const program = new Command()
   .version(cli.version, '-v, --version', 'Output the current version.')
   .usage('<command> [options]')
   .helpOption('-h, --help', 'Output usage information.')
+  .option('--theme <theme>', 'dark, light')
   .showSuggestionAfterError()
+  .hook('preAction', thisCommand => {
+    if (thisCommand.opts().theme) {
+      project.settings.theme = thisCommand.opts().theme;
+    }
+  })
   .addHelpText(
     'after',
     `
@@ -66,6 +72,7 @@ program
   .description('Run a test suite')
   .option('--all', 'Run every suite')
   .option('--build', 'Build tests before running')
+  .option('--base <url>', 'Base URL')
   .argument('[suite]', 'Specific suite you want to run')
   .action(async (suite, options, command: Command) => {
     await run(project, options, command);

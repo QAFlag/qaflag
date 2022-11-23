@@ -35,6 +35,7 @@ export class UsersSuite extends Suite({
         .and.must.be.a.positiveInteger();
     });
     const ids = context.find('[*].id');
+    ids.must.have.some.be.containedIn(['1', '2']);
     ids.must.all.be.greaterThan(0);
     ids.must.not.have.any.be.lessThan(0);
     ids.must.have.some.be.greaterThan(0);

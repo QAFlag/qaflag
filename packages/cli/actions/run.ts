@@ -15,6 +15,9 @@ export const run = async (
   options: { [key: string]: string | boolean },
   command: Command,
 ) => {
+  // Overrides
+  if (options.base) project.settings.baseUrl = String(options.base);
+  // Build?
   if (options.build) {
     try {
       await build(project);

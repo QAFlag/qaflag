@@ -10,11 +10,34 @@ import { addPackages } from '../utils/install';
 import { humanReadableList, ProjectSettings } from '@qaflag/core';
 import { exitError } from '../utils/exit';
 import * as fs from 'fs-extra';
+import { PackageManager_Enum, whichPackageManager } from '../utils/which';
+import { isPackageJson } from '../utils/is-project-root';
 
 export const init = async (project: Project) => {
+  const packageManager = whichPackageManager();
+  const packageManagerIndex =
+    packageManager === null ? 4 : PackageManager_Enum.indexOf(packageManager);
   printHeader();
   printLines(['', 'Initialize QA Flag', '']);
+  // Must run in root
+  if (!isPackageJson()) {
+    return exitError(
+      "Please run this command in your project's root folder. Could not find package.json. If this is a new project, you must initialize it first with your package manager.",
+    );
+  }
   const responses = await prompts([
+    {
+      type: 'select',
+      name: 'packageManager',
+      message: 'Which package manager do you want to use?',
+      initial: packageManagerIndex,
+      choices: [
+        { value: 'npm', title: 'NPM' },
+        { value: 'yarn', title: 'Yarn' },
+        { value: 'pnpm', title: 'PNPM' },
+        { value: 'none', title: 'None, skip installing dependencies' },
+      ],
+    },
     {
       type: 'text',
       name: 'baseUrl',
@@ -57,11 +80,13 @@ export const init = async (project: Project) => {
     },
   ]);
   try {
-    const packagesOutput = await addPackages([
-      '@qaflag/core',
-      ...responses.types,
-    ]);
-    printLines(['', ...packagesOutput, '']);
+    if (responses.packageManager !== 'none') {
+      const packagesOutput = await addPackages(responses.packageManager, [
+        '@qaflag/core',
+        ...responses.types,
+      ]);
+      printLines(['', ...packagesOutput, '']);
+    }
     project.settings.baseUrl = responses.baseUrl;
     project.settings.input.path = responses.src;
     project.settings.output.path = responses.dist;

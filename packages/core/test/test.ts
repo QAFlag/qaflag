@@ -2,10 +2,11 @@ import { ValueInterface } from '../value/value.interface';
 import validator from 'validator';
 import is from '@sindresorhus/is';
 import { humanReadableList } from '../utils/helpers';
-import { ArrayValue, NumericValue, StringValue } from '../value/values';
+import { ArrayValue, NumericValue } from '../value/values';
 import { mustShouldCould, TestEvalEnum } from './test-base';
 import { TestResult } from './result';
 import { TestInterface } from './test.interface';
+import { levenshtein } from './levenshtein';
 
 export type assertion = (data: unknown) => boolean;
 
@@ -229,30 +230,37 @@ export class Test<ValueWrapper extends ValueInterface>
    */
 
   public equal(value: any) {
-    this.message.push(`equal ${value}`);
-    return this.execute(item => item == value);
+    const thatValue = toThatValue(value);
+    this.message.push(`equal ${thatValue}`);
+    return this.execute(item => item == thatValue);
   }
 
   public equalTo(value: any) {
-    this.message.push(`equal to ${value}`);
-    return this.execute(item => item == value);
+    const thatValue = toThatValue(value);
+    this.message.push(`equal to ${thatValue}`);
+    return this.execute(item => item == thatValue);
   }
 
   public exactly(value: any) {
-    const thatValue = value instanceof StringValue ? value.$ : value;
+    const thatValue = toThatValue(value);
     this.message.push(`exactly ${thatValue}`);
     return this.execute(item => item === thatValue);
   }
 
   public include(value: any) {
-    this.message.push(`include ${value}`);
-    return this.execute(item =>
-      (Array.isArray(item) ? item : [item]).includes(value),
-    );
+    const thatValue = toThatValue(value);
+    this.message.push(`include ${thatValue}`);
+    return this.execute(item => toThatArray(item).includes(thatValue));
   }
 
-  public containedIn(value: string | string[] | StringValue) {
-    const thatValue = value instanceof StringValue ? value.$ : value;
+  public inArray(value: any[]) {
+    const thatValue = toThatArray(value);
+    this.message.push(`in array ${thatValue}`);
+    return this.execute(thisValue => thatValue.includes(thisValue));
+  }
+
+  public containedIn(value: any) {
+    const thatValue = toStringOrStringArray(value);
     this.message.push(`contained in ${thatValue}`);
     return this.execute(thisValue => {
       if (typeof thisValue == 'string') {
@@ -261,17 +269,17 @@ export class Test<ValueWrapper extends ValueInterface>
           : validator.contains(thatValue, thisValue);
       }
       if (Array.isArray(thisValue)) {
-        return thisValue.some(x => thatValue.includes(x));
+        return thisValue.some(x => thatValue.includes(String(x)));
       }
       // Convert to string
       return Array.isArray(thatValue)
-        ? thatValue.some(x => validator.contains(x, String(thisValue)))
+        ? thatValue.some(x => validator.contains(String(x), String(thisValue)))
         : validator.contains(thatValue, String(thisValue));
     });
   }
 
-  public contain(value: string | string[] | StringValue) {
-    const thatValue = value instanceof StringValue ? value.$ : value;
+  public contain(value: any) {
+    const thatValue = toStringOrStringArray(value);
     this.message.push(`contain ${thatValue}`);
     return this.execute(thisValue => {
       if (typeof thisValue == 'string') {
@@ -376,33 +384,46 @@ export class Test<ValueWrapper extends ValueInterface>
    */
 
   public like(value: any) {
-    this.message.push(`like ${value}`);
+    const thatValue = toThatValue(value);
+    this.message.push(`like ${thatValue}`);
     return this.execute(
       item =>
         String(item).toLocaleLowerCase().trim() ===
-        value.toLocaleLowerCase().trim(),
+        thatValue.toLocaleLowerCase().trim(),
     );
   }
 
-  public startWith(value: string | string[] | StringValue) {
-    const thatValue = value instanceof StringValue ? value.$ : value;
+  public similarTo(value: any, maxDistance = 3) {
+    const thatValue = toThatString(value);
+    this.message.push(`similar to ${thatValue} (Max Distance: 3)`);
+    return this.execute(
+      item =>
+        levenshtein(
+          String(item).toLocaleLowerCase().trim(),
+          thatValue.toLocaleLowerCase().trim(),
+        ) <= maxDistance,
+    );
+  }
+
+  public startWith(value: string | string[] | ValueInterface) {
+    const thatValue = toStringOrStringArray(value);
     this.message.push(`start with ${thatValue}`);
     return this.execute(item => {
       const str = String(item);
       return Array.isArray(thatValue)
-        ? thatValue.some(x => str.startsWith(x))
-        : str.startsWith(thatValue);
+        ? thatValue.some(x => str.startsWith(String(x)))
+        : str.startsWith(String(thatValue));
     });
   }
 
-  public endWith(value: string | string[] | StringValue) {
-    const thatValue = value instanceof StringValue ? value.$ : value;
+  public endWith(value: string | string[] | ValueInterface) {
+    const thatValue = toStringOrStringArray(value);
     this.message.push(`end with ${thatValue}`);
     return this.execute(item => {
       const str = String(item);
       return Array.isArray(thatValue)
-        ? thatValue.some(x => str.endsWith(x))
-        : str.endsWith(thatValue);
+        ? thatValue.some(x => str.endsWith(String(x)))
+        : str.endsWith(String(thatValue));
     });
   }
 
@@ -656,9 +677,33 @@ export class Test<ValueWrapper extends ValueInterface>
   }
 }
 
-export function test<ValueWrapper extends ValueInterface>(
+const isValueInterface = (x: any): x is ValueInterface => {
+  return x['$'] !== undefined && x['context'] && x['name'];
+};
+
+export const test = <ValueWrapper extends ValueInterface>(
   input: ValueWrapper,
   type: mustShouldCould,
-): Test<ValueWrapper> {
+): Test<ValueWrapper> => {
   return new Test(input, type);
-}
+};
+
+const toStringOrStringArray = (value: any): string | string[] => {
+  const thatValue = toThatValue(value);
+  if (typeof thatValue == 'string') return thatValue;
+  if (Array.isArray(thatValue)) return thatValue.map(x => String(x));
+  return String(thatValue);
+};
+
+const toThatValue = (value: any) => {
+  return isValueInterface(value) ? value.$ : value;
+};
+
+const toThatString = (value: any) => {
+  return String(isValueInterface(value) ? value.$ : value);
+};
+
+const toThatArray = (value: any): any[] => {
+  const thatValue = toThatValue(value);
+  return Array.isArray(thatValue) ? thatValue : [thatValue];
+};

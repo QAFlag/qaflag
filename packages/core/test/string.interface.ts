@@ -1,3 +1,4 @@
+import { ValueInterface } from '../value/value.interface';
 import { StringValue } from '../value/values';
 import { NumberMust } from './number.interface';
 import { TestResult } from './result';
@@ -46,6 +47,7 @@ export interface Assertions_StringMustBe extends Assertions_StringMustBeAn {
   onlyNumbers(): TestResult<StringValue>;
   alphanumeric(): TestResult<StringValue>;
   containedIn(value: string | string[] | StringValue): TestResult<StringValue>;
+  similarTo(value: string | ValueInterface): TestResult<StringValue>;
 }
 
 export interface Assertions_StringMustBeAn {
