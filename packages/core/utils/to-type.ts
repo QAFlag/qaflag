@@ -24,7 +24,7 @@ export const isArrayOfStrings = (value: unknown): boolean => {
 export const toType = (obj: any): string => {
   if (typeof obj === 'undefined') return 'undefined';
   if (obj === null) return 'null';
-  if (obj === NaN) return 'nan';
+  if (isNaN(obj)) return 'nan';
   if (!!obj && obj.cheerio) return 'cheerio';
   if (is.promise(obj)) return 'promise';
   if (is.asyncFunction(obj)) return 'asyncfunction';
