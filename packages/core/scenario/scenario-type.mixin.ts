@@ -39,9 +39,9 @@ export function ScenarioType(initOpts: ScenarioTypeOpts) {
     public readonly logger = new Logger();
 
     public async __startUp(): Promise<void> {
+      await this.persona.__startUp(this.suite);
       this.request.persona = this.persona;
       this.request.pathArgs = this.suite.store.entries();
-      await this.persona.__startUp(this.suite);
       this.logger.start();
     }
 

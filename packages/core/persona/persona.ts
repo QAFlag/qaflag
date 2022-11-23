@@ -102,13 +102,15 @@ export const Persona = (
 
     public async __startUp(suite: SuiteInterface): Promise<void> {
       if (!this[BeforeSymbol] || this.#hasStarted) return;
+      this.#hasStarted = true;
+      suite.events.emit('personaStartUp');
       const opts: Partial<HttpRequestOptions> = {
         baseUrl: suite.baseUrl,
         pathArgs: suite.store.entries(),
       };
       const befores = Object.values<Function>(this[BeforeSymbol] || {});
       await Promise.all(befores.map(async before => before(this, opts)));
-      this.#hasStarted = true;
+      suite.events.emit('personaInitialized');
     }
   };
 };

@@ -13,6 +13,8 @@ export interface SuiteStep {
 }
 
 export type SuiteEvents = {
+  personaStartUp: () => void;
+  personaInitialized: () => void;
   beforeAll: () => void;
   beforeEach: (scenario: ScenarioInterface) => void;
   afterEach: (scenario: ScenarioInterface) => void;
