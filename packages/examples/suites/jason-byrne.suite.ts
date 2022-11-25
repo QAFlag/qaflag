@@ -45,8 +45,6 @@ export class JasonByrneSuite extends Suite({
   }
 
   @Case() async testExperiencePage(context: PlaywrightContext) {
-    const user = context.persona as GuestUser;
-    user.foo();
     context.debug(this.title);
     await context.exists(image, near(topLeft));
     await context.exists(heading, '"Experience"');

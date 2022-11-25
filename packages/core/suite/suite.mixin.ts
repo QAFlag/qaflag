@@ -96,6 +96,9 @@ export function Suite(suiteOpts: SuiteOpts) {
     public async __execute() {
       this.logger.start();
       await this.persona.__startUp(this);
+      await Promise.all(
+        this.scenarios.map(scenario => scenario.persona?.__startUp(this)),
+      );
       this.events.emit('beforeAll');
       await Promise.all(
         this.befores.map(([methodName, before]) =>

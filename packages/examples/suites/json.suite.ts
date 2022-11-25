@@ -7,17 +7,20 @@ import initMocks from '../mocks/json';
 
 initMocks();
 
+const Guest = new GuestUser();
+const Standard = new StandardUser();
+
 const GetList = Template({
   uri: 'GET /users',
   step: 1,
   statusCode: 200,
-  persona: new StandardUser(),
+  persona: Standard,
   schema: '@getUsers',
 });
 
 export class UsersSuite extends Suite({
   title: 'Test Users Endpoints',
-  persona: new GuestUser(),
+  persona: Guest,
   type: JsonScenario,
 }) {
   @GetList()
@@ -56,6 +59,7 @@ export class UsersSuite extends Suite({
   @Scenario({
     description: 'Get first user',
     uri: 'GET /users/{firstUserId}',
+    persona: Standard,
     schema: {
       name: '@userJtd',
       type: 'jtd',
@@ -71,6 +75,7 @@ export class UsersSuite extends Suite({
     description: 'Get the last user in the list',
     uri: 'GET /users/{lastUserId}',
     schema: UserDto,
+    persona: Standard,
     step: 2,
   })
   async getLastUser(context: JsonContext) {
