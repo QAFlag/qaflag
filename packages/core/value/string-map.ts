@@ -1,4 +1,4 @@
-import { test, Test } from '../test/test';
+import { test, Test } from '../assertions/test';
 import { StringValue, ValueAbstract, ValueOpts } from './values';
 
 type StringMap<T> = Record<keyof T, string>;

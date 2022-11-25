@@ -7,12 +7,9 @@ import { ValueInterface } from '../value/value.interface';
 export interface ArrayMust<T extends ValueInterface>
   extends Assertions_ArrayMust {
   be: ArrayMustBe;
-  have: Assertions_ArrayMustHave<T>;
-  all: Must<T>;
-  none: Must<T>;
-  any: Must<T>;
-  some: Must<T>;
   not: ArrayMust<T>;
+  all: Must<any>;
+  have: Assertions_ArrayMustHave<T>;
 }
 
 interface ArrayMustBe extends Assertions_ArrayMustBe {
@@ -23,6 +20,7 @@ export interface Assertions_ArrayMustBeAn {
   arrayOf(
     typeName: 'string' | 'number' | 'boolean' | 'object',
   ): TestResult<ArrayValue>;
+  array(): TestResult<ArrayValue>;
 }
 
 export interface Assertions_ArrayMustHave<T extends ValueInterface> {
@@ -30,7 +28,9 @@ export interface Assertions_ArrayMustHave<T extends ValueInterface> {
   some: Must<T>;
   any: Must<T>;
   none: Must<T>;
-  all: Must<T>;
+  atLeast(n: number): Must<T>;
+  atMost(n: number): Must<T>;
+  only(n: number): Must<T>;
 }
 
 export interface Assertions_ArrayMust {

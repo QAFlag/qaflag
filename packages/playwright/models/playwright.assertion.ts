@@ -1,4 +1,4 @@
-import { mustShouldCould, sleep, TestBase, TestResult } from '@qaflag/core';
+import { sleep, TestBase, TestResult } from '@qaflag/core';
 import { PlaywrightMust } from '../types';
 import { TimeoutOpts } from '../types/timeout-opts';
 import { PlaywrightValue } from './playwright.value';
@@ -17,18 +17,10 @@ export type AwaitedAssertion = (
 ) => Promise<AssertionResult> | AssertionResult;
 export type mustOrShould = 'must' | 'should';
 
-export class PlaywrightAssertion extends TestBase implements PlaywrightMust {
-  constructor(
-    public readonly input: PlaywrightValue,
-    protected mustShouldCould: mustShouldCould,
-    protected isNot: boolean = false,
-    protected evalType: 'standard' | 'every' | 'some' = 'standard',
-    protected evalCount: number = 0,
-    message?: string[],
-  ) {
-    super(input, mustShouldCould, isNot, evalType, evalCount, message);
-  }
-
+export class PlaywrightAssertion
+  extends TestBase<PlaywrightValue>
+  implements PlaywrightMust
+{
   public get in() {
     this.message.push('in');
     return this;

@@ -41,8 +41,8 @@ export interface Assertions_NumberMustBeAn {
   negativeNumber(): TestResult<NumericValue>;
   positiveInteger(): TestResult<NumericValue>;
   negativeInteger(): TestResult<NumericValue>;
-  evenInteger(): TestResult<NumericValue>;
-  oddInteger(): TestResult<NumericValue>;
+  even(): TestResult<NumericValue>;
+  odd(): TestResult<NumericValue>;
   nonZeroNumber(): TestResult<NumericValue>;
   nonZeroInteger(): TestResult<NumericValue>;
   nan(): TestResult<NumericValue>;

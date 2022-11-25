@@ -1,4 +1,6 @@
 import { ValueInterface } from '../value/value.interface';
+import { AssertionOpts } from './assertion';
+import { TestResult } from './result';
 
 export type mustShouldCould = 'must' | 'should' | 'could';
 
@@ -10,18 +12,47 @@ export type TestEvalEnum =
   | 'atMost'
   | 'atLeast';
 
-export abstract class TestBase {
-  protected message: string[];
+export abstract class TestBase<ValueWrapper extends ValueInterface> {
+  public readonly message: string[];
+  protected readonly opts: AssertionOpts;
 
   constructor(
-    protected readonly input: ValueInterface,
+    public readonly input: ValueWrapper,
     protected readonly mustShouldCould: mustShouldCould,
-    protected isNot: boolean = false,
-    protected evalType: TestEvalEnum = 'standard',
-    protected evalCount: number,
+    opts?: AssertionOpts,
     message?: string[],
   ) {
     this.message = message || [input.name, mustShouldCould];
+    this.opts = {
+      isNot: opts?.isNot ?? false,
+      evalType: opts?.evalType ?? 'standard',
+      howMany: opts?.howMany ?? 0,
+    };
+  }
+
+  protected get evalType() {
+    return this.opts.evalType;
+  }
+
+  protected get isNot() {
+    return this.opts.isNot;
+  }
+
+  protected result(pass: boolean, statement: string) {
+    this.message.push(statement);
+    const text = this.message.join(' ');
+    if (this.needsResultOutput) {
+      this.input.logger.log(
+        pass ? 'pass' : this.isOptional ? 'optionalFail' : 'fail',
+        { text },
+      );
+      if (!pass) {
+        this.input.logger.log('info', {
+          text: `Actual Value: ${this.input.string.$}`,
+        });
+      }
+    }
+    return new TestResult(this, pass);
   }
 
   protected get needsResultOutput(): boolean {
@@ -33,7 +64,7 @@ export abstract class TestBase {
   }
 
   public get not() {
-    this.isNot = !this.isNot;
+    this.opts.isNot = !this.opts.isNot;
     this.message.push('not');
     return this;
   }
@@ -64,75 +95,75 @@ export abstract class TestBase {
   }
 
   public get all() {
-    this.evalType = 'every';
+    this.opts.evalType = 'every';
     this.message.push('all');
     return this;
   }
 
   public get none() {
-    this.evalType = 'some';
-    this.isNot = true;
+    this.opts.evalType = 'some';
+    this.opts.isNot = true;
     this.message.push('none');
     return this;
   }
 
   public get any() {
-    this.evalType = 'some';
+    this.opts.evalType = 'some';
     this.message.push('any');
     return this;
   }
 
   public get some() {
-    this.evalType = 'some';
+    this.opts.evalType = 'some';
     this.message.push('some');
     return this;
   }
 
   public only(count: number) {
-    this.evalType = 'only';
-    this.evalCount = count;
+    this.opts.evalType = 'only';
+    this.opts.howMany = count;
     this.message.push(`only ${count}`);
     return this;
   }
 
   public just(count: number) {
-    this.evalType = 'only';
-    this.evalCount = count;
+    this.opts.evalType = 'only';
+    this.opts.howMany = count;
     this.message.push(`just ${count}`);
     return this;
   }
 
   public atMost(count: number) {
-    this.evalType = 'atMost';
-    this.evalCount = count;
+    this.opts.evalType = 'atMost';
+    this.opts.howMany = count;
     this.message.push(`at most ${count}`);
     return this;
   }
 
   public atLeast(count: number) {
-    this.evalType = 'atLeast';
-    this.evalCount = count;
+    this.opts.evalType = 'atLeast';
+    this.opts.howMany = count;
     this.message.push(`at least ${count}`);
     return this;
   }
 
   public noLessThan(count: number) {
-    this.evalType = 'atLeast';
-    this.evalCount = count;
+    this.opts.evalType = 'atLeast';
+    this.opts.howMany = count;
     this.message.push(`no less than ${count}`);
     return this;
   }
 
   public moreThan(count: number) {
-    this.evalType = 'atLeast';
-    this.evalCount = count + 1;
+    this.opts.evalType = 'atLeast';
+    this.opts.howMany = count + 1;
     this.message.push(`more than ${count}`);
     return this;
   }
 
   public noMoreThan(count: number) {
-    this.evalType = 'atMost';
-    this.evalCount = count;
+    this.opts.evalType = 'atMost';
+    this.opts.howMany = count;
     this.message.push(`no more than ${count}`);
     return this;
   }

@@ -4,13 +4,13 @@ import {
   PrimitiveValueInterface,
 } from '../value/value.interface';
 import { toType } from '../utils/to-type';
-import { Test, test } from '../test/test';
+import { Test, test } from '../assertions/test';
 import is from '@sindresorhus/is';
-import { NumberMust } from '../test/number.interface';
-import { StringMust } from '../test/string.interface';
-import { BooleanMust } from '../test/boolean.interface';
-import { DateMust } from '../test/date.interface';
-import { ArrayMust } from '../test/array.interface';
+import { NumberMust } from '../assertions/number.interface';
+import { StringMust } from '../assertions/string.interface';
+import { BooleanMust } from '../assertions/boolean.interface';
+import { DateMust } from '../assertions/date.interface';
+import { ArrayMust } from '../assertions/array.interface';
 import { ordinal } from '../utils/helpers';
 import { ContextInterface } from '../context/context.interface';
 import { SuiteInterface } from '../suite/suite.interface';
@@ -49,6 +49,13 @@ export abstract class ValueAbstract<InputType>
 
   public get name(): string {
     return this._nameOverride || this.opts.name;
+  }
+
+  public get length(): NumericValue {
+    return new NumericValue(this.input['length'] ? this.input['length'] : 0, {
+      name: `Length of ${this.name}`,
+      context: this.context,
+    });
   }
 
   public abstract must: any;
@@ -194,13 +201,6 @@ export abstract class PrimitiveValueAbstract<InputType>
   extends ValueAbstract<InputType>
   implements PrimitiveValueInterface<InputType>
 {
-  public get length(): NumericValue {
-    return new NumericValue(this.input['length'] ? this.input['length'] : 0, {
-      name: `Length of ${this.name}`,
-      context: this.context,
-    });
-  }
-
   public get number() {
     return new NumericValue(this.toNumber(), this.opts);
   }
@@ -287,15 +287,15 @@ export class BooleanValue extends PrimitiveValueAbstract<boolean> {
 }
 
 export class ArrayValue<T = any> extends PrimitiveValueAbstract<T[]> {
-  public get must(): ArrayMust<typeof this> {
+  public get must(): ArrayMust<ArrayValue> {
     return test(this, 'must');
   }
 
-  public get should(): ArrayMust<typeof this> {
+  public get should(): ArrayMust<ArrayValue> {
     return test(this, 'should');
   }
 
-  public get could(): ArrayMust<typeof this> {
+  public get could(): ArrayMust<ArrayValue> {
     return test(this, 'could');
   }
 
@@ -303,6 +303,13 @@ export class ArrayValue<T = any> extends PrimitiveValueAbstract<T[]> {
     return new GenericValue(this.$[0], {
       ...this.opts,
       name: `First in ${this.name}`,
+    });
+  }
+
+  public get length(): NumericValue {
+    return new NumericValue(this.input.length, {
+      name: `Length of ${this.name}`,
+      context: this.context,
     });
   }
 

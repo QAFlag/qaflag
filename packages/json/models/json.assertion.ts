@@ -8,28 +8,37 @@ export class JsonAssertion extends Test<JsonValue> {
   public async dto<T>(className: ClassConstructor<T>, opts?: ValidatorOptions) {
     const instance = plainToClass(className, this.input.$);
     const errors = await validate(instance as unknown as object, opts);
-    this.message.push(`DTO ${className.name}`);
-    this.execute(() => errors.length == 0);
+    const result = this.result(
+      this.assertion.execute(() => errors.length == 0),
+      `DTO ${className.name}`,
+    );
     errors.forEach(error => {
       this.input.logger.log('info', error.toString());
     });
+    return result;
   }
 
   public async jtd(name: string) {
-    this.message.push(`JTD ${name}`);
     const errors = await testSchema(this.input.$, name, 'JTD');
-    this.execute(() => errors.length == 0);
+    const result = this.result(
+      this.assertion.execute(() => errors.length == 0),
+      `JTD ${name}`,
+    );
     errors.forEach(error => {
       this.input.logger.log('info', error.toString());
     });
+    return result;
   }
 
   public async jsonSchema(name: string) {
-    this.message.push(`JsonSchema ${name}`);
     const errors = await testSchema(this.input.$, name, 'JsonSchema');
-    this.execute(() => errors.length == 0);
+    const result = this.result(
+      this.assertion.execute(() => errors.length == 0),
+      `JsonSchema ${name}`,
+    );
     errors.forEach(error => {
       this.input.logger.log('info', error.toString());
     });
+    return result;
   }
 }

@@ -22,6 +22,8 @@ export class UsersSuite extends Suite({
 }) {
   @GetList()
   async getListOfUsers(context: JsonContext) {
+    context.document.must.be.an.array();
+    context.document.must.not.be.an.object();
     context.requestDuration.should.be.lessThan(100);
     await context.case('Test List', async () => {
       const items = context.find('[*]');

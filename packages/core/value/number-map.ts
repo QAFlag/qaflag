@@ -1,4 +1,4 @@
-import { test, Test } from '../test/test';
+import { test, Test } from '../assertions/test';
 import { NumericValue, ValueAbstract, ValueOpts } from './values';
 
 type NumberMap<T> = Record<keyof T, number>;

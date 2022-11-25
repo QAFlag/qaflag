@@ -1,6 +1,6 @@
 import { ArrayValue, BooleanValue, NumericValue, StringValue } from './values';
 import { LoggerInterface } from '../types/log-provider.interface';
-import { Must } from '../test/must.interface';
+import { Must } from '../assertions/must.interface';
 import { ContextInterface } from '../context/context.interface';
 
 export interface ValueInterface<InputType = any> {

@@ -125,7 +125,7 @@ export interface Assertions_MustBeAn<T extends ValueInterface> {
   emptyArray(): TestResult<T>;
   emptyObject(): TestResult<T>;
   emptyString(): TestResult<T>;
-  evenInteger(): TestResult<T>;
+  even(): TestResult<T>;
   integer(): TestResult<T>;
   ipAddress(version?: number): TestResult<T>;
   jwt(): TestResult<T>;
@@ -141,7 +141,7 @@ export interface Assertions_MustBeAn<T extends ValueInterface> {
   number(): TestResult<T>;
   numericString(): TestResult<T>;
   object(): TestResult<T>;
-  oddInteger(): TestResult<T>;
+  odd(): TestResult<T>;
   positiveInteger(): TestResult<T>;
   positiveNumber(): TestResult<T>;
   postalCode(countryCode: string): TestResult<T>;
