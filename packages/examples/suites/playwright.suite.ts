@@ -17,7 +17,7 @@ export class GoogleSearch extends Suite({
   async queryForMyGithub(context: PlaywrightContext) {
     const searchTerm = 'Jason Byrne Github';
     const searchButton = await context.visible('=button', '"Google Search"');
-    const searchInput = context.label('Search');
+    const searchInput = context.find('=textbox', 'title=Search');
     await context.exists('=button', near(top));
     await searchInput.must.exist();
     await searchInput.must.be.visible();
