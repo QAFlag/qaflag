@@ -1,13 +1,9 @@
 import { Scenario, Suite } from '@qaflag/core';
 import {
-  attr,
-  button,
   near,
   PlaywrightContext,
   PlaywrightScenario,
-  textbox,
   top,
-  visible,
 } from '@qaflag/playwright';
 
 export class GoogleSearch extends Suite({
@@ -20,9 +16,9 @@ export class GoogleSearch extends Suite({
   })
   async queryForMyGithub(context: PlaywrightContext) {
     const searchTerm = 'Jason Byrne Github';
-    const searchButton = await context.visible(button, '"Google Search"');
-    const searchInput = context.find(attr('aria-label', 'Search'));
-    await context.exists(button, near(top));
+    const searchButton = await context.visible('=button', '"Google Search"');
+    const searchInput = context.label('Search');
+    await context.exists('=button', near(top));
     await searchInput.must.exist();
     await searchInput.must.be.visible();
     await searchInput.must.not.be.hidden();
@@ -33,8 +29,10 @@ export class GoogleSearch extends Suite({
     await searchInput.must.be.in.focus();
     await searchButton.mouse.click();
     await context.waitForNavigation();
-    await context.find("'Jason Byrne jasonbyrne - GitHub'", visible).exists();
-    const newSearchBox = await context.exists(textbox, near(top));
+    await context
+      .find("'Jason Byrne jasonbyrne - GitHub'", ':visible')
+      .exists();
+    const newSearchBox = await context.exists('=textbox', near(top));
     const value = await newSearchBox.first.form.value();
     value.must.equal(searchTerm);
     await newSearchBox.mouse.click();

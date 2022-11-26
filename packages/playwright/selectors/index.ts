@@ -1,7 +1,6 @@
 export * from './find-query';
 export * from './modifiers';
 export * from './select-filter';
-export * from './state-selector';
 export * from './within';
 export * from './parent';
 export * from './sibling';
