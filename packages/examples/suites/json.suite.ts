@@ -67,8 +67,10 @@ export class UsersSuite extends Suite({
     step: 2,
   })
   async getFirstUser(context: JsonContext) {
-    context.find('email').must.be.an.email();
-    context.find('email').must.be.a.string();
+    const email = context.find('email');
+    email.must.be.an.email();
+    email.must.be.a.string();
+    email.length.must.be.between(1, 100);
   }
 
   @Scenario({
