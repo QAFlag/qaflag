@@ -17,40 +17,41 @@ import { ScenarioUri } from '../scenario/scenario.interface';
  * Options to instantiate a request
  */
 export interface HttpRequestOptions {
-  uri?: ScenarioUri;
+  auth?: HttpAuth;
   baseUrl?: string;
   bearerToken?: string;
-  headers?: HttpHeaders;
   cookies?: InputCookies;
-  queryString?: KeyValue<string>;
-  auth?: HttpAuth;
-  userAgent?: string;
-  proxy?: HttpProxy;
   data?: HttpBody;
-  responseType?: HttpResponseType;
-  responseEncoding?: HttpEncoding;
-  timeout?: number;
+  headers?: HttpHeaders;
   maxRedirects?: number;
   pathArgs?: [string, any][];
+  proxy?: HttpProxy;
+  queryString?: KeyValue<string>;
+  responseEncoding?: HttpEncoding;
+  responseType?: HttpResponseType;
+  timeout?: number;
+  uri?: ScenarioUri;
+  userAgent?: string;
 }
 
-export interface HttpRequestInterface {
-  uri: ScenarioUri;
-  url: URL;
+export interface HttpRequestInterface extends HttpRequestOptions {
+  auth: HttpAuth | undefined;
   baseUrl: string | undefined;
+  bearerToken: string | undefined;
+  cookies: Cookie[];
+  data: HttpBody | undefined;
+  headers: HttpHeaders;
+  maxRedirects: number;
   method: HttpVerbs;
   path: string;
-  persona: PersonaInterface | undefined;
-  headers: HttpHeaders;
-  cookies: Cookie[];
-  bearerToken: string | undefined;
-  auth: HttpAuth | undefined;
-  proxy: HttpProxy | undefined;
-  data: HttpBody | undefined;
-  responseType: HttpResponseType;
-  responseEncoding: HttpEncoding;
-  queryString: KeyValue<string>;
-  timeout: number;
-  maxRedirects: number;
   pathArgs: [string, any][];
+  persona: PersonaInterface | undefined;
+  proxy: HttpProxy | undefined;
+  queryString: KeyValue<string>;
+  responseEncoding: HttpEncoding;
+  responseType: HttpResponseType;
+  timeout: number;
+  uri: ScenarioUri;
+  url: URL;
+  userAgent: string;
 }

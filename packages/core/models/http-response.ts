@@ -3,11 +3,11 @@ import { Cookie } from 'tough-cookie';
 import { HttpResponseInterface } from '../types/http-response.interface';
 import { KeyValue } from '../types/general.types';
 import { HttpHeaders, HttpStatus } from '../types/http.types';
-import { AxiosRequest } from '../utils/axios';
+import { HttpRequestInterface } from '../types/http-request.interface';
 
 interface HttpResponseOptions<
   ResponseBodyType,
-  RequestType extends AxiosRequest,
+  RequestType extends HttpRequestInterface,
 > extends AxiosResponse<ResponseBodyType, RequestType> {
   cookies?: KeyValue;
   trailers?: KeyValue;
@@ -18,8 +18,10 @@ export interface ResponseMeta {
   endTime?: number;
 }
 
-export class HttpResponse<ResponseBodyType = any, RequestType = any>
-  implements HttpResponseInterface
+export class HttpResponse<
+  ResponseBodyType = any,
+  RequestType extends HttpRequestInterface = any,
+> implements HttpResponseInterface
 {
   public constructor(
     private response: HttpResponseOptions<ResponseBodyType, RequestType>,

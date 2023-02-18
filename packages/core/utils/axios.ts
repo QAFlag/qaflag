@@ -21,7 +21,7 @@ declare module 'axios' {
 
 export const fetchWithAxios = async (
   req: HttpRequestInterface,
-): Promise<HttpResponse<HttpBody, AxiosRequest>> => {
+): Promise<HttpResponse<HttpBody, HttpRequestInterface>> => {
   // https://axios-http.com/docs/req_config
   const axiosRequest: AxiosRequest = {
     method: req.method,

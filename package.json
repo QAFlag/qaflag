@@ -9,9 +9,8 @@
     "prepare": "husky install",
     "cli": "./packages/cli/dist/index.js"
   },
-  "dependencies": {},
   "devDependencies": {
-    "@types/node": "^17.0.21",
+    "@types/node": "^18.14.0",
     "husky": "^7.0.4",
     "lerna": "^4.0.0",
     "prettier": "^2.5.1",
