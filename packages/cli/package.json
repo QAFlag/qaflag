@@ -14,7 +14,8 @@
     "access": "public"
   },
   "scripts": {
-    "build": "npm run clean && tsc && npm run copy-files && chmod +x dist/index.js",
+    "build": "npm run clean && tsc && npm run copy-files",
+    "chmod": "chmod +x dist/index.js",
     "clean": "rimraf dist/",
     "copy-files": "copyfiles -u 1 ./**/*.html ./**/*.css dist/",
     "test": "echo \"Error: run tests from root\" && exit 1"
