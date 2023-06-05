@@ -15,7 +15,6 @@
     "outDir": "dist",
     "lib": ["es7"],
     "skipLibCheck": true,
-    "suppressImplicitAnyIndexErrors": true,
     "strict": false,
     "strictNullChecks": true,
     "importHelpers": false,

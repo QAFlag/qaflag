@@ -13,7 +13,6 @@
     "experimentalDecorators": true,
     "useUnknownInCatchVariables": false,
     "skipLibCheck": true,
-    "suppressImplicitAnyIndexErrors": true,
     "strict": false,
     "strictNullChecks": true,
     "importHelpers": false,

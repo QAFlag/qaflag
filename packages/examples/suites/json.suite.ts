@@ -71,7 +71,7 @@ export class UsersSuite extends Suite({
     email.must.be.an.email();
     email.must.be.a.string();
     email.length.must.be.between(1, 100);
-    email.must.include('@');
+    email.must.contain('@');
   }
 
   @Scenario({
