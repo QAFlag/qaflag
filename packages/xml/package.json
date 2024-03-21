@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@qaflag/core": "*",
-    "cheerio": "^1.0.0-rc.12"
+    "cheerio": "1.0.0-rc.12"
   },
   "gitHead": "0cf5cd6ba6109991b47293f14e9c9c029b180038",
   "devDependencies": {

@@ -3,10 +3,10 @@ import Project from '../../models/project';
 import { humanReadableList } from '@qaflag/core';
 import { resolve, sep } from 'path';
 import { cwd } from 'process';
-import camelcase = require('camelcase');
 import { writeFile } from 'fs-extra';
 import { whichInstalled } from '../../utils/is-installed';
 import { titleize } from '@qaflag/core';
+import camelcase = require('camelcase');
 
 const getFilePath = (project: Project, name: string, suffix: string) => {
   return resolve(cwd(), project.settings.input.path, `${name}.${suffix}.ts`);

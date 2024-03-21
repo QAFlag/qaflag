@@ -1,4 +1,4 @@
-import * as chalk from 'chalk';
+import chalk = require('chalk');
 import cli from '../cli';
 import Table = require('cli-table3');
 import {

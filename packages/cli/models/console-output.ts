@@ -1,4 +1,4 @@
-import * as chalk from 'chalk';
+import chalk = require('chalk');
 import cli from '../cli';
 import stringWidth from 'string-width';
 

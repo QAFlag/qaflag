@@ -14,10 +14,10 @@
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "dependencies": {
-    "@qaflag/core": "^0.3.23",
+    "@qaflag/core": "*",
     "hls-parser": "^0.10.4"
   },
   "devDependencies": {
-    "husky": "^7.0.4"
+    "husky": "^9.0.11"
   }
 }

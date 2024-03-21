@@ -6,9 +6,9 @@ import { outputSuiteToConsole } from '../formatter/console';
 import { SuiteClass, SuiteCollection } from '../types/suite-collection';
 import Project from '../models/project';
 import { Command } from 'commander';
-import * as pLimit from 'p-limit';
 import { printLines } from '../utils/print';
 import { build } from './build';
+import pLimit = require('p-limit');
 
 export const run = async (
   project: Project,
@@ -31,8 +31,8 @@ export const run = async (
     options.all
       ? suites.suiteClasses
       : command.args?.length
-      ? findSuiteByName(suites, command.args)
-      : [await pickSuite(suites)]
+        ? findSuiteByName(suites, command.args)
+        : [await pickSuite(suites)]
   ).filter(selection => !!selection);
   if (!selections.length) return exitError('No suites selected.');
   const limit = pLimit(1);

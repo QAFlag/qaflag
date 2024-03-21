@@ -2,10 +2,10 @@ import { printLineBreak, printLines, printTable } from '../utils/print';
 import * as prompts from 'prompts';
 import { exitError } from '../utils/exit';
 import { findSuites } from '../utils/find-suites';
-import chalk = require('chalk');
 import { loadSuite } from '../utils/load-suite';
 import Project from '../models/project';
 import { titleize, formatUri } from '@qaflag/core';
+import chalk = require('chalk');
 
 export const plan = async (project: Project) => {
   const suites = findSuites(project);
