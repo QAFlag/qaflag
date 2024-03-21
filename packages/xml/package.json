@@ -14,11 +14,11 @@
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "dependencies": {
-    "@qaflag/core": "^0.3.23",
-    "cheerio": "^1.0.0-rc.10"
+    "@qaflag/core": "*",
+    "cheerio": "^1.0.0-rc.12"
   },
   "gitHead": "0cf5cd6ba6109991b47293f14e9c9c029b180038",
   "devDependencies": {
-    "husky": "^7.0.4"
+    "husky": "^9.0.11"
   }
 }

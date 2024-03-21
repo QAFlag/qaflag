@@ -1,6 +1,9 @@
 {
   "name": "root",
   "private": false,
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "bootstrap": "lerna bootstrap",
     "build": "lerna run build",
@@ -12,7 +15,7 @@
   "devDependencies": {
     "@types/node": "^18.14.0",
     "husky": "^7.0.4",
-    "lerna": "^4.0.0",
+    "lerna": "^8.1.2",
     "prettier": "^2.5.1",
     "typescript": "^4.6.2"
   },

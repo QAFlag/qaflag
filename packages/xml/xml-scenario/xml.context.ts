@@ -29,7 +29,7 @@ export class XmlContext<
           withEndIndices: false,
           lowerCaseAttributeNames: true,
           lowerCaseTags: true,
-          normalizeWhitespace: true,
+          //normalizeWhitespace: true,
         },
       },
       false,

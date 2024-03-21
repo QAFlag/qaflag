@@ -51,7 +51,8 @@ export class HtmlValue extends XmlValue {
   }
 
   public tagName() {
-    return this.createString(String(this.$.get(0)['tagName']), {
+    const el = this.$.get(0);
+    return this.createString(el ? String(el['tagName']) : 'undefined', {
       name: `Tag of ${this.name}`,
     });
   }

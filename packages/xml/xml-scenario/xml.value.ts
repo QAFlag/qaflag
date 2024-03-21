@@ -2,7 +2,7 @@ import { KeyValue, test, ValueAbstract } from '@qaflag/core';
 import { Must } from '@qaflag/core';
 import * as cheerio from 'cheerio';
 
-export type CheerioElement = cheerio.Cheerio<cheerio.Node>;
+export type CheerioElement = cheerio.Cheerio<cheerio.AnyNode>;
 
 export class XmlValue extends ValueAbstract<CheerioElement> {
   public get must(): Must<typeof this> {
@@ -74,7 +74,8 @@ export class XmlValue extends ValueAbstract<CheerioElement> {
   }
 
   public tagName() {
-    return this.createString(String(this.$.get(0)['tagName']), {
+    const el = this.$.get(0);
+    return this.createString(el ? String(el['tagName']) : 'undefined', {
       name: `Tag of ${this.name}`,
     });
   }
