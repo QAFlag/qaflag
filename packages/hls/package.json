@@ -1,6 +1,6 @@
 {
   "name": "@qaflag/hls",
-  "version": "0.3.23",
+  "version": "0.4.0",
   "description": "",
   "author": "Jason Byrne",
   "homepage": "https://github.com/QAFlag/qaflag#readme",
@@ -14,7 +14,7 @@
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "dependencies": {
-    "@qaflag/core": "*",
+    "@qaflag/core": "^0.4.0",
     "hls-parser": "^0.10.4"
   },
   "devDependencies": {
